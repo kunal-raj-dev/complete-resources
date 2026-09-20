@@ -26,7 +26,17 @@ Complete-Resources/
 ├── Web Development/
 │   └── JavaScript/
 │       └── 24 js/
-│           └── 01. Event Bubbling.md
+│           ├── 01. Event Bubbling.md
+│           ├── 02. Building Todo with DOM.md
+│           ├── 03. Event Delegation.md
+│           ├── 04. How to Play Simon Says Game.md
+│           ├── 05. Setting up Project.md
+│           ├── 06. Start Game.md
+│           ├── 07. Flash Buttons & Level Up.md
+│           ├── 08. Button Event Listeners.md
+│           ├── 09. Matching Sequence.md
+│           ├── 10. Reset Game.md
+│           └── 11. Display Score.md
 ├── .gitignore
 └── README.md
 ```
@@ -61,11 +71,21 @@ Complete deep-dive into Linked Lists from scratch to FAANG-level hard problems w
 ### 🔹 Web Development
 
 #### JavaScript (24 JS Mini-Project)
-Core DOM event mechanics, propagation phases, and real-world event delegation patterns.
+Core DOM event mechanics, propagation phases, project setup, and complete Simon Says game implementation.
 
 | # | Topic | Key Concepts | Link |
 |---|---|---|---|
 | **01** | Event Bubbling | Bubbling vs Capturing, `event.stopPropagation()`, Event Delegation, Performance Benefits | [01. Event Bubbling.md](./Web%20Development/JavaScript/24%20js/01.%20Event%20Bubbling.md) |
+| **02** | Building Todo with DOM | Dynamic element creation, appendChild, remove child, DOM manipulation | [02. Building Todo with DOM.md](./Web%20Development/JavaScript/24%20js/02.%20Building%20Todo%20with%20DOM.md) |
+| **03** | Event Delegation | `event.target`, parent listeners, dynamic element event handling | [03. Event Delegation.md](./Web%20Development/JavaScript/24%20js/03.%20Event%20Delegation.md) |
+| **04** | How to Play Simon Says Game | Game rules, memory sequence, level progression, UX flow | [04. How to Play Simon Says Game.md](./Web%20Development/JavaScript/24%20js/04.%20How%20to%20Play%20Simon%20Says%20Game.md) |
+| **05** | Setting up Project | HTML structure, CSS styling, flexbox/grid layout for Simon buttons | [05. Setting up Project.md](./Web%20Development/JavaScript/24%20js/05.%20Setting%20up%20Project.md) |
+| **06** | Start Game | Keypress listener, state tracking (`started`, `level`), starting prompt | [06. Start Game.md](./Web%20Development/JavaScript/24%20js/06.%20Start%20Game.md) |
+| **07** | Flash Buttons & Level Up | Random button selection, visual flash animation, level counter increment | [07. Flash Buttons & Level Up.md](./Web%20Development/JavaScript/24%20js/07.%20Flash%20Buttons%20%26%20Level%20Up.md) |
+| **08** | Button Event Listeners | Click handlers, user color capture, user flash effect | [08. Button Event Listeners.md](./Web%20Development/JavaScript/24%20js/08.%20Button%20Event%20Listeners.md) |
+| **09** | Matching Sequence | User sequence vs game sequence check, index validation, error state | [09. Matching Sequence.md](./Web%20Development/JavaScript/24%20js/09.%20Matching%20Sequence.md) |
+| **10** | Reset Game | Reset variables, game-over screen flash, retry mechanism | [10. Reset Game.md](./Web%20Development/JavaScript/24%20js/10.%20Reset%20Game.md) |
+| **11** | Display Score | High score tracking, DOM score rendering, final project polish | [11. Display Score.md](./Web%20Development/JavaScript/24%20js/11.%20Display%20Score.md) |
 
 ---
 
