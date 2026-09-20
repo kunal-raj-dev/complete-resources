@@ -23,6 +23,10 @@ Complete-Resources/
 │       ├── 10_reverse_nodes_in_k_group.md
 │       ├── 11_swap_nodes_in_pairs.md
 │       └── 12_lru_cache.md
+├── Web Development/
+│   └── JavaScript/
+│       └── 24 js/
+│           └── 01. Event Bubbling.md
 ├── .gitignore
 └── README.md
 ```
@@ -51,6 +55,17 @@ Complete deep-dive into Linked Lists from scratch to FAANG-level hard problems w
 | **10** | Reverse Nodes in K-Group | K-Length Verification, Group Reversal | LC 25 | Hard | [10_reverse_nodes_in_k_group.md](./C++%20Notes/Linked%20List/10_reverse_nodes_in_k_group.md) |
 | **11** | Swap Nodes in Pairs | Dummy Node, 2-Node Reversal, Pointer Swap | LC 24 | Medium | [11_swap_nodes_in_pairs.md](./C++%20Notes/Linked%20List/11_swap_nodes_in_pairs.md) |
 | **12** | Implement LRU Cache | Doubly Linked List + Hash Map ($O(1)$ ops) | LC 146 | Med-Hard | [12_lru_cache.md](./C++%20Notes/Linked%20List/12_lru_cache.md) |
+
+---
+
+### 🔹 Web Development
+
+#### JavaScript (24 JS Mini-Project)
+Core DOM event mechanics, propagation phases, and real-world event delegation patterns.
+
+| # | Topic | Key Concepts | Link |
+|---|---|---|---|
+| **01** | Event Bubbling | Bubbling vs Capturing, `event.stopPropagation()`, Event Delegation, Performance Benefits | [01. Event Bubbling.md](./Web%20Development/JavaScript/24%20js/01.%20Event%20Bubbling.md) |
 
 ---
 
