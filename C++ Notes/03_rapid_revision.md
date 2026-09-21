@@ -1,152 +1,79 @@
 # ⚡ 03: Rapid Revision Cheat Sheet (Last-Minute FAANG Prep)
 
-> **High-Density Review:** The ultimate high-yield summary designed for 24-hour pre-interview review, formula recall, complexity tables, and boundary trap checklists.
+> **High-Density Review:** The ultimate high-yield summary designed for 24-hour pre-interview review, formula recall, complexity tables, and boundary trap checklists across all 144 lectures.
 
 ---
 
 ## 1. Syntax & Core Language Cheat Sheet
-- **Fast I/O:**
-  ```cpp
-  void fastIO() {
-      ios_base::sync_with_stdio(false);
-      cin.tie(nullptr);
-  }
-  ```
-- **Line break:** Use `'\n'` instead of `endl` (avoids buffer flushing).
-- **Safe Mid:** `mid = start + (end - start) / 2`.
-- **Signed Integer Boundaries:**
-  - 32-bit `int`: $[-2.14 \times 10^9, +2.14 \times 10^9]$ ($\approx 2^{31}-1$).
-  - 64-bit `long long`: $\approx \pm 9 \times 10^{18}$ ($\approx 2^{63}-1$).
-  - Literal suffix: Always append `LL` to avoid intermediate 32-bit truncation: `1LL << 40`.
+- **Fast I/O:** `ios_base::sync_with_stdio(false); cin.tie(nullptr);`
+- **Safe Midpoint:** `mid = low + (high - low) / 2;`
+- **64-bit Suffix:** Always append `LL` to avoid 32-bit truncation: `1LL << 40`.
 
 ---
 
-## 2. Bitwise Manipulation Master Formulas
-
+## 2. Universal Bitwise Formulas
 ```
-Check Odd / Even:         (n & 1) != 0
+Check Odd:                (n & 1) != 0
 Check Power of 2:         (n > 0) && ((n & (n - 1)) == 0)
-Clear Lowest Set Bit:     n = n & (n - 1)
-Isolate Lowest Set Bit:   lowest = n & (-n)
-Check k-th Bit:           (n & (1 << k)) != 0
-Set k-th Bit:             n |= (1 << k)
-Clear k-th Bit:           n &= ~(1 << k)
-Toggle k-th Bit:          n ^= (1 << k)
+Clear Lowest Set Bit:     n &= (n - 1)
+Isolate Lowest Set Bit:   n & (-n)
 XOR Cancellation:         X ^ X = 0, X ^ 0 = X
 Two's Complement:         -X = ~X + 1
 ```
 
 ---
 
-## 3. Algorithm Complexity Matrix
+## 3. Algorithm Complexity & Invariant Matrix
 
-| Problem / Algorithm | Best Case Time | Worst Case Time | Auxiliary Space | Key Invariant |
+| Domain | Problem / Pattern | Time (Worst) | Space | Key Invariant / Formula |
 |---|---|---|---|---|
-| **Linear Search** | $O(1)$ | $O(N)$ | $O(1)$ | Sequential scan |
-| **Binary Search** | $O(1)$ | $O(\log N)$ | $O(1)$ | Monotonic search space |
-| **Kadane's Algorithm** | $O(N)$ | $O(N)$ | $O(1)$ | Discard negative prefix sums |
-| **Boyer-Moore Voting** | $O(N)$ | $O(N)$ | $O(1)$ | Pairwise distinct cancellation |
-| **Container With Most Water** | $O(N)$ | $O(N)$ | $O(1)$ | Always move the shorter line |
-| **Product Except Self** | $O(N)$ | $O(N)$ | $O(1)$ | `ans = prefix[i-1] * suffix[i+1]` |
-| **Binary Exponentiation** | $O(1)$ | $O(\log N)$ | $O(1)$ | Square base, halve exponent |
-| **Rotated Sorted Search** | $O(1)$ | $O(\log N)$ | $O(1)$ | At least one half is always sorted |
-| **Peak in Mountain Array** | $O(1)$ | $O(\log N)$ | $O(1)$ | Follow positive slope gradient |
-| **Merge Sort** | $O(N \log N)$ | $O(N \log N)$ | $O(N)$ | Stable divide and conquer |
-| **Quick Sort** | $O(N \log N)$ | $O(N^2)$ | $O(\log N)$ | In-place partitioning around pivot |
-| **Floyd's Cycle Finding** | $O(1)$ | $O(N)$ | $O(1)$ | Fast travels 2x speed of slow |
-| **LRU Cache** | $O(1)$ | $O(1)$ | $O(\text{Capacity})$ | Doubly Linked List + Hash Map |
+| **Arrays** | Kadane's Algorithm | $O(N)$ | $O(1)$ | Reset `currSum = 0` when negative |
+| **Arrays** | Boyer-Moore Voting | $O(N)$ | $O(1)$ | Pairwise distinct cancellation |
+| **Binary Search** | Rotated Search | $O(\log N)$ | $O(1)$ | One half is always sorted (`nums[l] <= nums[m]`) |
+| **Binary Search** | Search on Answer | $O(N \log(\text{Range}))$ | $O(1)$ | Monotonic feasibility predicate |
+| **Sorting** | DNF 3-Way Partition | $O(N)$ | $O(1)$ | 4 regions; do not increment `mid` on swap with `high` |
+| **Sorting** | Next Permutation | $O(N)$ | $O(1)$ | Pivot from right $\to$ swap with successor $\to$ reverse suffix |
+| **Maths** | Sieve of Eratosthenes| $O(N \log \log N)$ | $O(N)$ | Inner loop starts at $i \times i$ |
+| **Maths** | Euclidean GCD | $O(\log(\min(a, b)))$| $O(1)$ | `gcd(a, b) = b == 0 ? a : gcd(b, a % b)` |
+| **Matrix** | Staircase Search | $O(R + C)$ | $O(1)$ | Top-Right: `val > target ? c-- : r++` |
+| **Hashing** | Subarray Sum = K | $O(N)$ | $O(N)$ | Prefix sum frequency: `count += mp[curr - K]` |
+| **Strings** | Sliding Window Perm | $O(N)$ | $O(1)$ | 26-char frequency matching |
+| **Trees** | Diameter of BT | $O(N)$ | $O(H)$ | Bottom-up height + diameter combination |
+| **Trees** | Morris Traversal | $O(N)$ | $O(1)$ | Temporary predecessor threading |
+| **BST** | Validate BST | $O(N)$ | $O(H)$ | Propagate `(minVal, maxVal)` bounds |
+| **Stacks** | Monotonic Stack | $O(N)$ | $O(N)$ | Aggregate amortized $O(1)$ per push/pop |
+| **Stacks** | Trapping Rainwater | $O(N)$ | $O(1)$ | Two-pointer inward boundary scan |
+| **Queues** | Sliding Window Max | $O(N)$ | $O(k)$ | Monotonic decreasing deque storing indices |
+| **Graphs** | Dijkstra's Algorithm| $O((V + E) \log V)$ | $O(V)$ | Min-heap greedy relaxation |
+| **Graphs** | Tarjan's Bridges | $O(V + E)$ | $O(V)$ | Bridge condition: `low[v] > tin[u]` |
+| **Graphs** | Kosaraju SCC | $O(V + E)$ | $O(V)$ | Finish stack $\to$ Transpose $\to$ DFS components |
+| **DP** | 0/1 Knapsack 1D | $O(N \times W)$ | $O(W)$ | Reverse capacity loop: `for (w = W; w >= wt[i]; w--)` |
 
 ---
 
-## 4. The 5 Must-Remember Code Templates
+## 4. Universal Code Templates
 
-### Template 1: Kadane's Algorithm
+### Template 1: DNF Sort 0s, 1s, 2s
 ```cpp
-int maxSubArray(const vector<int>& nums) {
-    int maxSum = INT_MIN, currSum = 0;
-    for (int x : nums) {
-        currSum += x;
-        maxSum = max(maxSum, currSum);
-        if (currSum < 0) currSum = 0;
+void sortColors(vector<int>& nums) {
+    int low = 0, mid = 0, high = nums.size() - 1;
+    while (mid <= high) {
+        if (nums[mid] == 0) swap(nums[low++], nums[mid++]);
+        else if (nums[mid] == 1) mid++;
+        else swap(nums[mid], nums[high--]);
     }
-    return maxSum;
 }
 ```
 
-### Template 2: Binary Exponentiation
+### Template 2: 0/1 Knapsack Space-Optimized
 ```cpp
-double myPow(double x, int n) {
-    long long p = n;
-    if (p < 0) { x = 1.0 / x; p = -p; }
-    double ans = 1.0;
-    while (p > 0) {
-        if (p & 1) ans *= x;
-        x *= x;
-        p >>= 1;
-    }
-    return ans;
-}
-```
-
-### Template 3: Reverse Linked List In-Place
-```cpp
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(nullptr) {}
-};
-
-ListNode* reverseList(ListNode* head) {
-    ListNode *prev = nullptr, *curr = head;
-    while (curr) {
-        ListNode* nextNode = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = nextNode;
-    }
-    return prev;
-}
-```
-
-### Template 4: Floyd's Cycle Entry Point
-```cpp
-ListNode *detectCycle(ListNode *head) {
-    ListNode *slow = head, *fast = head;
-    while (fast && fast->next) {
-        slow = slow->next;
-        fast = fast->next->next;
-        if (slow == fast) {
-            slow = head;
-            while (slow != fast) {
-                slow = slow->next;
-                fast = fast->next;
-            }
-            return slow; // Cycle start
+int knapSack(int W, const vector<int>& wt, const vector<int>& val, int n) {
+    vector<int> dp(W + 1, 0);
+    for (int i = 0; i < n; i++) {
+        for (int w = W; w >= wt[i]; w--) {
+            dp[w] = max(dp[w], val[i] + dp[w - wt[i]]);
         }
     }
-    return nullptr;
+    return dp[W];
 }
 ```
-
-### Template 5: Backtracking Template (Subsets II)
-```cpp
-void backtrack(int idx, vector<int>& nums, vector<int>& curr, vector<vector<int>>& res) {
-    res.push_back(curr);
-    for (int i = idx; i < nums.size(); i++) {
-        if (i > idx && nums[i] == nums[i-1]) continue; // Skip duplicates
-        curr.push_back(nums[i]);
-        backtrack(i + 1, nums, curr, res);
-        curr.pop_back(); // Undo choice
-    }
-}
-```
-
----
-
-## 5. Critical Interview Traps Checklist
-1. **Integer Division:** `5 / 2 == 2`. Write `(double)5 / 2` for `2.5`.
-2. **Modulo on Negative Numbers:** In C++, `-7 % 3 == -1`. To get a positive mathematical modulo, use `((a % m) + m) % m`.
-3. **Vectors by Reference:** Always declare function arguments as `const vector<int>& vec` to prevent an $O(N)$ deep copy.
-4. **All-Negative Subarrays:** Initialize `maxSum = INT_MIN` rather than `0` in Kadane's algorithm.
-5. **Dangling Local Pointers:** Never return a pointer or reference to a local stack variable.
-6. **Bit Shift Overflow:** Shifting a 32-bit `int` by $\ge 31$ bits is Undefined Behavior. Use `1LL << k`.
