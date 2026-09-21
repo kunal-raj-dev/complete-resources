@@ -226,7 +226,35 @@ Merge Sort is the preferred sorting algorithm for **Linked Lists** because:
 
 ---
 
-## ⚡ 2-Minute Revision
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger Cues:** "Sort a linked list in $O(N \log N)$ time", "Count the number of inversions in an array", "Stable sort required", "External sorting of massive files".
+- **Why Merge Sort?** Any problem asking for $O(N \log N)$ time complexity on a linked list **mandates** Merge Sort since Quick Sort requires random access. Problems asking to count pairs $(i, j)$ such that $i < j$ and $A[i] > A[j]$ (Inversions) are canonically solved by hooking into the Merge step of Merge Sort.
+
+## 🏆 Related Problems (Leetcode)
+- **Leetcode 148. Sort List:** Implement Merge Sort on a Linked List (Classic $O(N \log N)$ time, $O(1)$ space requirement).
+- **Leetcode 315. Count of Smaller Numbers After Self:** A harder variant of Count Inversions, solved elegantly using a modified Merge Sort.
+- **Leetcode 493. Reverse Pairs:** Find pairs where $i < j$ and $nums[i] > 2 \times nums[j]$. Also solved by augmenting Merge Sort.
+- **Leetcode 23. Merge k Sorted Lists:** An extension of the two-pointer merge step to $k$ pointers (often solved via Divide & Conquer or Min-Heap).
+
+## 🔗 Cross-Topic Connections
+- **Linked Lists:** The optimal sorting algorithm for Linked Lists.
+- **Binary Trees (Post-order Traversal):** The recursive structure of Merge Sort (process left child, process right child, merge them) is functionally identical to Post-order traversal of a binary tree.
+- **Arrays & Two Pointers:** The merge step is the ultimate application of the two-pointer technique on two distinct arrays.
+
+### 🔥 Additional Interview Q&A
+#### Q3: How do you optimize Merge Sort for arrays that are already partially sorted?
+- **Answer:** We can add a simple $O(1)$ check before merging: `if (arr[mid] <= arr[mid + 1]) return;`. Since both halves are individually sorted, if the largest element of the left half is $\le$ the smallest of the right half, the entire range `[start...end]` is already sorted! This reduces the best-case time complexity to $O(N)$.
+
+#### Q4: What is "External Sorting" and why is Merge Sort used for it?
+- **Answer:** External sorting is used when the data is too large to fit in RAM (e.g., sorting 100GB of data on a machine with 4GB RAM). Merge Sort is ideal because we can divide the data into RAM-sized chunks, sort them in-memory, write them back to disk, and then stream the sorted chunks back in concurrently, merging them iteratively without needing to load everything into memory.
+
+#### Q5: Can Merge Sort be implemented in $O(1)$ auxiliary space for arrays?
+- **Answer:** Yes, "In-place Merge Sort" exists. It involves complex block-swapping algorithms (like SymMerge or BlockMerge) to achieve $O(1)$ space while maintaining stability and $O(N \log N)$ time. However, it is mathematically dense, has a high constant factor, and is never expected to be coded in an interview.
+
+#### Q6: How does Merge Sort behave with a large number of duplicate elements compared to Quick Sort?
+- **Answer:** Merge Sort naturally handles duplicates beautifully. Its strict `<=` comparison ensures stability and uniform $O(N \log N)$ halving. Standard Quick Sort can easily degrade to $O(N^2)$ on arrays of identical elements unless specific 3-way partitioning (Dutch National Flag) is implemented.
+
+## ⚡ 2-Minute Revision Flash Card
 
 - Recurrence: $T(N) = 2T(N/2) + O(N) \implies O(N \log N)$.
 - Stable: Yes (`arr[i] <= arr[j]`).

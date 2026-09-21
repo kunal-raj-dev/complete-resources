@@ -1,12 +1,23 @@
-# ⚡ Rapid Revision — Topic 09: Maths for DSA
+# ⚡ Topic 09 Revision: Mathematics & Number Theory for DSA
 
-> **Target:** 5-minute pre-interview refresher on number theory and modular equations.
+> **High-Density Review:** Prime generation, Euclidean GCD, Modular Arithmetic, and Binary Exponentiation.
 
 ---
 
-## 🔑 Formulas to Memorize
-- **Euclidean GCD:** `gcd(a, b) = b == 0 ? a : gcd(b, a % b)`.
-- **LCM Formula:** `(a / gcd(a, b)) * b`.
-- **Modular Subtraction:** `(a - b + M) % M`.
-- **Sieve Complexity:** $O(N \log \log N)$.
-- **Binary Exponentiation:** Divide exponent by 2, square the base, multiply when odd.
+## 1. Prime Numbers & Sieve of Eratosthenes
+- **Primality Check:** Check divisors up to $\lfloor\sqrt{N}\rfloor$ in $O(\sqrt{N})$.
+- **Sieve of Eratosthenes:** Generate all primes up to $N$ in $O(N \log \log N)$ time.
+  - Inner multiple loop starts at $i \times i$ (smaller multiples already crossed out by smaller primes).
+  - Use `1LL * i * i <= N` to prevent signed 32-bit integer overflow!
+
+---
+
+## 2. Essential Formulas
+```
+Euclidean GCD:            gcd(a, b) = (b == 0 ? a : gcd(b, a % b))
+LCM Formula:              lcm(a, b) = (a / gcd(a, b)) * b   // Divide first to prevent overflow!
+Binary Exponentiation:    a^b = (a^(b/2))^2 * (b % 2 ? a : 1) in O(log b)
+Modular Arithmetic:       (A + B) % M = ((A % M) + (B % M)) % M
+                          (A * B) % M = ((A % M) * (B % M)) % M
+                          (A - B) % M = ((A % M) - (B % M) + M) % M
+```

@@ -285,3 +285,58 @@ In LeetCode 460 (LFU Cache - Least Frequently Used), nodes are evicted based on 
 - Structure: `unordered_map<int, Node*> cache` + DLL with `head` (MRU) and `tail` (LRU).
 - `get()`: If found, `deleteNode(node); addNode(node); return node->val;`.
 - `put()`: If full, evict `tail->prev` from map and DLL, then insert new node at head.
+
+
+## 🧠 Core Intuition — Why This Works
+An LRU (Least Recently Used) Cache requires two $O(1)$ operations:
+1. $O(1)$ Lookup by Key.
+2. $O(1)$ Eviction of the oldest item and updating recent items.
+
+A **Hash Map** provides the $O(1)$ lookup. However, Hash Maps have no concept of "order" or "age". A **Doubly Linked List (DLL)** maintains order. When an item is accessed, we can remove it from its current position in the DLL and move it to the front (Most Recently Used). Because it's a DLL, if the Hash Map stores *pointers to the DLL nodes*, we can extract a node from the middle of the list in exactly $O(1)$ time! When full, we evict the tail of the DLL.
+
+## 🎯 Pattern Recognition — When to Use This
+- **"Design a Cache"**: LRU and LFU are the gold standards. If it's LRU, it's always Hash Map + Doubly Linked List.
+- **"Maintain order of elements with $O(1)$ random access"**: Hash Map (for access) + DLL (for order) is the universal design pattern for this constraint.
+
+## 🔍 Dry Run Trace
+**Capacity:** 2.
+- `put(1, 10)`: Map adds `{1: Node(1,10)}`. DLL: `[1]`.
+- `put(2, 20)`: Map adds `{2: Node(2,20)}`. DLL: `[2 <-> 1]`. (2 is head/MRU, 1 is tail/LRU).
+- `get(1)`: Map finds `Node(1,10)`. DLL rewires to move `1` to head: `[1 <-> 2]`. Return 10.
+- `put(3, 30)`: Capacity full! DLL tail is `2`. 
+  - Delete `2` from DLL. Delete `2` from Map. 
+  - Add `3` to head of DLL. Add `{3: Node(3,30)}` to Map. 
+  - DLL: `[3 <-> 1]`.
+
+## ⚠️ Common Interview Mistakes
+1. **Using a Singly Linked List:** A singly linked list allows $O(1)$ insertion at the head, but to remove a node from the middle (when it's accessed), you need the `prev` pointer. Finding `prev` takes $O(N)$ in a singly linked list, ruining the time complexity. You *must* use a DLL.
+2. **Forgetting to erase from the Map on eviction:** When capacity is full and you pop the tail from the DLL, you must also `map.erase(tail->key)`. This means the DLL nodes *must* store both `key` and `value` (not just `value`), so you know which key to erase from the map!
+3. **Not using Dummy Head/Tail nodes:** Handling insertions and deletions is a nightmare of `if (head == NULL)` checks. Using a `dummy_head` and `dummy_tail` initialized to point to each other (`head <-> tail`) makes every insertion and deletion uniform $O(1)$ logic without edge cases.
+
+## 📊 Complexity Analysis
+- **Time Complexity:** $O(1)$ for both `get` and `put`.
+- **Space Complexity:** $O(C)$ where $C$ is the capacity. Map stores $C$ elements, DLL stores $C$ nodes.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Does C++ STL have a built-in LRU Cache or a way to build one easier?
+**Answer:** C++ does not have a native LRU Cache. However, you can use `std::list` (which is a Doubly Linked List) and `std::unordered_map<int, list<pair<int, int>>::iterator>`. The iterator acts as the pointer to the DLL node. `std::list::splice()` allows you to move a node to the front of the list in $O(1)$ time. This is the production-ready way to implement LRU in C++.
+
+### Q2: What if we used an Array instead of a Linked List?
+**Answer:** An array/vector would require $O(N)$ time to shift elements every time we move a recently used item to the front. The DLL is strictly required to bypass the shifting overhead.
+
+### Q3: How does LFU (Least Frequently Used) differ?
+**Answer:** LFU requires maintaining frequency counts. The standard optimal $O(1)$ LFU cache uses a Hash Map of Keys $\rightarrow$ Nodes, and a second Hash Map of Frequencies $\rightarrow$ Doubly Linked Lists! It is significantly more complex.
+
+## 🏆 Related Problems
+- **[460. LFU Cache](https://leetcode.com/problems/lfu-cache/)**: The terrifying step-up from LRU.
+- **[432. All O`one Data Structure](https://leetcode.com/problems/all-oone-data-structure/)**: Requires maintaining sorted order of strings by frequency in $O(1)$.
+
+## 🔗 Cross-Topic Connections
+- **Hash Maps:** Provide the $O(1)$ interface.
+- **Doubly Linked List:** Provides the $O(1)$ internal rearrangement.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Components:** `unordered_map<int, Node*>`, DLL with `dummy_head` and `dummy_tail`.
+- **Node Data:** Must store `key` AND `value` (need key to delete from map during eviction).
+- **GET Logic:** If found, move node to right after `dummy_head`. Return val.
+- **PUT Logic:** If exists, update val and move to head. If new, add to head. If over capacity, remove node just before `dummy_tail`, erase its key from map, and delete it.

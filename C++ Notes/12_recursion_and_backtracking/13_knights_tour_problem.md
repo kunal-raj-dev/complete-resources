@@ -221,8 +221,35 @@ Is `abs(r1 - r2) * abs(c1 - c2) == 2` a valid check for knight moves?
 
 ---
 
-## ⚡ 2-Minute Revision
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger Cues:** "Visit every cell on a board exactly once", "Find a path covering all nodes", "Knight's shortest path".
+- **Why Backtracking?** Finding a Hamiltonian Path (visiting every cell exactly once) on a grid is an NP-Complete problem. Unless we are just finding the *shortest* path between two points (which uses BFS), covering the *entire* board requires exhaustive search via Backtracking, heavily optimized by heuristics like Warnsdorff's.
+
+## 🏆 Related Problems (Leetcode)
+- **Leetcode 2596. Check Knight Tour Configuration:** Verify if a given 2D grid represents a valid knight's tour.
+- **Leetcode 1197. Minimum Knight Moves:** Find the shortest path for a knight to reach a target (Uses BFS, not Backtracking!).
+- **Leetcode 980. Unique Paths III:** A similar Hamiltonian Path problem where you must walk over every non-obstacle square exactly once.
+
+## 🔗 Cross-Topic Connections
+- **Graphs:** The Knight's Tour is fundamentally a search for a Hamiltonian Path in an undirected graph where $V = 64$ and edges are legal L-moves.
+- **BFS (Breadth-First Search):** While Backtracking finds a full tour, BFS is the correct approach for finding the *shortest distance* a knight needs to travel between two squares.
+
+### 🔥 Additional Interview Q&A
+#### Q2: How does Warnsdorff's Heuristic work and why is it effective?
+- **Answer:** Warnsdorff's heuristic dictates that the knight should always move to the adjacent unvisited square that has the *fewest* onward legal moves. This works because it forces the knight to visit the "hard-to-reach" edge and corner squares early. If it left them for later, they would become isolated and unreachable, causing the entire search branch to fail.
+
+#### Q3: What is the Time and Space Complexity of generating a Knight's Tour with Backtracking?
+- **Answer:** Without heuristics, the time complexity is $O(8^{N^2})$ in the worst case, as there are at most 8 branches at each of the $N^2$ steps. Space complexity is $O(N^2)$ for the recursion stack and the grid. With Warnsdorff's heuristic, the time complexity is drastically reduced, often finding a solution in near-linear time $O(N^2)$, though it is technically not guaranteed for all board sizes.
+
+#### Q4: Why is BFS not used for finding the full Knight's Tour?
+- **Answer:** BFS is used to find the shortest path to a single target. If we used BFS to find a path covering all 64 squares, we would need to store every partial path state in the queue. This would cause a massive combinatorial explosion in memory, quickly leading to an Out-Of-Memory (OOM) error. Backtracking (DFS) uses minimal memory ($O(N^2)$) by exploring one path deeply before trying the next.
+
+#### Q5: Is it possible to have a Knight's Tour on a $3 \times 3$ board?
+- **Answer:** No. A knight on the center square cannot move anywhere, and a knight on any outer square can never reach the center square. Thus, no Hamiltonian Path can exist.
+
+## ⚡ 2-Minute Revision Flash Card
 
 - Base Case: `step == n * n`.
 - 8 moves: `{-2, -2, -1, -1, 1, 1, 2, 2}` and `{-1, 1, -2, 2, -2, 2, -1, 1}`.
 - Backtrack: reset `board[r][c] = -1`.
+- Heuristic: Warnsdorff's Rule (always move to square with minimum onward options).

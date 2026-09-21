@@ -196,8 +196,35 @@ Quickselect (Hoare's Selection Algorithm) uses the same partitioning logic to fi
 
 ---
 
-## ⚡ 2-Minute Revision
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger Cues:** "Sort an array in $O(1)$ space", "Sort primitve types natively", "Find the K-th largest element in $O(N)$ average time".
+- **Why Quick Sort?** It is the standard `std::sort` mechanism (usually as Introsort). You apply Quick Sort algorithms directly when solving selection problems (Quickselect) or when partitioning arrays around a value (Dutch National Flag problem).
+
+## 🏆 Related Problems (Leetcode)
+- **Leetcode 215. Kth Largest Element in an Array:** Solved in average $O(N)$ time using Quickselect (a modification of Quick Sort's partitioning).
+- **Leetcode 75. Sort Colors:** Dutch National Flag problem, which extends Quick Sort partitioning to 3 regions ($<, ==, >$).
+- **Leetcode 912. Sort an Array:** A classic test of writing a robust sorting algorithm that won't TLE on adversarial inputs (requires Randomized Quick Sort or Merge Sort).
+
+## 🔗 Cross-Topic Connections
+- **Arrays & Two Pointers:** The partitioning logic is entirely two-pointer based.
+- **Binary Search Trees (BST):** The recursion tree of Quick Sort behaves identically to the construction of a BST. If you insert elements into a BST in a random order, the shape of the tree matches the Quick Sort recursion tree.
+
+### 🔥 Additional Interview Q&A
+#### Q2: What is the worst-case scenario for Quick Sort and how do we mitigate it?
+- **Answer:** The worst-case is $O(N^2)$, which occurs when the array is already sorted (or reverse sorted) and the pivot is chosen as the last (or first) element. This causes partitions of size 1 and $N-1$, leading to $N$ levels of recursion. We mitigate this by choosing a **Random Pivot** or the **Median of Three** (first, middle, last), ensuring balanced partitions on average.
+
+#### Q3: What is "Introsort"?
+- **Answer:** Introsort is a hybrid sorting algorithm used in `std::sort`. It begins with Quick Sort for speed, but if the recursion depth exceeds $2 \log_2 N$ (indicating pathological inputs pushing towards $O(N^2)$), it switches to **Heap Sort** to guarantee $O(N \log N)$ worst-case time. It also uses Insertion Sort for small subarrays.
+
+#### Q4: Why is Quick Sort generally faster than Merge Sort for in-memory arrays despite both being $O(N \log N)$?
+- **Answer:** Quick Sort operates in-place, which provides superior **cache locality**. Merge Sort allocates and writes to a temporary buffer array, resulting in constant cache misses and memory allocation overhead. Quick Sort's inner loop (the partition step) is exceptionally tight and hardware-friendly.
+
+#### Q5: Is Quick Sort Stable?
+- **Answer:** No, standard Quick Sort is **not stable**. The swapping during the partition step can jump elements past identical keys, disrupting their original relative order. If stability is required, Merge Sort is the go-to.
+
+## ⚡ 2-Minute Revision Flash Card
 
 - Lomuto partition: `if (arr[j] <= pivot) { i++; swap(arr[i], arr[j]); }`.
 - Place pivot: `swap(arr[i + 1], arr[end])`.
 - Average: $O(N \log N)$; Worst: $O(N^2)$ (sorted input).
+- Space: $O(1)$ auxiliary + $O(\log N)$ stack.

@@ -233,3 +233,60 @@ However, the iterative method is preferred in production to avoid $O(N)$ call-st
 - Loop condition: `while (prev->next && prev->next->next)`.
 - Reorder: `first->next = second->next; second->next = first; prev->next = second;`.
 - Advance: `prev = first;`.
+
+
+## 🧠 Core Intuition — Why This Works
+Swapping nodes in pairs is a specialized, simpler case of reversing nodes in $K$-groups where $K=2$. Because the group size is strictly 2, we don't need a full reversal `while` loop. We can manually rewire the three critical pointers (`prev->next`, `node1->next`, `node2->next`) in $O(1)$ operations per pair. Using a dummy node keeps the logic identical for the head pair.
+
+## 🎯 Pattern Recognition — When to Use This
+- **"Swap pairs"**: Directly maps to this algorithm.
+- **"Pairwise modification"**: Reordering interleaved nodes (like Odd/Even Linked List) relies on similar 2-step pointer jumps.
+
+## 🔍 Dry Run Trace
+**Example:** `1 -> 2 -> 3 -> 4`
+- **Setup:** `D -> 1 -> 2 -> 3 -> 4`. `prev = D`.
+- **Iteration 1:** `curr = 1`
+  - `first = 1`, `second = 2`.
+  - Rewire 1: `first->next = second->next` (`1 -> 3`)
+  - Rewire 2: `second->next = first` (`2 -> 1`)
+  - Rewire 3: `prev->next = second` (`D -> 2`)
+  - Move: `prev = first` (`1`), `curr = first->next` (`3`).
+  - List is now `D -> 2 -> 1 -> 3 -> 4`.
+- **Iteration 2:** `curr = 3`
+  - `first = 3`, `second = 4`.
+  - `first->next = second->next` (`3 -> NULL`)
+  - `second->next = first` (`4 -> 3`)
+  - `prev->next = second` (`1 -> 4`)
+  - Move: `prev = first` (`3`), `curr = NULL`.
+  - List is now `D -> 2 -> 1 -> 4 -> 3`.
+
+## ⚠️ Common Interview Mistakes
+1. **Losing the pointer to the rest of the list:** If you do `second->next = first` before saving `second->next` (node 3), you lose the rest of the list. Order of pointer assignment is critical!
+2. **Missing Dummy Node:** Without a dummy node, swapping the first two nodes requires special conditional logic because the `head` of the entire list changes from `1` to `2`. 
+3. **Odd number of nodes:** Forgetting to handle lists with an odd number of nodes (e.g., `1->2->3`). The loop condition must check `curr != NULL && curr->next != NULL`. If `curr->next` is `NULL`, we have an unpaired node at the end, and we just leave it alone.
+
+## 📊 Complexity Analysis
+- **Time Complexity:** $O(N)$. We visit each node exactly once.
+- **Space Complexity:** $O(1)$ auxiliary space for the iterative approach.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Can we just swap the *values* of the nodes instead of the pointers?
+**Answer:** Yes, doing `swap(first->val, second->val)` is perfectly valid C++ and takes 2 lines of code. However, interviewers will *always* explicitly forbid this. In real-world systems, the "value" of a node might be a massive 5GB object or a complex struct where copying data is prohibitively expensive or impossible. You must manipulate the pointers.
+
+### Q2: Compare this to Reverse in K-Groups.
+**Answer:** This is a hardcoded version of $K=2$. While you could reuse your $K$-group code, hardcoding the 3 pointer swaps for pairs is much faster to execute (avoids the inner `while` loop overhead) and significantly shorter to write.
+
+## 🏆 Related Problems
+- **[25. Reverse Nodes in k-Group](https://leetcode.com/problems/reverse-nodes-in-k-group/)**: The generalized version.
+- **[328. Odd Even Linked List](https://leetcode.com/problems/odd-even-linked-list/)**: Requires jumping pointers by 2, similar to pairwise grouping.
+
+## 🔗 Cross-Topic Connections
+- **Pointers & Memory:** Manual pointer rewiring is a fundamental C++ skill.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Core Loop:** `while(curr && curr->next)`
+- **Three Steps per Pair:**
+  1. `first->next = second->next;`
+  2. `second->next = first;`
+  3. `prev->next = second;`
+- **Advance:** `prev = first; curr = first->next;`

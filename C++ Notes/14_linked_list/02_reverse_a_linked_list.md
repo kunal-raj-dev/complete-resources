@@ -171,8 +171,86 @@ The iterative 3-pointer pattern is reused identically in:
 
 #### Q1: Can you reverse a linked list using a Stack? What are the trade-offs?
 - **Short Answer:** Yes, pushing all nodes onto a stack and popping them reverses order, but takes $O(N)$ auxiliary space instead of $O(1)$.
+- **When to use:** Only when you additionally need a copy of the original order, or in contexts where you cannot mutate the list.
 
 ---
+
+#### Q2: [Hard Extension] How do you reverse a linked list in groups of K? (LeetCode 25)
+- **Answer:** Use the `reverseKGroup` approach: verify $k$ nodes exist, reverse them with the 3-pointer technique for exactly $k$ iterations, then reconnect: `head->next = reverseKGroup(curr, k)`. The key insight is that after reversing, the original `head` becomes the **tail** of the group and must be connected to the output of the next recursion.
+```cpp
+ListNode* reverseKGroup(ListNode* head, int k) {
+    ListNode* temp = head;
+    for (int i = 0; i < k; i++) {
+        if (!temp) return head;  // Fewer than k nodes: leave as-is
+        temp = temp->next;
+    }
+    ListNode* prev = nullptr, *curr = head;
+    for (int i = 0; i < k; i++) {
+        ListNode* nxt = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = nxt;
+    }
+    head->next = reverseKGroup(curr, k);
+    return prev;
+}
+```
+
+---
+
+#### Q3: [Extension] How do you reverse only a sublist from position `left` to `right`? (LeetCode 92)
+- **Answer:** Use a dummy node before `head`. Advance to the node just before `left`. Run the 3-pointer reversal for exactly `right - left` steps. Reconnect the tail of the reversed segment to the node after `right`. Time: $O(N)$, Space: $O(1)$.
+- **Key invariant:** Track `connPrev` (node before `left`) and `curr` (node at `left`). After reversal, `curr` is the tail; `connPrev->next->next = curr_after_right`.
+
+---
+
+#### Q4: [Recursion / Call Stack] What does the call stack look like when `reverseList` is called on `[1, 2, 3]`?
+- **Answer:** Each recursive call suspends at `ListNode* newHead = reverseList(head->next)`:
+  ```
+  Frame 1: head=1, waiting...
+    Frame 2: head=2, waiting...
+      Frame 3: head=3, base case returns head=3
+    Frame 2 resumes: head->next->next = head => 3->2. head->next = null. Returns 3.
+  Frame 1 resumes: head->next->next = head => 2->1. head->next = null. Returns 3.
+  ```
+  The stack depth is $O(N)$, which causes **stack overflow** for $N \ge 10^5$.
+
+---
+
+#### Q5: [Debugging] What does this buggy recursive code do wrong?
+```cpp
+ListNode* reverseList(ListNode* head) {
+    if (!head || !head->next) return head;
+    ListNode* newHead = reverseList(head->next);
+    head->next->next = head;
+    // BUG: Missing head->next = nullptr;
+    return newHead;
+}
+```
+- **Answer:** Without `head->next = nullptr`, after unwinding frame 1 (head=1), node 1's `next` still points to node 2, and node 2's `next` points to node 1. This creates a **circular reference** between nodes 1 and 2: `1 <-> 2 -> NULL`. Traversing the result causes an infinite loop.
+
+---
+
+#### Q6: [Output Prediction] What does this iterative code return for `head = [1]`?
+```cpp
+ListNode* prev = nullptr;
+ListNode* curr = head;
+while (curr) {
+    ListNode* nxt = curr->next;
+    curr->next = prev;
+    prev = curr;
+    curr = nxt;
+}
+return prev;
+```
+- **Answer:** Returns the same single node `[1]`. The while loop runs once: `nxt = null, curr->next = null, prev = node(1), curr = null`. Loop exits. Returns `prev = node(1)`. Correct — single node lists are a no-op.
+
+---
+
+#### Q7: [Conceptual] What is the loop invariant of the iterative reversal?
+- **Answer:** At the end of each iteration, `prev` is the head of the reversed portion processed so far, and `curr` is the head of the remaining unreversed portion. This invariant is established before the first iteration (empty reversed portion, full list unreversed) and is maintained throughout. When `curr == nullptr`, the entire list is reversed and `prev` is the new head.
+
+
 
 ## 💻 Output / Debugging Questions
 
@@ -220,3 +298,61 @@ while (curr) {
 }
 return prev;
 ```
+
+
+## 🧠 Core Intuition — Why This Works
+To reverse a linked list, we don't need to move the data inside the nodes. Instead, we just reverse the direction of the `next` pointers. For any given node, instead of pointing to the next node, it should point to its previous node. To do this without losing the rest of the list, we need three pointers: `prev`, `curr`, and `next_node`. We carefully iterate, rewiring one link at a time.
+
+## 🎯 Pattern Recognition — When to Use This
+- **"Reverse a section of a sequence"**: Whenever a problem asks to reverse a linked list or parts of it (e.g., Reverse in K-Groups, Palindrome Linked List).
+- **In-place modifications**: Reversing is strictly an $O(1)$ space operation. If an interviewer asks to do something backwards in a linked list without extra space, reverse it!
+
+## 🔍 Dry Run Trace
+**Example:** `1 -> 2 -> 3 -> NULL`
+- Initialize: `prev = NULL`, `curr = 1`
+- **Iteration 1:**
+  - `next_node = curr->next` (`2`)
+  - `curr->next = prev` (`1 -> NULL`)
+  - `prev = curr` (`1`)
+  - `curr = next_node` (`2`)
+- **Iteration 2:**
+  - `next_node = curr->next` (`3`)
+  - `curr->next = prev` (`2 -> 1 -> NULL`)
+  - `prev = curr` (`2`)
+  - `curr = next_node` (`3`)
+- **Iteration 3:**
+  - `next_node = curr->next` (`NULL`)
+  - `curr->next = prev` (`3 -> 2 -> 1 -> NULL`)
+  - `prev = curr` (`3`)
+  - `curr = next_node` (`NULL`)
+- `curr` is `NULL`, loop ends. Return `prev` (which is `3`, the new head).
+
+## ⚠️ Common Interview Mistakes
+1. **Losing the rest of the list:** Writing `curr->next = prev` *before* saving `curr->next` in `next_node`. This breaks the chain and you lose access to the remaining nodes!
+2. **Returning the wrong head:** Returning `curr` instead of `prev` at the end of the loop. When the loop terminates, `curr` is always `NULL`, so you end up returning an empty list!
+3. **Handling single node or empty list:** Not accounting for `head == NULL` or `head->next == NULL`. The standard 3-pointer logic implicitly handles this safely, but custom logic often fails.
+
+## 📊 Complexity Analysis
+- **Time Complexity:** $O(N)$ to traverse the list exactly once.
+- **Space Complexity:** $O(1)$ for the iterative approach (only 3 pointers). $O(N)$ for the recursive approach due to the recursion stack.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Compare the iterative and recursive approaches. Which is better?
+**Answer:** The iterative approach is strictly better because it uses $O(1)$ space. The recursive approach takes $O(N)$ space on the call stack, which can lead to a Stack Overflow for a list with millions of nodes. However, understanding the recursive approach is crucial for trees and advanced linked list problems.
+
+### Q2: How does the recursive reversal work under the hood?
+**Answer:** In the recursive approach, we traverse all the way to the last node, making it the new head. As the recursion unwinds, for a given `node`, we make its next node point back to it: `node->next->next = node`, and then break the original forward link: `node->next = NULL`.
+
+## 🏆 Related Problems
+- **[92. Reverse Linked List II](https://leetcode.com/problems/reverse-linked-list-ii/)**: Reverse only a sublist from position `left` to `right`.
+- **[234. Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/)**: Requires reversing the second half of the list.
+- **[25. Reverse Nodes in k-Group](https://leetcode.com/problems/reverse-nodes-in-k-group/)**: The ultimate test of reversal logic.
+
+## 🔗 Cross-Topic Connections
+- **Recursion Stack / Call Stack**: The recursive implementation is a classic textbook example of how the call stack remembers previous states.
+- **Two Pointers**: Modifying the links relies heavily on maintaining a trailing and leading pointer (`prev` and `next`).
+
+## ⚡ 2-Minute Revision Flash Card
+- **Core Logic (Iterative):** Save `next`, rewire `curr->next = prev`, shift `prev = curr`, shift `curr = next`.
+- **Termination:** Loop until `curr != NULL`. Return `prev` as the new head.
+- **Recursive Core:** `newHead = reverse(head->next); head->next->next = head; head->next = NULL; return newHead;`

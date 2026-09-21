@@ -215,7 +215,34 @@ In LeetCode 132 (Palindrome Partitioning II), the goal is to find the **minimum 
 
 ---
 
-## ⚡ 2-Minute Revision
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger Cues:** "Find all possible ways to partition a string into palindromes", "Return all valid combinations of substrings that satisfy a condition".
+- **Why Backtracking?** Whenever a problem asks for "all possible ways" to segment a string, you must systematically explore placing a cut at every index, validating the prefix, and recursing on the suffix. This "cut and recurse" behavior is the textbook definition of string backtracking.
+
+## 🏆 Related Problems (Leetcode)
+- **Leetcode 132. Palindrome Partitioning II:** Find the *minimum number of cuts* needed. (Use 1D DP, not backtracking, because we only need the optimal count, not the actual partitions).
+- **Leetcode 93. Restore IP Addresses:** Another string partitioning problem where you place 3 cuts to form valid integer ranges `[0, 255]`.
+- **Leetcode 139. Word Break:** Determine if a string can be partitioned into words found in a dictionary. Also solved by validating prefix and recursing on suffix, heavily optimized with DP/Memoization.
+
+## 🔗 Cross-Topic Connections
+- **Dynamic Programming:** Backtracking explores all $2^N$ partitions. DP (Memoization) can be layered on top to optimize the `isPalindrome` checks or to solve optimization variants (like min cuts) in $O(N^2)$ time.
+- **Two Pointers:** Used centrally in the `isPalindrome()` helper function.
+
+### 🔥 Additional Interview Q&A
+#### Q2: What happens to the time complexity if we use a 2D DP table to precompute palindromes?
+- **Answer:** Precomputing all palindromic substrings takes $O(N^2)$ time. During backtracking, the `isPalindrome()` check drops from $O(N)$ to $O(1)$. While the worst-case complexity remains bounded by the $O(2^N)$ possible partitions, the actual runtime in practice and average case drops significantly since we avoid redundant linear scans.
+
+#### Q3: How do we adapt this to solve "Palindrome Partitioning II" (Min Cuts)?
+- **Answer:** Instead of a `vector<vector<string>>` backtracking function, we define a DP array `dp[i]` which represents the minimum cuts for the substring `s[0...i]`. We iterate $j$ from $0$ to $i$, and if `s[j...i]` is a palindrome, `dp[i] = min(dp[i], dp[j-1] + 1)`.
+
+#### Q4: Why do we push to `path` before recursion and pop from `path` after recursion?
+- **Answer:** This is the core mechanism of backtracking. We share a single `path` array across all recursive calls to save memory ($O(N)$ space instead of $O(N^2)$ if we passed by value). We `push` our current valid palindrome to simulate "taking this path", recurse to explore the suffix, and then `pop` it to "undo the choice" and try a longer prefix cut in the next iteration of the `for` loop.
+
+#### Q5: Can this problem be solved using Iterative BFS instead of Recursive DFS?
+- **Answer:** Yes, but it is highly memory-inefficient. A BFS queue would need to store every partial partition (e.g., `["a"]`, `["aa"]`) simultaneously. Since there are exponentially many partitions, this quickly exhausts memory. DFS/Backtracking only keeps one active path in memory at a time, resulting in $O(N)$ auxiliary space.
+
+## ⚡ 2-Minute Revision Flash Card
 
 - Cut loop: `for (int i = start; i < s.length(); i++)`.
-- Check: `if (isPalindrome(s, start, i)) { path.push_back(); dfs(i + 1); path.pop_back(); }`.
+- Check: `if (isPalindrome(s, start, i)) { path.push_back(s.substr(start, i - start + 1)); dfs(i + 1); path.pop_back(); }`.
+- Complexity: $O(N \cdot 2^N)$ time, $O(N)$ space.

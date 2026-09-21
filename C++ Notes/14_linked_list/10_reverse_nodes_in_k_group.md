@@ -238,3 +238,63 @@ When $k = 2$, this problem reduces directly to **Swap Nodes in Pairs (LeetCode 2
 - Verify $k$ nodes: `for (int i = 0; i < k; i++) if (!temp) return head;`.
 - Reverse $k$ nodes using 3 pointers.
 - Reconnect: `head->next = reverseKGroup(curr, k); return prev;`.
+
+
+## 🧠 Core Intuition — Why This Works
+Reversing nodes in $K$-groups is a complex combination of finding the $K$-th node and reversing a sublist. The core intuition is modularization: we isolate a block of $K$ nodes, detach it momentarily (or keep bounds), reverse it using the standard Linked List Reversal algorithm, and then reconnect its head and tail to the main list. We repeat this process chunk by chunk until fewer than $K$ nodes remain.
+
+## 🎯 Pattern Recognition — When to Use This
+- **"Reverse every $K$ nodes"**: Directly maps to this algorithm.
+- **"Swap nodes in pairs"**: This is exactly Reverse Nodes in $K$-Group where $K = 2$.
+- **Sublist manipulations**: Any problem requiring localized reversal (like reversing only the middle half) uses the same 3-pointer boundary rewiring technique.
+
+## 🔍 Dry Run Trace
+**Example:** `1 -> 2 -> 3 -> 4 -> 5`, $K = 2$
+- **Setup Dummy:** `D -> 1 -> 2 -> 3 -> 4 -> 5`. `prev_group_tail = D`.
+- **Group 1 (1 to 2):**
+  - Check if 2 nodes exist. Yes (`1`, `2`). `kth = 2`.
+  - Next group starts at `next_group = kth->next` (`3`).
+  - Reverse the sublist `1 -> 2` so it becomes `2 -> 1`.
+  - Rewire: `prev_group_tail->next = 2`. The old head (`1`) is now the tail of this group. `1->next = next_group` (`3`).
+  - `prev_group_tail = 1`. List is `D -> 2 -> 1 -> 3 -> 4 -> 5`.
+- **Group 2 (3 to 4):**
+  - Check if 2 nodes exist. Yes (`3`, `4`). `kth = 4`.
+  - Next group starts at `next_group = 5`.
+  - Reverse `3 -> 4` to `4 -> 3`.
+  - Rewire: `1->next = 4`. `3->next = 5`.
+  - `prev_group_tail = 3`. List is `D -> 2 -> 1 -> 4 -> 3 -> 5`.
+- **Group 3 (5):**
+  - Check if 2 nodes exist. No (only `5`). Leave as is.
+- **Return:** `D->next` (`2`).
+
+## ⚠️ Common Interview Mistakes
+1. **Losing the connections between groups:** Reversing a group is easy, but connecting the *previous* group's tail to the *new* head of the reversed group, and the *new* tail of the reversed group to the *next* group's head, is where 90% of candidates fail.
+2. **Reversing the leftover nodes:** The standard problem statement explicitly says: "If the number of nodes is not a multiple of $k$, then left-out nodes in the end should remain as it is." Many candidates automatically reverse the last remaining $< K$ nodes.
+3. **Not using a Dummy Node:** The head of the list changes if $K > 1$. Trying to track the new head without a dummy node requires messy `if` statements. `ListNode dummy(0); dummy.next = head;` solves everything cleanly.
+
+## 📊 Complexity Analysis
+- **Time Complexity:** $O(N)$. We traverse the list to count/find the $K$-th node, and then traverse it again to reverse. Each node is visited twice. $O(2N) = O(N)$.
+- **Space Complexity:** $O(1)$ auxiliary space. Only a few pointers are used. (Recursive solutions take $O(N/K)$ space on the call stack and are discouraged).
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Is the recursive approach acceptable for this problem?
+**Answer:** While recursive solutions are much shorter to write (reversing $K$ nodes and then doing `head->next = reverseKGroup(next_group, K)`), they consume $O(N/K)$ space on the call stack. For a production system with millions of nodes, this causes Stack Overflow. Top companies expect the $O(1)$ space iterative solution.
+
+### Q2: What if we ARE required to reverse the leftover nodes at the end?
+**Answer:** The logic becomes slightly simpler. We don't need to check if $K$ nodes exist before reversing. We just reverse whatever is left until `curr == NULL`, attach it to the `prev_group_tail`, and terminate.
+
+## 🏆 Related Problems
+- **[24. Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/)**: The exact same problem for $K=2$.
+- **[92. Reverse Linked List II](https://leetcode.com/problems/reverse-linked-list-ii/)**: Reversing just a single sublist defined by indices.
+
+## 🔗 Cross-Topic Connections
+- **Linked List Reversal**: This is the ultimate application of the basic reversal algorithm.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Pattern:** Dummy Node + Find $K$-th Node + Reverse Sublist + Rewire Ends.
+- **Rewire Logic:** 
+  1. `next_group = kth->next;`
+  2. `kth->next = NULL;` (temporarily break)
+  3. `reverseList(group_start);`
+  4. `prev_group_tail->next = kth;` (kth is new head)
+  5. `group_start->next = next_group;` (group_start is new tail)

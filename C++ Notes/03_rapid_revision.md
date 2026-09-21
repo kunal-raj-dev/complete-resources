@@ -8,6 +8,7 @@
 - **Fast I/O:** `ios_base::sync_with_stdio(false); cin.tie(nullptr);`
 - **Safe Midpoint:** `mid = low + (high - low) / 2;`
 - **64-bit Suffix:** Always append `LL` to avoid 32-bit truncation: `1LL << 40`.
+- **String View:** Use `std::string_view` for zero-allocation substring passing.
 
 ---
 
@@ -45,9 +46,12 @@ Two's Complement:         -X = ~X + 1
 | **Stacks** | Trapping Rainwater | $O(N)$ | $O(1)$ | Two-pointer inward boundary scan |
 | **Queues** | Sliding Window Max | $O(N)$ | $O(k)$ | Monotonic decreasing deque storing indices |
 | **Graphs** | Dijkstra's Algorithm| $O((V + E) \log V)$ | $O(V)$ | Min-heap greedy relaxation |
+| **Graphs** | Bellman-Ford | $O(V \times E)$ | $O(V)$ | $V-1$ edge relaxations; $V$-th detects negative cycle |
+| **Graphs** | Kahn's Algorithm | $O(V + E)$ | $O(V)$ | In-degree 0 queue BFS; count $< V$ indicates cycle |
 | **Graphs** | Tarjan's Bridges | $O(V + E)$ | $O(V)$ | Bridge condition: `low[v] > tin[u]` |
 | **Graphs** | Kosaraju SCC | $O(V + E)$ | $O(V)$ | Finish stack $\to$ Transpose $\to$ DFS components |
 | **DP** | 0/1 Knapsack 1D | $O(N \times W)$ | $O(W)$ | Reverse capacity loop: `for (w = W; w >= wt[i]; w--)` |
+| **DP** | House Robber Circular| $O(N)$ | $O(1)$ | $\max(\text{rob}(0 \dots N-2),\, \text{rob}(1 \dots N-1))$ |
 
 ---
 
@@ -65,7 +69,30 @@ void sortColors(vector<int>& nums) {
 }
 ```
 
-### Template 2: 0/1 Knapsack Space-Optimized
+### Template 2: Kahn's Algorithm (BFS Topo Sort & Cycle Detection)
+```cpp
+pair<bool, vector<int>> getTopoOrder(int V, const vector<vector<int>>& adj) {
+    vector<int> inDegree(V, 0);
+    for (int u = 0; u < V; ++u)
+        for (int v : adj[u]) inDegree[v]++;
+
+    queue<int> q;
+    for (int i = 0; i < V; ++i)
+        if (inDegree[i] == 0) q.push(i);
+
+    vector<int> order;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        order.push_back(u);
+        for (int v : adj[u]) {
+            if (--inDegree[v] == 0) q.push(v);
+        }
+    }
+    return {order.size() == V, order};
+}
+```
+
+### Template 3: 0/1 Knapsack Space-Optimized
 ```cpp
 int knapSack(int W, const vector<int>& wt, const vector<int>& val, int n) {
     vector<int> dp(W + 1, 0);
@@ -75,5 +102,27 @@ int knapSack(int W, const vector<int>& wt, const vector<int>& val, int n) {
         }
     }
     return dp[W];
+}
+```
+
+### Template 4: Dijkstra's Algorithm
+```cpp
+vector<int> dijkstra(int V, const vector<vector<pair<int, int>>>& adj, int src) {
+    vector<int> dist(V, INT_MAX);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    dist[src] = 0;
+    pq.push({0, src});
+
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d > dist[u]) continue;
+        for (auto [v, w] : adj[u]) {
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+    return dist;
 }
 ```

@@ -1,13 +1,22 @@
-# 💼 Topic Interview Question Bank — Topic 06: Sorting Algorithms
+# 💼 Topic 06 Interview Question Bank: Sorting Algorithms
+
+> **Curated FAANG Question Bank:** Sorting invariants, stability analysis, in-place partitions, and permutation algorithms.
 
 ---
 
-### Q1: When is Insertion Sort faster than QuickSort or MergeSort?
-**Answer:**
-For small arrays ($N \le 16 - 32$) or arrays that are already "nearly sorted", Insertion Sort runs in linear $O(N)$ time with minimal constant factors, zero recursion overhead, and excellent CPU cache locality. This is why standard library implementations (`std::sort`) switch to Insertion Sort for small partitions.
+## 📌 Conceptual & Architectural Questions
+
+### Q1: What is a Stable Sort and why does stability matter in real-world systems?
+- **Answer:** A sorting algorithm is stable if elements with equal keys maintain their relative original input order in the sorted output. Stability is critical in multi-key sorting (e.g. sorting by Date, then by Price). If the second sort is unstable, the earlier Date ordering is destroyed for items with identical prices.
 
 ---
 
-### Q2: Why does DNF not increment `mid` when `nums[mid] == 2`?
-**Answer:**
-When `nums[mid] == 2`, it is swapped with `nums[high]`. The element previously at `high` was in the "unknown" partition `[mid...high]`. Because its value has not yet been inspected, we cannot increment `mid`; it must be evaluated on the subsequent iteration.
+### Q2: Why does DNF sort 0s, 1s, and 2s in a single pass while Counting Sort requires two passes?
+- **Answer:** Counting sort computes frequencies in pass 1 and overwrites array values in pass 2. DNF maintains 4 invariant partitions (`[0..low-1]` for 0s, `[low..mid-1]` for 1s, `[mid..high]` for unknown, `[high+1..N-1]` for 2s) and places elements directly via in-place swaps, finishing in a single pass without extra memory.
+
+---
+
+### Q3: Why is QuickSort generally preferred over MergeSort for arrays, but MergeSort preferred for Linked Lists?
+- **Answer:**
+  - **Arrays:** QuickSort has great cache locality (contiguous memory reads) and in-place $O(1)$ auxiliary space. MergeSort requires allocating an auxiliary array of size $O(N)$, causing memory allocation overhead.
+  - **Linked Lists:** MergeSort requires $O(1)$ extra space on linked lists because merging only requires pointer manipulation without memory allocation, whereas QuickSort cannot perform random-access pivot indexing in $O(1)$.

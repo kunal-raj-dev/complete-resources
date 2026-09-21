@@ -212,8 +212,34 @@ Inversions can also be counted in $O(N \log N)$ time using a **Fenwick Tree (Bin
 
 ---
 
-## ⚡ 2-Minute Revision
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger Cues:** "Find how far the array is from being sorted", "Count pairs $(i, j)$ such that $i < j$ and $A[i] > A[j]$", "Determine the number of swaps needed in Bubble Sort".
+- **Why Merge Sort?** A brute force nested loop takes $O(N^2)$ time. The Divide-and-Conquer strategy of Merge Sort naturally processes elements in sorted relative order. When merging, if an element from the right half is smaller than an element from the left half, it is smaller than *all remaining elements* in the left half, allowing us to count inversions in $O(1)$ math rather than counting them one by one.
+
+## 🏆 Related Problems (Leetcode)
+- **Leetcode 315. Count of Smaller Numbers After Self:** You must track the actual count of smaller elements to the right for *each specific index*. Solved by augmenting Merge Sort with original index tracking.
+- **Leetcode 493. Reverse Pairs:** Count pairs where $i < j$ and $nums[i] > 2 \times nums[j]$. Requires doing the counting step *before* the merging step inside `mergeSort()`.
+- **Leetcode 327. Count of Range Sum:** Count number of range sums that lie in `[lower, upper]`. Solved using Merge Sort on a prefix sum array.
+
+## 🔗 Cross-Topic Connections
+- **Divide and Conquer:** The ultimate application of modifying a standard sorting algorithm to solve a counting problem.
+- **Advanced Data Structures (Fenwick Tree / Segment Tree):** Counting inversions can also be solved by mapping array values to their ranks and querying the number of already-inserted elements that are greater than the current element in a Fenwick Tree in $O(N \log N)$ time.
+
+### 🔥 Additional Interview Q&A
+#### Q2: What is the relationship between the number of inversions and Bubble Sort?
+- **Answer:** The number of inversions in an array is exactly equal to the number of adjacent swaps required to sort the array using Bubble Sort. Each adjacent swap in Bubble Sort resolves exactly one inversion.
+
+#### Q3: How do you handle duplicate elements when counting inversions?
+- **Answer:** Duplicate elements (where $A[i] == A[j]$) are **not** considered inversions, since an inversion requires a strictly greater value ($A[i] > A[j]$). By maintaining the strict `<` or `<=` condition for left-half preference during merging, duplicates are placed without incrementing the inversion counter.
+
+#### Q4: Why can't we use Quick Sort to count inversions in $O(N \log N)$ time?
+- **Answer:** Quick Sort's partitioning step swaps elements over long distances, which simultaneously creates and destroys an unpredictable number of inversions in a single $O(1)$ swap. Merge Sort only shifts elements past each other linearly, which allows exact mathematical counting.
+
+#### Q5: Can we count inversions in $O(N)$ time if the elements are within a small range (e.g., $1$ to $K$)?
+- **Answer:** Yes, if $K$ is very small, we can use a frequency array. As we iterate through the array from left to right, we query the sum of frequencies of elements strictly greater than $A[i]$, then increment the frequency of $A[i]$. This takes $O(N \cdot K)$ time. If $K$ is large, we replace the frequency array with a Fenwick Tree, bringing it to $O(N \log N)$.
+
+## ⚡ 2-Minute Revision Flash Card
 
 - Condition: `if (arr[i] > arr[j]) invCount += (mid - i + 1);`.
 - Complexity: $O(N \log N)$ Time, $O(N)$ Space.
-- Counter type: `long long`.
+- Counter type: `long long` (Critical to prevent overflow).

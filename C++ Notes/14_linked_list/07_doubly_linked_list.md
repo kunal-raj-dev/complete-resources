@@ -286,3 +286,53 @@ The sentinel pattern with two dummy nodes (`dummyHead` and `dummyTail`) eliminat
 - Node: `data`, `next`, `prev`.
 - Splicing: `target->prev->next = target->next; target->next->prev = target->prev;`.
 - Delete tail: `tail = tail->prev; tail->next = nullptr;`.
+
+
+## 🧠 Core Intuition — Why This Works
+A Doubly Linked List (DLL) solves the primary weakness of a Singly Linked List: unidirectional traversal. By adding a `prev` pointer to each node, we can traverse backwards in $O(1)$ time. This makes operations like deleting a known node or inserting before a node strictly $O(1)$, because we don't need to traverse from the head to find the preceding node!
+
+## 🎯 Pattern Recognition — When to Use This
+- **"Delete a node in $O(1)$ time given its pointer"**: Singly linked lists require $O(N)$ to find the previous node (unless using a value-swap trick). DLLs do it inherently.
+- **LRU Cache Implementation**: The most famous use case for DLLs. You need $O(1)$ removal of a node from the middle and $O(1)$ insertion at the head.
+- **Complex UI Histories**: Browser back/forward buttons, music playlist next/previous logic.
+
+## 🔍 Dry Run Trace
+**Example:** Deleting node `B` from `A <-> B <-> C`
+- We are given a pointer to `B`.
+- `B->prev` is `A`. `B->next` is `C`.
+- Step 1: `B->prev->next = B->next` (makes `A` point forward to `C`)
+- Step 2: `B->next->prev = B->prev` (makes `C` point backward to `A`)
+- Step 3: `delete B`
+Result: `A <-> C`. Both forward and backward links are maintained.
+
+## ⚠️ Common Interview Mistakes
+1. **Forgetting `prev` pointer updates:** When inserting or deleting, candidates often perfectly wire the `next` pointers but forget the `prev` pointers. Always verify both directions!
+2. **Head/Tail edge cases:** Deleting the head node means `head->prev` doesn't exist, and `B->prev` becomes `NULL`. Checking `if (node->prev != NULL)` before assignment is mandatory to avoid null pointer dereferences.
+3. **Memory Leaks:** Forgetting to actually free the memory after bypassing the node.
+
+## 📊 Complexity Analysis
+- **Access:** $O(N)$
+- **Insert/Delete at ends:** $O(1)$
+- **Insert/Delete given a pointer:** $O(1)$ (This is the defining advantage over Singly LL)
+- **Space Overhead:** $O(1)$ extra space per node (for the `prev` pointer).
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Can a DLL be implemented with a single pointer?
+**Answer:** Yes! An **XOR Linked List** compresses the `prev` and `next` pointers into a single field by storing their bitwise XOR: `ptr = prev ^ next`. When traversing forward from `prev`, the next node is `ptr ^ prev`. When traversing backward from `next`, the previous node is `ptr ^ next`. This reduces memory overhead back to that of a Singly LL while maintaining bi-directional traversal capabilities.
+
+### Q2: Why isn't a DLL used everywhere if it's strictly better than Singly LL for insertions/deletions?
+**Answer:** Memory overhead and maintenance complexity. The extra pointer takes up 8 bytes (on 64-bit systems) per node, increasing the memory footprint by 33%-50%. Additionally, maintaining two pointers per link doubles the chance of bugs and cache misses. Singly linked lists are preferred unless $O(1)$ reverse traversal or deletion is strictly required.
+
+## 🏆 Related Problems
+- **[146. LRU Cache](https://leetcode.com/problems/lru-cache/)**: The ultimate test of Doubly Linked Lists combined with Hash Maps.
+- **[460. LFU Cache](https://leetcode.com/problems/lfu-cache/)**: An even more complex cache using multiple DLLs.
+- **[432. All O`one Data Structure](https://leetcode.com/problems/all-oone-data-structure/)**: Requires advanced DLL manipulation.
+
+## 🔗 Cross-Topic Connections
+- **Hash Maps:** Often paired together (e.g., in LRU cache) so that the Hash Map provides $O(1)$ lookup to the node, and the DLL provides $O(1)$ structural modification.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Structure:** `struct Node { int val; Node* prev; Node* next; }`
+- **Superpower:** $O(1)$ deletion from the middle (given the node pointer).
+- **Core Deletion Logic:** `node->prev->next = node->next; node->next->prev = node->prev;`
+- **Trap:** Always guard against `NULL` for head/tail boundary nodes!

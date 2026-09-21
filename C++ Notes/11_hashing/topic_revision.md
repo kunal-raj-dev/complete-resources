@@ -1,11 +1,34 @@
-# ⚡ Rapid Revision — Topic 11: Hashing & Prefix Sums
+# ⚡ Topic 11 Revision: Hashing & Prefix Sum Patterns
 
-> **Target:** 5-minute pre-interview refresher on hashing patterns and prefix sum equations.
+> **High-Density Review:** Two Sum hash lookup, Prefix sum frequency equations, and k-Sum generalizations.
 
 ---
 
-## 🔑 Key Problem Patterns
-- **Subarray Sum = K:** `target = curr_sum - K`. Store prefix sum frequencies. Always initialize `mp[0] = 1`.
-- **3-Sum:** Sort array. Loop $i$, two pointers $j$ and $k$. Skip `nums[i] == nums[i-1]`.
-- **4-Sum:** Nested loops $i, j$ + two pointers. Cast to `long long` before adding 4 values.
-- **Find Duplicate ($O(1)$ space):** Array is a linked list (`next = nums[curr]`). Use Floyd's cycle detection.
+## 1. Core Hashing Patterns
+
+| Problem | Optimal Technique | Time Complexity | Auxiliary Space | Core Invariant |
+|---|---|---|---|---|
+| **Two Sum** | Hash Map Complement | $O(N)$ | $O(N)$ | Lookup `target - nums[i]` |
+| **3-Sum** | Sort + Two Pointers | $O(N^2)$ | $O(1)$ aux | Skip duplicate values |
+| **4-Sum** | Sort + Double Loop + 2-Pointer | $O(N^3)$ | $O(1)$ aux | Cast sums to `long long` |
+| **Subarray Sum = K** | Prefix Sum Frequency Hash Map | $O(N)$ | $O(N)$ | `prefix[j] - prefix[i] = K` |
+
+---
+
+## 2. Subarray Sum Equals K Template
+```cpp
+int subarraySum(vector<int>& nums, int k) {
+    unordered_map<int, int> prefixCounts;
+    prefixCounts[0] = 1; // Base case: prefix sum 0 occurs once before index 0
+
+    int currentSum = 0, totalCount = 0;
+    for (int x : nums) {
+        currentSum += x;
+        if (prefixCounts.find(currentSum - k) != prefixCounts.end()) {
+            totalCount += prefixCounts[currentSum - k];
+        }
+        prefixCounts[currentSum]++;
+    }
+    return totalCount;
+}
+```

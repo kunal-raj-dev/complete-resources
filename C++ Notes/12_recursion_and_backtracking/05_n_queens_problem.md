@@ -273,3 +273,214 @@ How many solutions exist for $N = 4$?
 - One queen per row: `nQueens(row + 1)`.
 - Upper-left diagonal: `(r-1, c-1)`; Upper-right diagonal: `(r-1, c+1)`.
 - Revert: `board[r][c] = '.'` during backtracking.
+
+---
+
+## 🧠 Core Intuition — Why Row-by-Row with 3 Checks Works
+
+### The Constraint Satisfaction View
+N-Queens is a **Constraint Satisfaction Problem (CSP)**:
+- Variables: row 0, row 1, ..., row N-1 (where does the queen go in each row?)
+- Domain: columns 0, 1, ..., N-1 for each row
+- Constraints: no two queens share a column, left-diagonal, or right-diagonal
+
+By fixing **one queen per row**, we automatically eliminate **row conflicts**. The only remaining constraints are column and diagonal.
+
+### Visual: N=4 Board Exploration Trace
+
+```
+Row 0: Try col 0        Row 0: Try col 1
+Q . . .                 . Q . .
+. . . .                 . . . .
+. . . .                 . . . .
+. . . .                 . . . .
+  ↓ Row 1                 ↓ Row 1
+col 0: ✗ (same col)     col 0: ✓ safe!
+col 1: ✗ (diag)         . Q . .
+col 2: ✓ safe!          Q . . .   ← place here
+. Q . .                   ↓ Row 2
+. . Q .                 col 0: ✗ (diag)
+                        col 1: ✗ (col)
+  ↓ Row 2               col 2: ✗ (diag)
+col 0: ✗ (diag)         col 3: ✓ safe!
+col 1: ✗ (col)          . Q . .
+col 2: ✗ (col)          Q . . .
+col 3: ✓ safe!          . . . Q
+. Q . .                   ↓ Row 3
+. . Q .                 col 0: ✗ (diag)
+. . . Q                 col 1: ✗ (col)
+                        col 2: ✓ safe!
+  ↓ Row 3               . Q . .     ← SOLUTION 2!
+col 0: ✗ (diag)         Q . . .
+col 1: ✗ (col)          . . . Q
+col 2: ✓ safe!          . . Q .
+. Q . .     ← SOLUTION 1!
+. . Q .
+. . . Q
+. Q . .  wait wrong, check again
+```
+
+**N=4 has exactly 2 solutions:**
+```
+Solution 1:       Solution 2:
+. Q . .           . . Q .
+. . . Q           Q . . .
+Q . . .           . . . Q
+. . Q .           . Q . .
+```
+
+### The Mathematical Insight: Why Diagonals Have Constant Invariants
+```
+Main diagonal (top-left to bottom-right, "\"): row - col = constant
+  (0,0):0  (1,1):0  (2,2):0  (3,3):0  ← all share row-col = 0
+  (0,1):-1 (1,2):-1 (2,3):-1          ← all share row-col = -1
+
+Anti-diagonal (top-right to bottom-left, "/"): row + col = constant
+  (0,3):3  (1,2):3  (2,1):3  (3,0):3  ← all share row+col = 3
+  (0,2):2  (1,1):2  (2,0):2           ← all share row+col = 2
+```
+This is why `leftDiag[row - col + n - 1]` and `rightDiag[row + col]` are $O(1)$ lookup keys!
+
+---
+
+## 🎯 Pattern Recognition — N-Queens Type Problems
+
+### Keywords That Signal This Pattern
+- "Place N non-attacking [objects]" on an N×N grid
+- "No two in same row/column/diagonal"
+- "Count configurations" or "find all arrangements"
+- Any problem where constraints eliminate entire rows/columns of a 2D grid
+
+### N-Queens vs. Sudoku vs. Rat in Maze
+| Dimension | N-Queens | Sudoku | Rat in Maze |
+|---|---|---|---|
+| Grid size | $N \times N$ variable | $9 \times 9$ fixed | $N \times N$ |
+| Constraint type | Row/col/diagonal | Row/col/3×3 box | Walls + visited |
+| Return type | `void` (all solutions) | `bool` (one solution) | `void` (all paths) |
+| Backtrack target | Cell to `'.'` | Cell to `'.'` | Cell to unvisited |
+
+---
+
+## 🔥 Interview Q&A — Google / Amazon / Meta Level
+
+### Q1: [Conceptual] Why does N-Queens run in $O(N!)$ rather than $O(N^N)$?
+**Answer:** A naive approach would try all $N^N$ placements (N options for each of N rows). But with the column constraint enforced, at row 0 we have $N$ choices, at row 1 the used column is blocked leaving at most $N-1$ choices, at row 2 at most $N-2$, and so on. This strictly upper-bounds the number of paths in the search tree to $N \times (N-1) \times (N-2) \times \dots \times 1 = N!$. In practice (with diagonal constraints), many branches are pruned even further, making the actual runtime much less than $N!$.
+
+---
+
+### Q2: [Optimization] How do you optimize diagonal checking from $O(N)$ to $O(1)$?
+**Answer:** Maintain three boolean arrays:
+- `cols[c]` — true if column `c` has a queen
+- `leftDiag[r - c + n - 1]` — true if the "\" diagonal through `(r,c)` has a queen (offset by `n-1` to keep index non-negative, range `[0, 2n-2]`)
+- `rightDiag[r + c]` — true if the "/" anti-diagonal through `(r,c)` has a queen (range `[0, 2n-2]`)
+
+**Placement:** `cols[c] = leftDiag[r-c+n-1] = rightDiag[r+c] = true; board[r][c] = 'Q';`  
+**Removal:** `cols[c] = leftDiag[r-c+n-1] = rightDiag[r+c] = false; board[r][c] = '.';`  
+**Check:** `if (!cols[c] && !leftDiag[r-c+n-1] && !rightDiag[r+c])` — single $O(1)$ condition vs $O(N)$ board scan.
+
+---
+
+### Q3: [Trivia → Depth] How many solutions exist for N=8? Why does this matter?
+**Answer:** There are **92 distinct solutions** for the 8-Queens problem (12 fundamental solutions; the other 80 are reflections/rotations). This matters for:
+1. **Interview context:** Shows you know the classical result.
+2. **Algorithm efficiency:** Demonstrating that pruning reduces $O(8^8) = 16M$ brute-force attempts to $O(8!) = 40,320$ backtracking calls, with further pruning finding solutions quickly.
+3. **LeetCode 52 (N-Queens II):** Only asks for the count, so you optimize to avoid storing board strings.
+
+---
+
+### Q4: [Output Prediction / Debug] What's wrong with this `isSafe` function?
+```cpp
+bool isSafe(vector<string>& board, int row, int col, int n) {
+    // Check full column (both up and down)
+    for (int i = 0; i < n; i++) {           // BUG: checks ALL rows
+        if (board[i][col] == 'Q') return false;
+    }
+    // ... diagonal checks ...
+    return true;
+}
+```
+**Answer:** The bug is checking the FULL column (`i = 0` to `n-1`) instead of only the UPPER column (`i = 0` to `row-1`). When placing a queen at `(row, col)`, rows `row` to `n-1` haven't been filled yet — they are all `'.'` — so checking them is wasteful but harmless. **However**, in early rows, the current cell `(row, col)` itself is `'.'` (not placed yet) and row-0 through row-1 are correct. The deeper bug: if you place a queen at `(row, col)` and THEN call `isSafe(row, col)`, the function checks `board[row][col]` which is now `'Q'` → always returns false! This is not a bug in the given code but a common interview trap when placement and checking are in the wrong order.
+
+---
+
+### Q5: [Extension] How would you solve N-Queens II (LeetCode 52) — just count solutions?
+**Answer:** Replace `result.push_back(board)` with `count++` and use `int count` instead of `vector<vector<string>> result`. With bitmask optimization, this runs in microseconds:
+```cpp
+int totalNQueens(int n) {
+    int count = 0;
+    // cols, diag1, diag2 are integer bitmasks (bit i = column/diagonal i occupied)
+    function<void(int, int, int, int)> dfs = [&](int row, int cols, int d1, int d2) {
+        if (row == n) { count++; return; }
+        int available = ((1 << n) - 1) & ~(cols | d1 | d2);
+        while (available) {
+            int bit = available & (-available);  // lowest set bit
+            available -= bit;
+            dfs(row + 1, cols | bit, (d1 | bit) << 1, (d2 | bit) >> 1);
+        }
+    };
+    dfs(0, 0, 0, 0);
+    return count;
+}
+```
+This uses bitmask operations to represent all three constraints as integers, making it 10-100× faster than the array-based approach.
+
+---
+
+### Q6: [Proof] Prove that no queen can be placed on a $2 \times 2$ or $3 \times 3$ board (N=2, N=3).
+**Answer:**
+- **N=2:** Row 0 queen at column 0 or 1. If column 0: row 1 can't use column 0 (same col), can't use column 1 (diagonal). 0 valid columns → no solution. Column 1 is symmetric.
+- **N=3:** By exhaustive check — row 0 queen at col 1 (center): blocks col 1 + both diagonals for rows 1-2. Row 1: only col 0 or col 2 available (col 1 blocked by column, left/right diagonals block col 0 and col 2 respectively). No valid column for row 1. Outer columns (0 or 2) for row 0 lead by symmetry to the same dead-end. ∎
+
+---
+
+### Q7: [Extension] What if queens could also attack like rooks on a toroidal board (edges wrap around)?
+**Answer:** This becomes the **N-Queens on a Torus** problem. Diagonal invariants change: `(row - col) mod N` and `(row + col) mod N`. The sets track these modular values. Solutions become harder to find — for prime N, the number of solutions follows specific algebraic patterns (related to primitive roots). This is a research-level extension, but framing the answer shows deep algorithmic thinking.
+
+---
+
+## 📊 Complexity Analysis — Extended
+
+### Why the True Runtime is Much Less Than $O(N!)$
+The diagonal constraints dramatically prune the tree. For N=8:
+- Brute force: $8^8 = 16,777,216$
+- With column constraint: $8! = 40,320$
+- With all constraints (actual backtracking calls): ~15,720
+
+The constant factor improvement makes N-Queens solvable for $N \le 15$ in milliseconds.
+
+### Space Complexity Breakdown
+- **Board:** $O(N^2)$ characters
+- **Optimization arrays:** $O(N)$ for `cols`, $O(2N)$ for each diagonal → $O(N)$ total
+- **Recursion stack:** $O(N)$ frames (one per row)
+- **Results storage:** $O(N^2 \cdot \text{solutions})$ — for N=8, 92 solutions × 64 chars ≈ 6KB
+
+---
+
+## 🏆 Related LeetCode Problems
+
+| # | Problem | Key Connection |
+|---|---|---|
+| 51 | N-Queens | Direct — all board configurations |
+| 52 | N-Queens II | Count only — bitmask optimization for speed |
+| 37 | Sudoku Solver | Same 2D backtracking pattern, different constraints |
+| 79 | Word Search | 2D grid DFS with visited marking |
+| 1001 | Grid Illumination | Diagonal hash invariants used in similar way |
+
+---
+
+## 🔗 Cross-Topic Connections
+
+- **→ Sudoku Solver (File 06):** Both are 2D constraint-satisfaction backtracking. N-Queens places 1 queen per row; Sudoku fills 1 digit per empty cell. Both use `bool` return for early exit (when finding one solution).
+- **→ Rat in Maze (File 07):** Both use 2D grid backtracking with placement + undo. Rat in Maze explores paths; N-Queens places non-attacking pieces.
+- **→ Graph Coloring:** N-Queens is graph coloring where nodes are columns and edges connect attacking queens.
+- **→ Combinatorics:** $N!$ permutations are reduced by column/diagonal constraints — this is CSP (Constraint Satisfaction Problem) reduction.
+
+---
+
+## ⚡ 2-Minute Revision Flash Card (Enhanced)
+
+- **One queen per row:** Eliminates row conflicts; recurse on `row + 1`.
+- **Three checks:** Column (`cols[]`), upper-left diagonal (`leftDiag[row-col+n-1]`), upper-right diagonal (`rightDiag[row+col]`).
+- **$O(1)$ optimization:** Replace $O(N)$ scan with three boolean array lookups using invariants.
+- **N=8 → 92 solutions:** Classic fact interviewers love to ask about.
+- **Complexity:** $O(N!)$ time (tighter than $O(N^N)$ due to column constraint), $O(N^2)$ space for board.

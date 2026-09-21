@@ -1,6 +1,6 @@
 # 💼 Complete C++ & DSA Master Interview Question Bank
 
-> **Long-Term Placement Bank:** High-frequency FAANG interview questions, conceptual traps, system architecture queries, and algorithmic proofs with comprehensive solutions across all 16 course modules.
+> **Long-Term Placement Bank:** High-frequency FAANG interview questions, conceptual traps, system architecture queries, and algorithmic proofs with comprehensive solutions across all 20 course modules.
 
 ---
 
@@ -30,49 +30,61 @@
 
 ## 1. C++ Fundamentals & Memory Architecture
 ### Q1.1: Why does `main()` return an `int` rather than `void`?
-- **Answer:** ISO C++ standard mandates `main()` return an integer process termination status code to the OS shell. An exit code of `0` denotes success, while non-zero values denote runtime errors.
+- **Answer:** The ISO C++ standard mandates that `main()` must return an integer exit code to the operating system shell (`0` indicates success, non-zero values denote specific error termination codes). Returning `void` from `main()` is non-standard and rejected by compliant compilers.
+
 ### Q1.2: What is the performance impact of `std::endl` vs `'\n'`?
-- **Answer:** `'\n'` inserts a newline into the stream buffer; `std::endl` inserts `'\n'` AND triggers an explicit hardware flush via an OS system call, degrading loop I/O speed.
+- **Answer:** `'\n'` inserts a newline into the stream output buffer. `std::endl` inserts `'\n'` AND issues an explicit system call to flush the buffer (`WriteFile` / `write`), which causes enormous I/O performance bottlenecks in loops.
+
+### Q1.3: What is Undefined Behavior (UB) in signed integer overflow?
+- **Answer:** The C++ standard leaves signed integer overflow strictly undefined. Modern optimizing compilers (GCC/Clang) assume signed overflow never happens and may eliminate safety checks such as `if (x + 1 > x)`.
 
 ---
 
 ## 2. Bitwise Operations & Number Systems
 ### Q2.1: How do you verify if an integer $N$ is a Power of 2 in $O(1)$ time?
-- **Answer:** `(n > 0) && ((n & (n - 1)) == 0)`. Powers of 2 possess exactly one set bit; subtracting 1 flips all trailing bits.
+- **Answer:** `(n > 0) && ((n & (n - 1)) == 0)`. Powers of 2 possess exactly one set bit in binary representation; subtracting 1 flips that bit and sets all lower bits, so their bitwise AND is strictly zero.
+
 ### Q2.2: How does Brian Kernighan's Algorithm count set bits?
-- **Answer:** `n &= (n - 1)` clears the lowest set bit in each iteration, completing in strictly $O(k)$ operations where $k$ is set bit count.
+- **Answer:** `n &= (n - 1)` clears the lowest set bit in each iteration. It completes in strictly $O(k)$ operations where $k$ is the number of set bits.
 
 ---
 
 ## 3. Arrays, Vectors & Linear Time Techniques
 ### Q3.1: How does Kadane's Algorithm achieve $O(N)$ time for Maximum Subarray Sum?
-- **Answer:** Maintains running sum `currSum`. Any prefix sum dropping below zero is immediately discarded since it reduces subsequent contiguous sums.
+- **Answer:** It maintains a running sum `currSum`. Any prefix sum that drops below zero is discarded (`currSum = 0`) because adding a negative sum to any subsequent subarray strictly reduces its value.
+
 ### Q3.2: Why does Boyer-Moore's Voting Algorithm achieve $O(1)$ auxiliary space?
-- **Answer:** Distinct elements cancel each other in pairs. Since the majority element occurs $> N/2$ times, its count strictly survives all cancellations.
+- **Answer:** Distinct elements cancel each other in pairs. Because the majority element occurs strictly more than $N/2$ times, its count will strictly survive all pairwise cancellations.
 
 ---
 
 ## 4. Pointers & Low-Level Memory
 ### Q4.1: What is Pointer Decay in C++?
-- **Answer:** When an array identifier is passed to a function, it implicitly decays into a raw pointer pointing to its first element (`int*`), losing its compiled `sizeof` extent.
+- **Answer:** When an array name is passed to a function, it implicitly decays into a pointer pointing to its first element (`int*`), losing its compiled `sizeof` extent and length information.
+
+### Q4.2: What is a Dangling Pointer and how do you prevent it?
+- **Answer:** A pointer that references deallocated memory (e.g. stack variable of an exited function or deleted heap memory). Prevent by assigning `ptr = nullptr` immediately after deletion and preferring smart pointers (`std::unique_ptr`, `std::shared_ptr`).
 
 ---
 
 ## 5. Binary Search & Monotonic Optimization
 ### Q5.1: How do you formulate "Binary Search on Answer Space"?
-- **Answer:** Identify an answer domain $[L, R]$ with a monotonic feasibility predicate `isValid(x)`. If value $x$ is valid, all values $> x$ are guaranteed valid (or invalid). Search for the transition boundary in $O(N \log(R - L))$.
+- **Answer:** Identify a bounded monotonic search domain $[L, R]$ with a predicate function `isValid(x)`. If value $x$ is feasible, all values $\ge x$ (or $\le x$) are guaranteed feasible. Perform binary search over the answer range in $O(N \log(R - L))$.
+
+### Q5.2: How do you search in a Rotated Sorted Array (LeetCode 33)?
+- **Answer:** In any rotated sorted array, the midpoint divides the array such that **at least one half is strictly sorted**. Check if `nums[low] <= nums[mid]`. If yes, the left half is sorted; check if target falls in `[nums[low], nums[mid]]`. Otherwise, the right half is sorted; check if target falls in `[nums[mid], nums[high]]`.
 
 ---
 
 ## 6. Sorting Algorithms & DNF
 ### Q6.1: Why does DNF sort 0s, 1s, and 2s in a single pass while Counting Sort takes two?
-- **Answer:** Counting Sort calculates frequencies then overwrites elements in pass 2. DNF maintains 4 partitioned pointer regions (`low`, `mid`, `high`) and places elements strictly via in-place pointer swaps in one pass.
+- **Answer:** Counting Sort counts frequencies in pass 1 then overwrites values in pass 2. DNF maintains 4 partitioned pointer regions (`low`, `mid`, `high`) and places elements via in-place pointer swaps in a single pass without auxiliary memory.
 
 ---
 
 ## 7. C++ Standard Template Library
 ### Q7.1: What is the complexity distinction between `std::map` and `std::unordered_map`?
-- **Answer:** `std::map` uses Red-Black Trees guaranteeing $O(\log N)$ worst-case operations with ordered keys. `std::unordered_map` uses hash tables offering $O(1)$ amortized average operations but can degrade to $O(N)$ on heavy hash collisions.
+- **Answer:** `std::map` uses Red-Black Trees guaranteeing $O(\log N)$ worst-case operations with sorted key traversal. `std::unordered_map` uses hash tables offering $O(1)$ amortized average operations but can degrade to $O(N)$ on hash collisions.
 
 ---
 
@@ -96,58 +108,66 @@
 
 ## 11. Hashing & Prefix Sums
 ### Q11.1: Why does Subarray Sum Equals K require Hash Maps instead of Two Pointers?
-- **Answer:** Negative integers destroy the monotonic window expansion property. Prefix sum difference equation $\text{prefix}[j] - \text{prefix}[i] = K$ works universally regardless of signs.
+- **Answer:** Negative integers destroy the monotonic window expansion property. The prefix sum frequency equation $\text{prefix}[j] - \text{prefix}[i] = K$ works universally regardless of signs.
 
 ---
 
 ## 12. Recursion & Backtracking
-### Q12.1: How does Backtracking differ from Brute Force recursion?
-- **Answer:** Backtracking prunes dead-end search paths early using constraint predicates before generating illegitimate subtrees, and explicitly un-mutates state upon return.
+### Q12.1: What is the difference between Subsets, Permutations, and Combinations?
+- **Answer:**
+  - **Subsets:** All $2^N$ power set combinations; order does not matter; elements can be included or excluded.
+  - **Permutations:** All $N!$ orderings of elements; order matters.
+  - **Combinations:** Fixed-size selections of $K$ elements from $N$; order does not matter.
 
 ---
 
 ## 13. Object-Oriented Programming
-### Q13.1: Why must a base class destructor always be declared `virtual`?
-- **Answer:** To prevent resource leaks. Deleting a derived instance via a base pointer with a non-virtual destructor invokes only `~Base()`, skipping derived cleanups.
+### Q13.1: Why must a Base class destructor always be declared `virtual`?
+- **Answer:** If a derived class object is deleted through a base class pointer (`delete basePtr;`), declaring `virtual ~Base()` ensures dynamic dispatch correctly invokes `~Derived()` first, preventing memory leaks in the derived class.
 
 ---
 
 ## 14. Linked Lists & Cache System Design
-### Q14.1: Why does LRU Cache combine a Doubly Linked List with a Hash Map?
-- **Answer:** Doubly Linked List allows $O(1)$ node removal and head insertion once a pointer is known; Hash Map provides $O(1)$ key-to-node lookup.
+### Q14.1: How does LRU Cache achieve $O(1)$ `get()` and `put()`?
+- **Answer:** By combining a Hash Map (`unordered_map<int, Node*>`) for $O(1)$ key lookup with a Doubly Linked List for $O(1)$ node removal and insertion at the MRU head.
 
 ---
 
 ## 15. Stacks & Monotonic Invariants
-### Q15.1: Why does the Monotonic Stack run in $O(N)$ despite a nested loop?
-- **Answer:** Aggregate amortized analysis: Each array element is pushed onto the stack exactly once and popped at most once, bounding total operations by $2N$.
+### Q15.1: How does Min Stack achieve $O(1)$ space without a second stack?
+- **Answer:** Value encoding: When pushing a value $x < \text{minVal}$, push $2x - \text{minVal}$. Because $x < \text{minVal}$, the stored value is strictly $< x$. When popping, if top $< \text{minVal}$, the previous minimum is restored via $2 \cdot \text{minVal} - \text{top}$.
 
 ---
 
 ## 16. Queues & Deques
-### Q16.1: How does a Monotonic Deque find Sliding Window Maximums in $O(N)$?
-- **Answer:** It stores indices whose values are strictly decreasing. Smaller elements at the back are popped whenever a larger value arrives; the front always holds the current window maximum.
+### Q16.1: How does Monotonic Deque achieve $O(N)$ for Sliding Window Maximum?
+- **Answer:** Every index enters and leaves the deque at most once across the entire array scan. The aggregate number of operations is bounded by $2N$, guaranteeing amortized $O(1)$ per window.
 
 ---
 
 ## 17. Binary Trees & Traversals
-### Q17.1: How does Morris Traversal achieve $O(1)$ auxiliary space?
-- **Answer:** It temporarily threads the right child of the inorder predecessor back to the current root, eliminating the need for a call stack.
+### Q17.1: How does Morris Traversal achieve $O(1)$ space?
+- **Answer:** By using temporary threaded predecessor pointers: point the inorder predecessor's right pointer to current root, then remove the thread on the second visit before moving right.
 
 ---
 
 ## 18. Binary Search Trees
-### Q18.1: Why is checking `left < root && right > root` insufficient for BST validation?
-- **Answer:** It checks only immediate local children. An invalid BST can have a node in the right subtree smaller than an ancestor. Range bounds `(minAllowed, maxAllowed)` must be propagated down.
+### Q18.1: Why must Validate BST propagate $(-\infty, +\infty)$ range bounds?
+- **Answer:** Checking only local child relationships (`left < root < right`) fails if a node deep in the right subtree is smaller than an ancestor above it. Propagating `(minVal, maxVal)` bounds guarantees global invariant satisfaction.
 
 ---
 
 ## 19. Graphs & Network Topologies
-### Q19.1: When is Dijkstra's algorithm preferred over Bellman-Ford?
-- **Answer:** Dijkstra runs in $O((V + E) \log V)$ for non-negative weights; Bellman-Ford runs in slower $O(V \times E)$ but handles negative weights and detects negative cycles.
+### Q19.1: Compare Dijkstra, Bellman-Ford, and Floyd-Warshall.
+- **Dijkstra:** SSSP on non-negative weighted graphs in $O((V + E) \log V)$ via greedy Min-Heap.
+- **Bellman-Ford:** SSSP on graphs with negative weights, detects negative cycles in $O(V \times E)$ via $V-1$ edge relaxations.
+- **Floyd-Warshall:** APSP (All-Pairs Shortest Path) in $O(V^3)$ via 3 nested DP loops.
+
+### Q19.2: How does Kahn's algorithm detect directed cycles?
+- **Answer:** Nodes in a cycle never reach in-degree 0 and therefore never enter the BFS queue. If `topoOrder.size() < V`, a directed cycle is confirmed.
 
 ---
 
 ## 20. Dynamic Programming & Knapsack
-### Q20.1: Why must the 1D DP capacity loop in 0/1 Knapsack run in reverse?
-- **Answer:** Running capacity $w$ backwards ($W$ down to $wt[i]$) ensures `dp[w - wt[i]]` accesses values from the previous item's row, preventing the same item from being selected multiple times.
+### Q20.1: Why does 0/1 Knapsack require a reverse capacity loop in 1D DP?
+- **Answer:** Iterating backwards ($w = W \dots wt[i]$) ensures $dp[w - wt[i]]$ comes from the previous item row, guaranteeing item $i$ is selected at most once. Forward iteration allows reuse of the same item, which solves Unbounded Knapsack.

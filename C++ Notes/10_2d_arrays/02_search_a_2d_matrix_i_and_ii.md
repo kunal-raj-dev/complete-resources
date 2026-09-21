@@ -84,3 +84,61 @@ public:
 ```
 - **Time Complexity:** $O(R + C)$ — In every step, either `row` increments or `col` decrements.
 - **Space Complexity:** $O(1)$.
+
+## 🧠 Core Intuition — Why This Works
+**Matrix I:** Because every row's first element is strictly greater than the last element of the previous row, the entire matrix can be imagined as one continuously sorted 1D array. By using integer division (`/ C`) and modulo (`% C`), we can map any 1D index `mid` to a 2D coordinate `(row, col)`.
+**Matrix II (Staircase Search):** Since rows and columns are independently sorted, treating it as 1D fails. However, the Top-Right element `(0, C-1)` acts as a "binary search tree node". Everything to its left is smaller, and everything below it is larger. By comparing our target with this node, we can instantly eliminate an entire row (if target is larger) or an entire column (if target is smaller), stepping down a "staircase" towards the answer.
+
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger cues:** "Search in a 2D matrix", "Rows and columns are sorted".
+- **Keywords:** Index mapping (`mid / C`, `mid % C`), Staircase Search, BST elimination.
+
+## 📐 Algorithm Walk-Through
+**Matrix I (1D mapping):**
+1. Treat matrix as 1D array of size `N = R * C`.
+2. Binary search `low = 0`, `high = N - 1`.
+3. `mid = (low + high) / 2`.
+4. Fetch value at `matrix[mid / C][mid % C]`. Adjust `low`/`high` as usual.
+
+**Matrix II (Staircase Search):**
+1. Start at `row = 0, col = C - 1`.
+2. While inside matrix bounds:
+   - If `val == target`: Return true.
+   - If `val > target`: `col--` (Eliminate current column because everything below is even bigger).
+   - If `val < target`: `row++` (Eliminate current row because everything left is even smaller).
+
+## 🔍 Dry Run Trace (Matrix II)
+`matrix = [[1, 4], [2, 5]]`, `target = 2`
+1. Start `row=0, col=1`, val = 4.
+2. `4 > 2`. Eliminate column 1. `col--` -> `col=0`.
+3. `row=0, col=0`, val = 1.
+4. `1 < 2`. Eliminate row 0. `row++` -> `row=1`.
+5. `row=1, col=0`, val = 2.
+6. `2 == 2`. Return `true`.
+
+## ⚠️ Common Interview Mistakes
+- **Index mapping inversion:** Doing `matrix[mid % C][mid / C]` instead of `matrix[mid / C][mid % C]`. Remember: Division (`/`) yields the row, Modulo (`%`) yields the column.
+- **Staircase starting point:** Starting at Top-Left `(0,0)` or Bottom-Right `(R-1, C-1)` doesn't work for Matrix II because both directions increase/decrease the values, making elimination impossible.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Could we start the Staircase Search from the Bottom-Left instead of Top-Right?
+**Answer:** Yes! At the Bottom-Left `(R-1, 0)`, everything above is smaller, and everything to the right is larger. It works exactly the same. We just cannot start at Top-Left or Bottom-Right.
+
+### Q2: Can we use binary search on each row for Matrix II?
+**Answer:** Yes. You can iterate through all $R$ rows, and binary search each row. Time complexity would be $O(R \log C)$. However, Staircase Search is $O(R + C)$, which is strictly better for square matrices and most rectangular ones.
+
+### Q3: How to prevent integer overflow in Matrix I `high = R * C - 1`?
+**Answer:** If $R \times C$ exceeds $2^{31}-1$, you should use `long long` for `low`, `high`, and `mid` to prevent multiplication overflow before division/modulo.
+
+## 🏆 Related Problems (Leetcode)
+- **LeetCode 378:** Kth Smallest Element in a Sorted Matrix (Uses binary search on answer over the 2D value range).
+- **LeetCode 1095:** Find in Mountain Array (Binary search variations).
+
+## 🔗 Cross-Topic Connections
+- **Binary Search Tree (BST):** The Staircase algorithm in Matrix II is perfectly isomorphic to searching in a BST.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Matrix I:** Sorted continuously. 1D Mapping: `row = mid / C`, `col = mid % C`. Time: $O(\log(RC))$.
+- **Matrix II:** Sorted rows/cols. Staircase Search.
+- **Staircase Setup:** Start Top-Right `(0, C-1)` or Bottom-Left `(R-1, 0)`.
+- **Staircase Logic:** If `> target`, move left (`col--`). If `< target`, move down (`row++`). Time: $O(R + C)$.

@@ -133,3 +133,62 @@ void algorithmsDemo() {
 | Insert Front | $O(N)$ | $O(1)$ | $O(1)$ | N/A | N/A | N/A |
 | Insert Back | $O(1)$ amortized | $O(1)$ | $O(1)$ | N/A | N/A | $O(\log N)$ |
 | Find / Search | $O(N)$ | $O(N)$ | $O(N)$ | $O(\log N)$ | $O(1)$ avg | $O(1)$ (top only) |
+
+## 🧠 Core Intuition — Why This Works
+The STL separates algorithms from data structures using **Iterators**. An iterator is an object that points to an element in a container and allows algorithms to traverse them uniformly without knowing the container's internal memory layout. `std::vector` uses contiguous memory, providing raw pointer arithmetic. `std::map` uses a Red-Black Tree, where moving the iterator traverses the tree in-order. By decoupling these, `std::sort` can operate on any container that provides Random Access Iterators.
+
+## 🎯 Pattern Recognition — When to Use This
+- **Need fast lookup/deduplication?** `unordered_set` / `unordered_map` ($O(1)$).
+- **Need sorted keys or range queries?** `set` / `map` ($O(\log N)$).
+- **Need dynamically growing arrays?** `vector` ($O(1)$ amortized push).
+- **Need fast front & back insertion?** `deque` ($O(1)$).
+- **Need Kth largest/smallest?** `priority_queue` (Heap, $O(\log N)$).
+
+## 📐 Algorithm Walk-Through
+**Custom Sorting with Lambdas:**
+When using `std::sort`, the lambda comparator `[](const Type& a, const Type& b)` must return `true` if `a` should come strictly before `b`.
+- Example: Sort descending by score, ascending by ID on tie.
+- If `a.score > b.score`, return `true` (A is placed before B).
+- If `a.score == b.score`, check if `a.id < b.id`. Return `true` if lower.
+- **Rule of strict weak ordering:** If `a == b` conceptually, the comparator MUST return `false`. Never use `>=` or `<=`.
+
+## 🔍 Dry Run Trace (Lower vs Upper Bound)
+`vector = [1, 2, 4, 4, 4, 6]`, sorted.
+- `lower_bound(vector, 4)`: Returns iterator to the *first* `4` (index 2).
+- `upper_bound(vector, 4)`: Returns iterator to the *first element strictly greater than* `4`, which is `6` (index 5).
+- Distance: `upper_bound - lower_bound = 5 - 2 = 3` (Exactly the count of `4`s).
+
+## ⚠️ Common Interview Mistakes
+- **Comparator returning true on equality:** This breaks strict weak ordering and can cause `std::sort` to crash or infinite loop (segmentation fault) in C++! Always use `<` or `>`.
+- **Calling `map[key]` to check existence:** Using `if (myMap[key] == val)` implicitly creates a node in the map with default values if `key` didn't exist, silently increasing the map size. Always use `if (myMap.find(key) != myMap.end())` or `if (myMap.count(key))`.
+- **Erase invalidating iterators:** `vector.erase(it)` invalidates all iterators pointing to elements after the erased one.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q1: Why is `unordered_map` $O(1)$ average but $O(N)$ worst case?
+**Answer:** `unordered_map` relies on hashing. If an adversary knows the hash function (or if the hash is poor), they can insert $N$ keys that all hash to the same bucket. The Hash Table degenerates into a single linked list, taking $O(N)$ to search. `std::map` guarantees $O(\log N)$ regardless of input.
+
+### Q2: What happens when a `std::vector` runs out of capacity?
+**Answer:** It allocates a new, larger memory block (usually double the current capacity), copies all existing elements to the new block, and deletes the old block. This takes $O(N)$ time, but because it doubles, the amortized cost per insertion remains $O(1)$.
+
+### Q3: How do you initialize a Min-Heap priority queue?
+**Answer:** `priority_queue<int, vector<int>, greater<int>> minHeap;`. The default is `less<int>` which produces a Max-Heap.
+
+### Q4: When would you use a `std::list` (doubly linked list) in modern C++?
+**Answer:** Almost never, due to CPU cache misses caused by non-contiguous memory allocation. `std::vector` is vastly superior for almost all use cases except when you need massive amounts of insertions/deletions exactly in the middle of a huge container AND you already have the iterator to that location.
+
+## 🏆 Related Problems (Leetcode)
+- **LeetCode 146:** LRU Cache (Requires `std::list` + `std::unordered_map`)
+- **LeetCode 347:** Top K Frequent Elements (Requires `std::unordered_map` + `std::priority_queue`)
+- **LeetCode 23:** Merge k Sorted Lists (Requires `std::priority_queue`)
+
+## 🔗 Cross-Topic Connections
+- **Graphs:** BFS uses `queue`, DFS can use `stack`, Dijkstra's Algorithm uses `priority_queue` (min-heap).
+- **Binary Search:** `lower_bound` and `upper_bound` are native binary search implementations.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Vector:** Dynamic array. Amortized $O(1)$ back insertion, $O(1)$ random access.
+- **Unordered Map:** Hash table. $O(1)$ search. **Map:** Red-Black Tree. $O(\log N)$ search, sorted keys.
+- **Priority Queue:** Heap. Default is Max-Heap. $O(\log N)$ push/pop, $O(1)$ top.
+- **Lower Bound:** Iterator to first element $\ge X$.
+- **Upper Bound:** Iterator to first element $> X$.
+- **Custom Sort Trap:** Never return `true` if `a == b`.

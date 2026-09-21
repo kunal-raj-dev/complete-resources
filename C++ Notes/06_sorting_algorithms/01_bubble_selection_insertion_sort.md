@@ -132,3 +132,52 @@ void insertionSort(vector<int>& arr) {
 
 ### Q1: Why is Selection Sort preferred when memory writes are extremely expensive?
 **Answer:** While Bubble and Insertion Sort may execute up to $O(N^2)$ write operations, Selection Sort makes at most $N - 1$ writes (swaps) across its entire execution. In systems with flash memory or EEPROM where writes wear down the hardware, Selection Sort's minimal write count is advantageous.
+
+
+## 🧠 Core Intuition — Why This Works
+- **Bubble Sort:** Like bubbles rising to the surface, the largest element is pushed to the rightmost sorted section with each pass.
+- **Selection Sort:** Scanning the remaining unsorted elements to select the absolute minimum, placing it at the front of the unsorted section.
+- **Insertion Sort:** Like arranging cards in your hand, you pick up one card at a time and insert it into its correct position among the already sorted cards.
+
+## 🎯 Pattern Recognition — When to Use This
+- **Trigger cues:** "Sort an array that is almost sorted", "Sort an array with very limited memory writes".
+- **Keywords:** Stable sort, in-place sort, adaptive sort.
+- **Selection Sort:** When memory writes are costly.
+- **Insertion Sort:** When data is nearly sorted or very small ($N \le 30$).
+
+## 📐 Algorithm Walk-Through
+1. **Bubble Sort:** Loop $i$ from 0 to $N-1$. Loop $j$ from 0 to $N-1-i$. If $A[j] > A[j+1]$, swap. If no swaps in inner loop, break.
+2. **Selection Sort:** Loop $i$ from 0 to $N-1$. Find minimum in $A[i...N-1]$. Swap with $A[i]$.
+3. **Insertion Sort:** Loop $i$ from 1 to $N-1$. Store `curr = A[i]`. Shift elements $A[j]$ greater than `curr` to the right. Insert `curr`.
+
+## 🔍 Dry Run Trace
+**Insertion Sort on `[4, 3, 2, 10, 12, 1, 5, 6]` (Trace first 3 steps):**
+- **Init:** Sorted part `[4]`. `i = 1`, `curr = 3`.
+- **Step 1:** `4 > 3`, shift `4` right. Array: `[4, 4, ...]`. Insert `3`. Array: `[3, 4, 2, 10, 12, 1, 5, 6]`.
+- **Step 2:** `i = 2`, `curr = 2`. `4 > 2` (shift), `3 > 2` (shift). Array: `[2, 3, 4, 10, 12, 1, 5, 6]`.
+- **Step 3:** `i = 3`, `curr = 10`. `4 < 10`, no shift. Array remains `[2, 3, 4, 10, 12, 1, 5, 6]`.
+
+## ⚠️ Common Interview Mistakes
+- **Confusing Bubble and Selection Sort:** Bubble sort swaps adjacent elements constantly; Selection sort swaps exactly once per pass.
+- **Stability of Selection Sort:** Thinking Selection Sort is stable. It is NOT, because long-distance swaps can reorder equal elements.
+- **Off-by-one errors:** Forgetting to do $N-1-i$ in Bubble sort's inner loop, resulting in out-of-bounds or redundant comparisons.
+
+## 🔥 Interview Q&A — Google / Amazon Level
+### Q2: Why is Insertion Sort used in modern sorting libraries like `std::sort`?
+**Answer:** `std::sort` typically uses Introsort (QuickSort + HeapSort + InsertionSort). When the recursion depth makes the subarray size very small (e.g., 16 elements), Insertion Sort is much faster due to low overhead and excellent cache locality.
+### Q3: How can we make Bubble Sort Adaptive?
+**Answer:** By adding a boolean `swapped` flag. If a full pass occurs without any swaps, the array is sorted, and we can terminate early, achieving $O(N)$ best-case time.
+
+## 🏆 Related Problems (Leetcode)
+- **LeetCode 912:** Sort an Array (Requires faster sorts, but good to test $O(N^2)$ TLE)
+- **LeetCode 147:** Insertion Sort List (Implementing Insertion Sort on a Linked List)
+- **LeetCode 75:** Sort Colors (DNF, related to linear sorting concepts)
+
+## 🔗 Cross-Topic Connections
+- **Linked Lists:** Insertion sort is naturally suited for linked lists because elements can be inserted without shifting arrays.
+- **Divide and Conquer:** These fundamental sorts are base cases for Merge Sort and Quick Sort.
+
+## ⚡ 2-Minute Revision Flash Card
+- **Bubble:** Swap adjacent, max bubbles to right. $O(N^2)$ time. Stable. Adaptive.
+- **Selection:** Find min, swap with front. $O(N^2)$ time. Unstable. Min writes.
+- **Insertion:** Insert into sorted prefix. $O(N^2)$ time. Stable. Best for nearly sorted/small data.

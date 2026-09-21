@@ -243,3 +243,220 @@ For `maze = {{1, 1}, {1, 1}}`:
 - Order: Down ('D'), Left ('L'), Right ('R'), Up ('U').
 - In-place mark: `maze[r][c] = 0`; backtrack: `maze[r][c] = 1`.
 - Bounds: `0 <= r < n` and `0 <= c < n`.
+
+---
+
+## 🧠 Core Intuition — Grid DFS as a State-Space Tree
+
+### Why the Order D-L-R-U Produces Lexicographic Output
+Characters in alphabetical order: D < L < R < U. By trying D first, then L, R, U, we explore paths in lexicographic order of their path strings. The first valid path recorded is lexicographically smallest.
+
+### ASCII Grid DFS Visualization: 4×4 Maze
+
+```
+Maze (1=open, 0=blocked):
+[1][0][0][0]
+[1][1][0][1]
+[1][1][0][0]
+[0][1][1][1]
+Start: (0,0), End: (3,3)
+
+Exploration trace:
+(0,0) → try D → (1,0) ✓ → mark (0,0) = 0
+  (1,0) → try D → (2,0) ✓ → mark (1,0) = 0
+    (2,0) → try D → (3,0) ✗ [blocked]
+    (2,0) → try L → (2,-1) ✗ [out of bounds]
+    (2,0) → try R → (2,1) ✓ → mark (2,0) = 0
+      (2,1) → try D → (3,1) ✓ → mark (2,1) = 0
+        (3,1) → try D → (4,1) ✗ [out of bounds]
+        (3,1) → try L → (3,0) ✗ [blocked]
+        (3,1) → try R → (3,2) ✓ → mark (3,1) = 0
+          (3,2) → try R → (3,3) ✓ → mark (3,2) = 0
+            (3,3) → DESTINATION! Record path "DDRDRR"
+          (3,2) → unmark → (3,2) = 1
+        (3,1) → unmark → (3,1) = 1
+      ... explore other directions from (2,1)
+    (2,0) → unmark → (2,0) = 1
+  (1,0) → unmark → (1,0) = 1
+(0,0) → unmark → (0,0) = 1
+```
+
+### The Breadcrumb Analogy (In Depth)
+When the rat enters `(r,c)`:
+1. Drops a breadcrumb: `maze[r][c] = 0`
+2. Explores all 4 directions
+3. Picks up the breadcrumb: `maze[r][c] = 1`
+
+Why pick it up? Cell `(r,c)` might be part of ANOTHER valid path that doesn't pass through the current path. If left as `0`, that other path would incorrectly see it as a wall.
+
+---
+
+## 🎯 Pattern Recognition — Grid Backtracking Problems
+
+### Keywords That Signal This Pattern
+- "Find all paths from source to destination"
+- "How many unique paths" (DP version!) or "find one valid path"
+- "Grid/maze traversal", "island", "connected components"
+- "4-directional" or "8-directional" movement
+
+### Grid Backtracking vs. Grid DP
+| Aspect | Backtracking | Dynamic Programming |
+|---|---|---|
+| What to find | ALL paths, or ONE path with constraints | COUNT of paths, SHORTEST path |
+| State visited? | Yes, restore on backtrack | Yes, permanent memo |
+| Time | $O(4^{N^2})$ worst case | $O(N^2)$ |
+| Example | Rat in Maze, Word Search | Unique Paths (LC 62), Min Path Sum (LC 64) |
+
+### The 8-Direction Variant
+For problems allowing diagonal moves (e.g., Word Search, Robot Room Cleaner):
+```cpp
+// 8-direction delta arrays
+const int dr[] = {-1, -1, -1,  0,  0,  1,  1,  1};
+const int dc[] = {-1,  0,  1, -1,  1, -1,  0,  1};
+// Directions: NW, N, NE, W, E, SW, S, SE
+```
+Used in: Chess piece movement, flood fill with diagonals, word search in any direction.
+
+---
+
+## 🔥 Interview Q&A — Google / Amazon / Meta Level
+
+### Q1: [Conceptual] Why must we restore `maze[r][c] = 1` when backtracking?
+**Answer:** Consider a maze where the path `DDRR` uses cell `(1,1)` and path `DRD R` also uses `(1,1)`. When exploring `DDRR`, we mark `(1,1) = 0`. After recording path `DDRR` and backtracking through `(1,1)`, we restore `(1,1) = 1`. Now when exploring `DRDR`, it can correctly visit `(1,1)`. Without restoration, path `DRDR` would see `(1,1) = 0` (wall) and wrongly skip a valid path.
+
+---
+
+### Q2: [Complexity] What is the worst-case time complexity and when does it occur?
+**Answer:** $O(4^{N^2})$ when the maze is fully open (all cells = 1). At each cell, the rat can move in up to 4 directions. With $N^2$ cells and up to 4 choices per cell, the state tree can have up to $4^{N^2}$ paths. However, the `visited` marking prevents revisiting → each path visits at most $N^2$ cells. Tighter bound: the number of simple paths in an $N \times N$ grid is much less than $4^{N^2}$ in practice.
+
+For competitive programming: $N = 5$ gives $4^{25} \approx 10^{15}$ theoretical but ~thousands in practice due to blocked cells and visited marking.
+
+---
+
+### Q3: [Extension] How do you find the SHORTEST path (minimum moves) instead of all paths?
+**Answer:** Replace backtracking with **BFS (Breadth-First Search)**. BFS explores cells level by level (by move count), so the first time it reaches the destination, that's the shortest path.
+```cpp
+#include <queue>
+int shortestPath(vector<vector<int>>& maze, int n) {
+    queue<pair<int,int>> q;
+    q.push({0, 0});
+    maze[0][0] = 0;  // Mark visited
+    int moves = 0;
+    const int dr[] = {1, 0, 0, -1}, dc[] = {0, -1, 1, 0};
+    while (!q.empty()) {
+        int sz = q.size();
+        while (sz--) {
+            auto [r, c] = q.front(); q.pop();
+            if (r == n-1 && c == n-1) return moves;
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dr[d], nc = c + dc[d];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && maze[nr][nc] == 1) {
+                    maze[nr][nc] = 0;
+                    q.push({nr, nc});
+                }
+            }
+        }
+        moves++;
+    }
+    return -1;  // No path
+}
+```
+
+---
+
+### Q4: [Output Prediction] What is the output for `maze = {{1,1},{1,1}}` (2×2, all open)?
+**Answer:** Paths are `"DR"` and `"RD"`. Trace:
+- Start `(0,0)`, mark visited.
+- **Try D:** Go to `(1,0)`.
+  - `(1,0)` → Try D: `(2,0)` out of bounds. Try L: `(1,-1)` OOB. Try R: `(1,1)` = destination! Record `"DR"`.
+  - Backtrack from `(1,1)` → unmark. Try U: `(0,0)` marked. No more.
+  - Unmark `(1,0)`.
+- **Try R:** Go to `(0,1)`.
+  - `(0,1)` → Try D: `(1,1)` = destination! Record `"RD"`.
+  - Try others... no more paths.
+  - Unmark `(0,1)`.
+- Output: `DR`, `RD`.
+
+---
+
+### Q5: [Extension] How would you handle an $N \times M$ rectangular maze (not square)?
+**Answer:** Replace the single `n` dimension with separate `rows` and `cols` parameters:
+```cpp
+void solve(vector<vector<int>>& maze, int r, int c, int rows, int cols, 
+           string& path, vector<string>& result) {
+    if (r == rows - 1 && c == cols - 1) { result.push_back(path); return; }
+    maze[r][c] = 0;
+    const int dr[] = {1, 0, 0, -1};
+    const int dc[] = {0, -1, 1, 0};
+    const char dir[] = {'D', 'L', 'R', 'U'};
+    for (int d = 0; d < 4; d++) {
+        int nr = r + dr[d], nc = c + dc[d];
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && maze[nr][nc] == 1) {
+            path.push_back(dir[d]);
+            solve(maze, nr, nc, rows, cols, path, result);
+            path.pop_back();
+        }
+    }
+    maze[r][c] = 1;
+}
+```
+
+---
+
+### Q6: [Conceptual] Why is the delta array approach `{dr[], dc[], dir[]}` preferred over 4 separate `if` blocks?
+**Answer:**
+1. **Scalability:** Adding an 8-direction variant requires changing only the array size, not writing 4 more `if` blocks.
+2. **Bug reduction:** Consistent array indexing prevents order mistakes (e.g., accidentally checking `(r+1, c+1)` twice).
+3. **Direction label consistency:** The `dir[]` character array ensures the path string character always matches the actual direction taken.
+4. **Code review clarity:** Interviewers can verify 4 moves at a glance without reading 4 separate `if` blocks.
+
+---
+
+## 📊 Complexity Analysis — Extended
+
+### Path Length Bounds
+- **Shortest path:** $N + N - 2 = 2N - 2$ moves (Manhattan distance, diagonal-free).
+- **Longest simple path:** $N^2 - 1$ moves (visiting every cell exactly once — Hamiltonian path).
+- **Recursion depth:** = path length ≤ $N^2 - 1$ frames.
+- **Space per frame:** $O(1)$ beyond the path string → total stack $O(N^2)$.
+
+### When to Use Backtracking vs. BFS vs. DP for Grid Problems
+| Goal | Algorithm | Time |
+|---|---|---|
+| Find ALL paths | Backtracking | $O(4^{N^2})$ |
+| Find ONE path (existence) | DFS or BFS | $O(N^2)$ |
+| Find SHORTEST path (unweighted) | BFS | $O(N^2)$ |
+| Count paths | DP | $O(N^2)$ |
+| Find min-cost path (weighted) | Dijkstra / DP | $O(N^2 \log N)$ |
+
+---
+
+## 🏆 Related LeetCode Problems
+
+| # | Problem | Key Connection |
+|---|---|---|
+| GFG | Rat in a Maze | Direct — this problem (all paths) |
+| 79 | Word Search | 4-direction DFS with character matching + visited marking |
+| 200 | Number of Islands | 4-direction flood fill (DFS/BFS without explicit backtrack) |
+| 980 | Unique Paths III | Count paths visiting all non-obstacle cells (DP + backtracking) |
+| 489 | Robot Room Cleaner | 4-direction backtracking with relative direction system |
+
+---
+
+## 🔗 Cross-Topic Connections
+
+- **→ Graph DFS:** Rat in Maze IS graph DFS where each cell is a node and edges connect adjacent open cells.
+- **→ BFS (Shortest Path):** Replace DFS stack (recursion) with BFS queue to find shortest instead of all paths.
+- **→ Dynamic Programming (Unique Paths):** When counting paths (not finding them), DP table avoids exponential exploration.
+- **→ Word Search (File context):** Same DFS + visited pattern; adds character matching at each cell.
+- **→ N-Queens (File 05):** Both explore a 2D grid with backtracking; N-Queens uses constraints to avoid trying invalid cells.
+
+---
+
+## ⚡ 2-Minute Revision Flash Card (Enhanced)
+
+- **Mark before, unmark after:** `maze[r][c] = 0` → recurse → `maze[r][c] = 1`. Symmetric.
+- **Alphabetical direction order:** D, L, R, U ensures lexicographically sorted output.
+- **Edge check before access:** Always validate `0 <= nr < n && 0 <= nc < n` before `maze[nr][nc]`.
+- **Find all vs. shortest:** Backtracking = all paths; BFS = shortest path. Different tools for different goals.
+- **Worst case:** $O(4^{N^2})$ in fully-open maze; practical complexity far lower due to blocked cells and visited marks.
