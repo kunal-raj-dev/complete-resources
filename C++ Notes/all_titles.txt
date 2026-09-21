@@ -1,0 +1,144 @@
+001 | VTLCoHnyACE | 01:25:52 | Lecture 1 : Flowchart & Pseudocode + Installation | DSA Series by Shradha Khapra Ma'am | C++
+002 | Dxu7GKtdbnA | 01:16:44 | Lecture 2 : Variable, Data Types & Operators | DSA Series by Shradha Ma'am | C++
+003 | qR9U6bKxJ7g | 01:34:39 | Lecture 3: Conditional Statements & Loops | DSA Series by Shradha Ma'am | C++
+004 | rga_q2N7vU8 | 01:31:07 | Lecture 4: Patterns | DSA Series by Shradha Khapra Ma'am | C++
+005 | P08Z_NC8GuY |    49:13 | Lecture 5: Functions | DSA Series by Shradha Khapra Ma'am | C++
+006 | xpy5NXiBFvA |    37:20 | Binary Number System | DSA Series by Shradha Khapra Ma'am | C++
+007 | r-u4uh3QvsQ |    38:33 | Bitwise Operators, Data Type Modifiers & more | DSA Series by Shradha Khapra Ma'am | C++
+008 | 8wmn7k1TTcI |    54:07 | Array Data Structure - Part1 | DSA Series by Shradha Khapra Ma'am | C++
+009 | NWg38xWYzEg |    40:06 | Vectors in C++ | Arrays Part 2 | DSA Series by Shradha Ma'am | Lecture 9
+010 | 9IZYqostl2M |    23:29 | Kadane's Algorithm | Maximum Subarray Sum | DSA Series by Shradha Ma'am
+011 | _xqIp2rj8bo |    39:10 | Majority Element | Brute- Better-Best Approach | Moore's Voting Algorithm | & Pair Sum
+012 | PwKv8fOcriM | 01:25:41 | Time & Space Complexity - DSA Series by Shradha Ma'am
+013 | WBzZCm46mFo |    29:10 | Buy and Sell Stock Problem and Pow(X,N) Power exponential Problem - Leetcode | DSA Series
+014 | EbkMABpP52U |    32:00 | Container with Most Water Problem | Brute & Optimal Solution | Two Pointer Approach - Leetcode 11
+015 | TW2m8m_FNJE |    29:30 | Product of Array Except Self | Brute to Optimal Solution | Leetcode 238
+016 | qYEjR6M0wSk |    46:08 | Pointers in C++ | In Detail | DSA Series by Shradha Ma'am
+017 | TbbSJrY5GqQ |    44:16 | Binary Search Algorithm - Iterative and Recursive Method | [Theory + Code] with Example
+018 | 6WNZQBHWQJs |    19:30 | Search in Rotated Sorted Array | Binary Search | Leetcode 33
+019 | RjxD6UXGlhc |    23:34 | Peak Index in Mountain Array | Binary Search | Leetcode 852
+020 | qsbCBduIs40 |    27:33 | Single Element in Sorted Array | Binary Search | DSA Series Lecture 20
+021 | JRAByolWqhw |    32:59 | Book Allocation or Allocate Books Problem | DSA Series - Binary Search
+022 | srsFN5OHBgw |    27:44 | Painter's Partition Problem | DSA Placement Series - Binary Search | Lecture 22
+023 | 7wOzDqsfXy0 |    30:12 | Aggressive Cows Problem | DSA Placement Series - Binary Search | Lecture 23
+024 | 1jCFUv-Xlqo |    34:33 | Sorting Algorithms | Bubble Sort, Selection Sort & Insertion Sort | DSA Series by Shradha Ma'am
+025 | J48aGjfjYTI |    33:39 | Sort an Array of 0s, 1s & 2s | DNF Sorting Algorithm | Leetcode 75
+026 | -1cLK6PaLsQ |    43:49 | Merge Sorted Arrays Problem and Next Permutation Problem | DSA Series
+027 | okhdtEk1iKk | 01:27:20 | C++ STL Complete Tutorial | Standard Template Library - One Shot
+028 | varXreLWPRo |    01:40 | How to setup C++ compiler on Mac ? | Software Installation for Mac users
+029 | MOSjYaVymcU |    30:03 | Strings & Character Arrays in C++  -  Part 1 | DSA Placement Series
+030 | dSRFgEs3a6A |    24:02 | Valid Palindrome & Remove all Occurrences | Strings Part 2 | DSA Placement Series
+031 | VXewy91P0S4 |    21:41 | Strings - Part 3 | Permutation in String | DSA Placement Series
+032 | RitppzIdMCo |    14:42 | Strings - Part 4 | Reverse Words in String | DSA Placement Series
+033 | cAB15h6-sWA |    19:29 | String Compression problem - Lecture 32 | Leetcode 443
+034 | Y4KdgqV1IqA |    55:48 | Maths for DSA - One Shot | Euclid's Algorithm | Sieve of Eratosthenes | Modular Arithmetics
+035 | lBL8327gq8I |    37:31 | 2D Arrays in C++ | Part 1 | DSA Series by Shradha Ma'am
+036 | LEFFjgt5i6w |    37:43 | Search a 2D Matrix - Variation I & II | 2D Arrays - Part 2 | DSA Series by Shradha Ma'am
+037 | XMpdvwUObho |    24:33 | Spiral Matrix | 2D Arrays - Part 3 | Leetcode 54 | DSA Series by Shradha Ma'am
+038 | 0Fxc_jKj2vo |    53:30 | Two Sum | Find Duplicate | Find Repeating & Missing Values | Hashing Problems
+039 | K-RsltkN63w |    43:43 | 3 Sum | Brute, Better & Optimized Approach with Codes | Leetcode 15
+040 | X6sL8JTROLY |    23:02 | 4 Sum Problem | Optimal Approach | DSA Series by Shradha Ma'am
+041 | KDH4mhFVvHw |    34:45 | Subarray Sum Equals K | Brute-Better-Optimal approach
+042 | 9OsMG4fI4OY |    46:22 | Recursion Tutorial - Basics to Advanced | Part 1
+043 | 4iT-GhvSKzc |    41:30 | Recursion Part 2 : Fibonacci numbers problem, Binary search problem, Find if array sorted problem
+044 | pNzljlzDCiI |    42:20 | Recursion Part 3 : Backtracking in Detail | Print all Subsets | Subsets II
+045 | N4gJDGdhpLw |    22:55 | Permutations of an Array/String | Recursion & Backtracking
+046 | BdSJnIdR-4s |    24:26 | N-Queens Problem | using Backtracking | Leetcode Hard
+047 | 70cP3qtJp-s |    26:58 | Sudoku Solver Problem | using Backtracking | Leetcode Hard
+048 | D8Yze9CDDAw |    32:45 | Rat in a Maze Problem | Backtracking
+049 | jkgZw2WEaqA |    23:35 | Combination Sum Problem | Recursion & Backtracking
+050 | aZ0B1eWkSVU |    20:44 | Palindrome Partitioning Problem | Recursion & Backtracking
+051 | cQDtOBTy7_Y |    32:04 | Merge Sort Algorithm | Recursion & Backtracking
+052 | SBQfXK7q5K4 |    03:50 | One Major update & reaching 1000M views
+053 | 8MNB0Mba_Dc |    26:23 | Quick Sort Algorithm - Lecture 51 of Complete DSA Placement Series
+054 | ynnWDBTdVi0 |    24:33 | Count Inversions Problem | Brute and Optimal
+055 | Sp1jzttFVdE |    22:32 | KNIGHTS TOUR Problem - Backtracking | Leetcode 2596
+056 | mlIUKyZIUUU | 02:04:23 | OOPs Tutorial in One Shot | Object Oriented Programming | in C++ Language | for Placement Interviews
+057 | LyuuqCVkP5I |    50:43 | Introduction to Linked List | Data Structures & Algorithms
+058 | R-CKBYnOv1U |    10:29 | Reverse a Linked List | DSA Series by @shradhaKD
+059 | nzaHG0dme4g |    10:32 | Middle of a Linked List | DSA Series by @shradhaKD
+060 | -1E8ZMS0gSs |    30:24 | Detect & Remove Cycle in Linked List | DSA Series by @shradhaKD
+061 | f8RPIb-0DDE |    12:41 | Merge Two Sorted Lists | DSA Series by @shradhaKD
+062 | 8ze7Zopdsaw |    20:52 | Copy List with Random Pointer | DSA Series by @shradhaKD
+063 | bO5DasTsaRQ |    32:16 | Doubly Linked List Tutorial
+064 | e6lZY5Yha8U |    33:56 | Circular Linked List in Data Structures
+065 | I8b0rff5F9M |    24:47 | Flatten a Doubly Linked List | Leetcode 430 | DSA Series by @shradhaKD
+066 | -swgIiMIlJo |    20:39 | Reverse Nodes in K-Group | Linked List
+067 | wwbTMNVlFHQ |    20:06 | Swap Nodes in Pairs | Linked List
+068 | 0X-fV-1ir9c |    22:11 | Introduction to STACKS | Data Structures & Algorithms | Lecture 66
+069 | NlHupEeDXzY |    16:25 | Valid Parentheses | Stack | Lecture 67
+070 | 01vBuZyMfqk |    26:29 | Stock Span Problem | Optimal Solution
+071 | NKbExYwvjb0 |    23:32 | Next Greater Element | Optimal Solution & Code
+072 | WnjUfBn9nZM |    09:24 | Previous Smaller Element | Optimal Solution & Code
+073 | wHDm-N2m2XY |    24:34 | Design a Min Stack | Optimal Solution & Code
+074 | ysy1o-QEj3k |    32:56 | Largest Rectangle in Histogram | Best Solution & Code
+075 | If--3pm9K3U |    20:04 | L73. Next Greater Element - II | Stack & Queue
+076 | UHHp8USwx4M |    30:50 | L74. Trapping Rainwater Problem | Optimal Solution & Code
+077 | OZPmEA_8FM8 |    15:11 | L75. The Celebrity Problem | Stack & Queue
+078 | GsY6y0iPaHw |    35:34 | L76. Implement LRU Cache | Linked List
+079 | Khf9v67Ya30 |    18:55 | New Chapter : Queue Data Structure
+080 | 4mKKolshFD0 |    18:37 | L78. Circular Queue in Data Strucuture
+081 | sFvP5Ois0CE |    15:47 | L79. Implement Queue using Stack & Stack using Queue
+082 | sqyCBvEQN9c |    13:23 | L80. First Unique Character in String | Easy - Leetcode387
+083 | XwG5cozqfaM |    31:22 | L81. Sliding Window Maximum | Queue
+084 | SmTow5Ht4iU |    22:16 | L82. Gas Station | Greedy Approach | Leetcode 134
+085 | eKJrXBCRuNQ | 01:14:15 | Binary Trees in Data Structures | Tree Traversal | DSA Placement Series
+086 | 7tzHzN_Ehus |    23:09 | L.84 Height of a Binary Tree | Count of Nodes in a Binary Tree
+087 | tumW7jsjv68 |    23:28 | L.85 Identical Tree (same tree) | Subtree of another Tree
+088 | aPyDPImR5UM |    19:29 | L.86 Diameter of Binary Tree
+089 | FGr-syrhvOA |    19:39 | Top View of a Binary Tree | DSA Series : L.87
+090 | ze4JO_ODl3w |    07:59 | Kth Level of a Binary Tree | DSA Series : L.88
+091 | oX5D0uKOMck |    18:20 | Lowest Common Ancestor in Binary Tree | DSA Series : L.89
+092 | 33b1M980cCA |    20:59 | Build Tree from Preorder & Inorder | DSA Series : L.90
+093 | TY6kEejJEM0 |    08:41 | Transform to Sum Tree | DSA Series : L.91
+094 | AWJD__CfM6A |    10:01 | Binary Tree Paths | DSA Series : L.92
+095 | rhz-csskg_A |    21:09 | Maximum Width of Binary Tree | DSA Series : L.93
+096 | PUfADhkq1LI |    17:52 | Morris Inorder Traversal | DSA Series : L.94
+097 | dU2Z5HWSGM0 |    15:43 | Flatten Binary Tree to Linked List | DSA Series : L.95
+098 | RuF7dPfj27Q |    43:16 | Binary Search Trees (BSTs) | DSA Series : L.96
+099 | 0s6sCjs_4g0 |    08:44 | Sorted Array to Balanced BST | DSA Series : L.97
+100 | dSBcCynP1nA |    12:41 | Validate Binary Search Tree | DSA Series : L.98
+101 | WZmjRXF_Zi4 |    14:16 | Min Distance between BST Nodes | DSA Series : L.99
+102 | Kq4BbvIhj44 |    12:43 | Kth Smallest in BST | DSA Series : L.100
+103 | ORxkZ12FrU4 |    12:29 | Lowest Common Ancestor in BST | DSA Series : L.101
+104 | -n5Ur1wE5Jc |    19:10 | Construct BST from Preorder | DSA Series : L.102
+105 | AiKZjCuy2k4 |    16:39 | Merge Two Binary Search Trees | DSA Series : L.103
+106 | 0KGzfij_SCk |    24:03 | Recover BST | DSA Series : L.104
+107 | Pr-HFxp7npk |    24:56 | Largest BST in Binary Tree | DSA Series : L.105
+108 | a8VKpW1DsD8 |    11:12 | Populate Next Right Pointers in Each Node | DSA Series : L.106
+109 | dS1bKglre3A |    17:16 | BST Iterator | DSA Series : L.107
+110 | IHNkql1tAnk |    19:50 | Inorder Predecessor & Successor in BST | DSA Series : L.108
+111 | RpgyCJBbl5E |    26:08 | Introduction to Graphs | Data Structure & Algorithms
+112 | scQITTLgFJo |    18:31 | BFS Traversal in Graphs | Data Structure & Algorithms
+113 | 3czYbhac160 |    14:03 | DFS Traversal in Graphs | Data Structure & Algorithms
+114 | OZClCpPQDR4 |    19:45 | Detect a Cycle in Undirected Graph using DFS | Data Structure & Algorithms
+115 | MIjOkApZ39g |    18:23 | Detect a Cycle in Undirected Graph using BFS | Data Structure & Algorithms
+116 | AME6baBpswY |    17:05 | Number of Islands | Connected Components in Matrix | Leetcode 200
+117 | RmXo5SWkhCs |    26:22 | Rotting Oranges | Multi-source BFS | Leetcode 994
+118 | AcppN5XFt24 |    15:59 | Detect a Cycle in Directed Graph using DFS | Lecture 116
+119 | 0WIINUY12Yg |    15:58 | Topological Sorting in Graph | using DFS | Lecture 117
+120 | 37cJ38HadM4 |    17:54 | Course Schedule Problem | using Graph & Topological Sort
+121 | rZsgWxodGmM |    19:33 | Course Schedule II Problem | using Graph & Topological Sort
+122 | JI_e2RzARbM |    15:10 | Flood Fill Algorithm | Graph Problem
+123 | BnQpaTZg6Sc |    18:47 | Topological Sorting using Kahn's Algorithm | Graph  - DSA Lecture 121
+124 | 8gYBHjtjWBI |    35:20 | Dijkstra's Algorithm - Single Source Shortest Path - Greedy Method
+125 | 3rFHlbJ7qKc |    23:38 | Bellman Ford Algorithm - Single Source Shortest Path - Dynamic Programming
+126 | YlmU4gBgePA |    06:24 | DSA Series Quick Update - 125 lectures | New DSA Sheet | DP, Heaps, Tries etc
+127 | Sflh1z6cIMk |    26:07 | Prim's Algorithm - Minimum Spanning Tree in Graph
+128 | nnrjWxWMo3E |    34:04 | Disjoint Set Union | With Rank/Size & Path Compression | Union Find
+129 | inoM6jwj1CA |    29:07 | Kruskal's Algorithm - Minimum Spanning Tree in Graph
+130 | J1yCPIP-K8s |    12:35 | Number of Provinces | Graph Problem
+131 | mEx8JJQJUs8 |    21:16 | Min Cost to Connect All Points | Graph Problem
+132 | CLmykzpeCCs |    30:29 | Cheapest Flights Within K Stops | Graph Problem
+133 | 6h1SucBNxgc |    32:36 | Bridge in Graph using Tarjan's Algorithm | Critical Connections
+134 | cn7pov3BEmg |    36:53 | Articulation Point in Graph using Tarjan's Algorithm | Critical Points
+135 | lqY8TE0P1S8 |    26:26 | Strongly Connected Components - Kosaraju's Algorithm | Graphs
+136 | iZBXd-vjHUA |    27:36 | Floyd Warshall Algorithm | All Pairs Shortest Path in Graph
+137 | uBA8DkCBdco |    41:33 | Complete Dynamic Programming | DP Series - Lecture 1
+138 | 3GzA0mz6wp0 |    26:26 | DP 2. Climbing Stairs | 1D Dynamic Programming
+139 | BRmLlJA6ncI |    25:43 | DP 3. House Robber | 1D Dynamic Programming
+140 | hSMJj9AdNBo |    22:30 | DP 4. House Robber II | 1D Dynamic Programming
+141 | AKqlgskrZwI |    29:29 | DP 5. Frog Jump | 1D Dynamic Programming
+142 | KwItlcfF9vE |    26:08 | DP 6. Min Cost Climbing Stairs | 1D Dynamic Programming
+143 | yggezlvUN2w |    16:33 | Fractional Knapsack Algorithm | Greedy Method
+144 | tEW-zDckvFw |    45:03 | DP 8. 0/1 Knapsack | Recursion to DP Solution | Space Optimized
