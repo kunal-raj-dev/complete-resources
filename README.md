@@ -1,6 +1,6 @@
 # 🚀 Complete-Resources
 
-A comprehensive, curated collection of engineering notes, Data Structures & Algorithms implementations, interview cheat sheets, and computer science resources.
+A comprehensive, curated collection of engineering notes, Data Structures & Algorithms implementations, interview cheat sheets, and computer science resources designed for deep conceptual mastery and senior/FAANG technical interview readiness.
 
 ---
 
@@ -9,33 +9,38 @@ A comprehensive, curated collection of engineering notes, Data Structures & Algo
 ```text
 Complete-Resources/
 ├── C++ Notes/
-│   └── Linked List/
-│       ├── 00_MASTER_INDEX.md
-│       ├── 01_introduction_to_linked_list.md
-│       ├── 02_reverse_a_linked_list.md
-│       ├── 03_middle_of_a_linked_list.md
-│       ├── 04_detect_and_remove_cycle.md
-│       ├── 05_merge_two_sorted_lists.md
-│       ├── 06_copy_list_with_random_pointer.md
-│       ├── 07_doubly_linked_list.md
-│       ├── 08_circular_linked_list.md
-│       ├── 09_flatten_a_multilevel_doubly_linked_list.md
-│       ├── 10_reverse_nodes_in_k_group.md
-│       ├── 11_swap_nodes_in_pairs.md
-│       └── 12_lru_cache.md
+│   ├── README.md
+│   ├── Linked List/
+│   │   ├── 00_MASTER_INDEX.md
+│   │   ├── 01_introduction_to_linked_list.md
+│   │   └── ... (02–12 DSA problems)
+│   └── ... (16 DSA Curriculum Modules)
+├── JavaScript Notes/
+│   └── 08-dom-events-storage/
+│       ├── 00-master-index.md
+│       ├── 51-introduction-to-dom.md
+│       ├── 52-selecting-elements-in-javascript.md
+│       ├── 53-difference-between-innertext-and-textcontent.md
+│       ├── 54-getattribute-and-setattribute.md
+│       ├── 55-how-to-apply-styles-in-javascript.md
+│       ├── 56-access-parent-sibling-and-children-elements.md
+│       ├── 57-difference-between-element-and-node.md
+│       ├── 58-difference-between-append-and-appendchild.md
+│       ├── 59-creating-elements-in-javascript.md
+│       ├── 60-how-to-remove-element-using-javascript.md
+│       ├── 61-event-listeners-explained-in-depth.md
+│       ├── 62-form-event-and-event-object.md
+│       ├── 63-keyboard-events-in-javascript.md
+│       ├── 64-mouse-events-in-javascript.md
+│       ├── 65-event-bubbling-and-event-capturing.md
+│       ├── 66-event-simulation-in-javascript.md
+│       ├── 67-event-delegation-in-javascript.md
+│       └── 68-local-storage-explained-in-depth.md
 ├── Web Development/
 │   └── JavaScript/
 │       └── 24 js/
 │           ├── 01. Event Bubbling.md
-│           ├── 02. Building Todo with DOM.md
-│           ├── 03. Event Delegation.md
-│           ├── 04. How to Play Simon Says Game.md
-│           ├── 05. Setting up Project.md
-│           ├── 06. Start Game.md
-│           ├── 07. Flash Buttons & Level Up.md
-│           ├── 08. Button Event Listeners.md
-│           ├── 09. Matching Sequence.md
-│           ├── 10. Reset Game.md
+│           ├── ... (02–10 Simon Says Game & DOM)
 │           └── 11. Display Score.md
 ├── .gitignore
 └── README.md
@@ -44,6 +49,35 @@ Complete-Resources/
 ---
 
 ## 📚 Topics Covered
+
+### 🔹 JavaScript Notes
+
+#### Module 08: [DOM, Modern Events & Web Storage](./JavaScript%20Notes/08-dom-events-storage/00-master-index.md)
+A lecture-derived, interview-grade knowledge base covering **Episodes 51 through 68** of Anurag Singh's *Complete JavaScript Course (ProCodrr)*. Structured using the **14-Section Progressive Learning Architecture** with physical mental models, step-by-step traces, ASCII memory diagrams, defensive edge cases, "Predict first" output tracing, and Chromium engine mechanics.
+
+| # | Episode Title | Core Topic & Pedagogical Focus | Link |
+|---|---|---|---|
+| **00** | **Module Roadmap & Master Index** | 📚 **How to Study This Module**, 3-Phase Study Sequence Roadmap, 4-Tier Knowledge Levels, 25-Question FAANG Cheat Sheet | [00-master-index.md](./JavaScript%20Notes/08-dom-events-storage/00-master-index.md) |
+| **51** | **Introduction to DOM** | Critical Rendering Path, Render Tree, DOM Object Hierarchy, `window` vs `document`, Live puppet strings analogy | [51-introduction-to-dom.md](./JavaScript%20Notes/08-dom-events-storage/51-introduction-to-dom.md) |
+| **52** | **Selecting Elements in JavaScript** | Phone directory vs GPS, `getElementById` vs `querySelector`, Live `HTMLCollection` vs static `NodeList`, Standards vs Heuristics | [52-selecting-elements-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/52-selecting-elements-in-javascript.md) |
+| **53** | **Difference Between innerText & textContent** | Script reader vs human spectator, Reflow cost mechanics, Layout tree flushes, XSS vulnerabilities, CSS awareness | [53-difference-between-innertext-and-textcontent.md](./JavaScript%20Notes/08-dom-events-storage/53-difference-between-innertext-and-textcontent.md) |
+| **54** | **getAttribute & setAttribute** | Birth certificate vs living person, HTML attributes vs live DOM properties, 1:1 reflection vs divergence (`href`, `value`), Boolean attributes, `dataset` | [54-getattribute-and-setattribute.md](./JavaScript%20Notes/08-dom-events-storage/54-getattribute-and-setattribute.md) |
+| **55** | **How to Apply Styles in JavaScript** | Wardrobe closet vs spray paint, `classList` API vs `el.style` inline overrides, `getComputedStyle`, CSS cascade & layout thrashing | [55-how-to-apply-styles-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/55-how-to-apply-styles-in-javascript.md) |
+| **56** | **Access Parent, Sibling & Children Elements** | Royal bloodline vs castle rooms, Element-only traversal (`parentElement`, `children`, `nextElementSibling`), safe tree navigation | [56-access-parent-sibling-and-children-elements.md](./JavaScript%20Notes/08-dom-events-storage/56-access-parent-sibling-and-children-elements.md) |
+| **57** | **Difference Between Element and Node** | Animal kingdom taxonomy (Mammal vs Dog), `Node` vs `Element`, `nodeType` bitmasks, whitespace text nodes, comment nodes | [57-difference-between-element-and-node.md](./JavaScript%20Notes/08-dom-events-storage/57-difference-between-element-and-node.md) |
+| **58** | **Difference Between append & appendChild** | Strict postal clerk vs express courier, variadic arguments, DOMString auto-conversion, node relocation mechanics | [58-difference-between-append-and-appendchild.md](./JavaScript%20Notes/08-dom-events-storage/58-difference-between-append-and-appendchild.md) |
+| **59** | **Creating Elements in JavaScript** | Architect drafting table vs building site, `DocumentFragment` batching, `cloneNode(true)`, Virtual DOM foundations | [59-creating-elements-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/59-creating-elements-in-javascript.md) |
+| **60** | **How to Remove Element Using JavaScript** | Severing puppet strings, Detached DOM tree memory leaks, Garbage collection roots & reachability, `remove()` vs `removeChild()` | [60-how-to-remove-element-using-javascript.md](./JavaScript%20Notes/08-dom-events-storage/60-how-to-remove-element-using-javascript.md) |
+| **61** | **Event Listeners Explained in Depth** | Emergency broadcast subscription, Observer pattern, Anonymous unbinding trap, `AbortSignal`, `{ once: true, passive: true }` | [61-event-listeners-explained-in-depth.md](./JavaScript%20Notes/08-dom-events-storage/61-event-listeners-explained-in-depth.md) |
+| **62** | **Form Event and Event Object** | Passport control desk, `submit`, `input`, `change`, `e.preventDefault()`, `FormData` API, `e.target` vs `e.currentTarget` | [62-form-event-and-event-object.md](./JavaScript%20Notes/08-dom-events-storage/62-form-event-and-event-object.md) |
+| **63** | **Keyboard Events in JavaScript** | Mechanical typewriter, `e.code` (hardware grid) vs `e.key` (character), `tabindex="0"`, IME composition, game loops | [63-keyboard-events-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/63-keyboard-events-in-javascript.md) |
+| **64** | **Mouse, Touch & Pointer Events** | Instruments on canvas, `mouseenter` (private estate) vs `mouseover` (laser tripwire), Pointer Events API, Pointer Capture, Coordinates | [64-mouse-events-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/64-mouse-events-in-javascript.md) |
+| **65** | **Event Bubbling & Event Capturing** | Deep-sea diver trickling down & air bubbles rising, 3-Phase flow, `stopPropagation()` vs `stopImmediatePropagation()`, capture telemetry | [65-event-bubbling-and-event-capturing.md](./JavaScript%20Notes/08-dom-events-storage/65-event-bubbling-and-event-capturing.md) |
+| **66** | **Event Simulation in JavaScript** | Doorbell & master control board, `form.requestSubmit()` vs `form.submit()`, `event.isTrusted` origin model, synchronous dispatch | [66-event-simulation-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/66-event-simulation-in-javascript.md) |
+| **67** | **Event Delegation in JavaScript** | Lobby receptionist, single parent listener, `e.target.closest()`, non-bubbling `focusin`, memory retention vs listener scaling | [67-event-delegation-in-javascript.md](./JavaScript%20Notes/08-dom-events-storage/67-event-delegation-in-javascript.md) |
+| **68** | **Local Storage & Master Revision Sheet** | Whiteboard vs locker, `JSON.stringify`/`parse`, ~5MB heuristic, XSS risks + **⚡ DOM + EVENTS + STORAGE MASTER REVISION** | [68-local-storage-explained-in-depth.md](./JavaScript%20Notes/08-dom-events-storage/68-local-storage-explained-in-depth.md) |
+
+---
 
 ### 🔹 C++ Notes
 
@@ -89,13 +123,16 @@ Core DOM event mechanics, propagation phases, project setup, and complete Simon 
 
 ---
 
-## 🎯 Key Features
-- **Intuitive Hinglish + Professional C++**: Concepts explained clearly with real-world analogies and industry-standard code.
-- **Visual ASCII Diagrams**: Step-by-step memory pointer movements for dry runs.
-- **Time & Space Complexity**: Detailed breakdown for every problem.
-- **Edge Case Checklists**: Common pitfalls and null-pointer traps highlighted for interview prep.
+## 🎯 Key Engineering & Pedagogical Features
+
+- **14-Section Progressive Learning Structure:** Every JavaScript module note leads step-by-step from beginner intuition to senior interview mastery without cognitive overwhelm.
+- **Physical Mental Models & Visual ASCII Diagrams:** Every concept is anchored with a focused physical analogy and detailed architectural diagrams for memory retention.
+- **Critical Addendum Accuracy:** Pure technical rigor grounded in W3C/WHATWG specifications — zero artificial Big-O claims, accurate reflow mechanics, and explicit `> ⚙️ Implementation Detail — Chromium Example` tags.
+- **"Predict First" Output Challenges & Debugging Scenarios:** Interactive code puzzles with hidden explanations to prepare for real-world FAANG interviews.
+- **Master Revision Sheet & 30-Second Snapshots:** Categorized checklists and side-by-side comparison matrices for fast pre-interview review.
+- **Zero Placeholders:** 100% complete, runnable, and robust code snippets across all notes.
 
 ---
 
 ## 🤝 Contributing
-Contributions are welcome! If you'd like to add new topics, improve explanations, or fix typos, feel free to open a pull request.
+Contributions are welcome! If you'd like to add new topics, improve explanations, or fix typos, feel free to open an issue or pull request.
