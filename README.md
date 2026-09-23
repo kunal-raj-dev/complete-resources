@@ -7,7 +7,7 @@ A comprehensive, curated collection of engineering notes, Data Structures & Algo
 ## 📂 Repository Structure
 
 ```text
-Complete-Resources/
+ Complete-Resources/
 ├── C++ Notes/
 │   ├── README.md
 │   ├── Linked List/
@@ -16,6 +16,11 @@ Complete-Resources/
 │   │   └── ... (02–12 DSA problems)
 │   └── ... (16 DSA Curriculum Modules)
 ├── JavaScript Notes/
+│   ├── 01-fundamentals/
+│   │   ├── 00-master-index.md
+│   │   ├── 01-story-of-javascript.md
+│   │   ├── ... (02–24 Core Fundamentals)
+│   │   └── 25-while-loop-in-javascript.md
 │   └── 08-dom-events-storage/
 │       ├── 00-master-index.md
 │       ├── 51-introduction-to-dom.md
@@ -51,6 +56,40 @@ Complete-Resources/
 ## 📚 Topics Covered
 
 ### 🔹 JavaScript Notes
+
+#### Module 01: [JavaScript Fundamentals (Ep.01 → Ep.25)](./JavaScript%20Notes/01-fundamentals/00-master-index.md)
+A foundational, interview-grade knowledge base covering **Episodes 01 through 25** of Anurag Singh's *Complete JavaScript Course (ProCodrr)*. Structured using the **16-Section Progressive Learning Architecture** with physical mental models, Chrome DevTools memory heap snapshots, execution phase walkthroughs, truthy/falsy evaluation tables, and interview output tracing puzzles.
+
+| # | Episode Title | Core Topic & Pedagogical Focus | Link |
+|---|---|---|---|
+| **00** | **Module Roadmap & Master Index** | 📚 **Curriculum Orientation**, 3-Phase Mastery Sequence, Dependency Graph, 25-Question FAANG Active-Recall Cheat Sheet | [00-master-index.md](./JavaScript%20Notes/01-fundamentals/00-master-index.md) |
+| **01** | **The Story of JavaScript** | Netscape, Brendan Eich, Java vs JS branding, ECMAScript standard, Node.js, V8 JIT compilation pipeline | [01-story-of-javascript.md](./JavaScript%20Notes/01-fundamentals/01-story-of-javascript.md) |
+| **02** | **Introduction to JavaScript** | Skeleton/Paint/Nerves analogy, script linking, `<script defer>` vs `async`, DevTools REPL, operator precedence | [02-introduction-to-javascript.md](./JavaScript%20Notes/01-fundamentals/02-introduction-to-javascript.md) |
+| **03** | **Data Types in JavaScript** | 7 Primitive types vs Objects, Granite blocks vs shipping containers, `typeof null === 'object'` 1995 bug, conversions | [03-data-types-in-javascript.md](./JavaScript%20Notes/01-fundamentals/03-data-types-in-javascript.md) |
+| **04** | **Variables Explained in Depth** | `let`, `const`, `var`, declaration vs initialization, `undefined` vs `not defined`, identifier naming rules | [04-javascript-variables-explained-in-depth.md](./JavaScript%20Notes/01-fundamentals/04-javascript-variables-explained-in-depth.md) |
+| **05** | **Line-by-Line in DevTools** | Memory Creation Phase vs Code Execution Phase, Sources panel stepping, Scope pane (Global vs Script), TDZ live trace | [05-watch-your-code-running-line-by-line-in-dev-tools.md](./JavaScript%20Notes/01-fundamentals/05-watch-your-code-running-line-by-line-in-dev-tools.md) |
+| **06** | **Dialog Boxes (alert, confirm, prompt)** | Synchronous event-loop blocking, return values (`undefined`, `boolean`, `string \| null`), modern `<dialog>` | [06-dialog-boxes-in-javascript.md](./JavaScript%20Notes/01-fundamentals/06-dialog-boxes-in-javascript.md) |
+| **07** | **Template Literals & String Methods** | UTF-16 indexing, Autoboxing wrappers, immutability, `slice` vs `substring`, `padStart`, tagged template literals | [07-template-literals-string-methods-and-properties.md](./JavaScript%20Notes/01-fundamentals/07-template-literals-string-methods-and-properties.md) |
+| **08** | **The Math Object in JavaScript** | Static namespace object (no `new Math()`), rounding (`floor`, `ceil`, `round`, `trunc`), uniform random integer formula | [08-math-object-in-javascript.md](./JavaScript%20Notes/01-fundamentals/08-math-object-in-javascript.md) |
+| **09** | **Truthy and Falsy Values** | Exactly 8 falsy values, `ToBoolean` abstract operation, double bang `!!` idiom, `document.all` legacy anomaly | [09-truthy-and-falsy-values.md](./JavaScript%20Notes/01-fundamentals/09-truthy-and-falsy-values.md) |
+| **10** | **Comparison Operators** | `===` vs `==`, Abstract Equality Coercion algorithm, lexicographical string comparison, `null >= 0` quirk | [10-comparison-operators-in-javascript.md](./JavaScript%20Notes/01-fundamentals/10-comparison-operators-in-javascript.md) |
+| **11** | **Logical Operators (&&, \|\|, !)** | Short-circuit evaluation, operand value returns (not just booleans), default values (`\|\|` vs `??`), React JSX zero bug | [11-logical-operators-in-javascript.md](./JavaScript%20Notes/01-fundamentals/11-logical-operators-in-javascript.md) |
+| **12** | **Decision Making with if** | Railway track switch, block scoping, the accidental assignment bug (`=`), the floating semicolon trap | [12-decision-making-using-if-statement.md](./JavaScript%20Notes/01-fundamentals/12-decision-making-using-if-statement.md) |
+| **13** | **Optimizing with else if** | Cascading waterfall, short-circuit branch skipping, condition ordering (shadowing bug), lookup table refactor | [13-optimize-decision-making-using-else-if-and-else.md](./JavaScript%20Notes/01-fundamentals/13-optimize-decision-making-using-else-if-and-else.md) |
+| **14** | **Nested if-else Statements** | Multi-gate decisions, Arrow Anti-Pattern (Pyramid of Doom), Dangling Else ambiguity, Guard Clauses (Early Return) | [14-nested-if-else-statement-in-javascript.md](./JavaScript%20Notes/01-fundamentals/14-nested-if-else-statement-in-javascript.md) |
+| **15** | **The switch Statement** | Strict equality matching (`===`), Case fall-through, `switch(true)` range idiom, block scoping in cases | [15-switch-statement-in-javascript.md](./JavaScript%20Notes/01-fundamentals/15-switch-statement-in-javascript.md) |
+| **16** | **The Ternary Operator** | Statements vs Expressions, JSX inline rendering, right-associativity in nested chains | [16-ternary-operator-in-javascript.md](./JavaScript%20Notes/01-fundamentals/16-ternary-operator-in-javascript.md) |
+| **17** | **Variable Memory Addresses** | Call Stack vs Memory Heap, Chrome DevTools Heap Snapshots, `@id` pointers, Shallow Size vs Retained Size | [17-how-to-see-variable-address-in-dev-tools.md](./JavaScript%20Notes/01-fundamentals/17-how-to-see-variable-address-in-dev-tools.md) |
+| **18** | **Objects Explained in Depth** | Manila folder model, Dot vs Bracket notation, dynamic keys, V8 Hidden Classes / Shapes, `in` vs `hasOwn` | [18-objects-in-javascript-explained-in-depth.md](./JavaScript%20Notes/01-fundamentals/18-objects-in-javascript-explained-in-depth.md) |
+| **19** | **Object.freeze() vs Object.seal()** | Property descriptors (`writable`, `configurable`), shallow freeze caveat, recursive `deepFreeze` utility | [19-object-freeze-vs-object-seal.md](./JavaScript%20Notes/01-fundamentals/19-object-freeze-vs-object-seal.md) |
+| **20** | **Arrays Explained in Depth** | Exotic objects, `Array.isArray()`, length truncation, `delete arr[i]` hole bug, V8 Elements Kinds | [20-arrays-explained-in-depth.md](./JavaScript%20Notes/01-fundamentals/20-arrays-explained-in-depth.md) |
+| **21** | **Most Common Array Methods** | Mutating vs Non-mutating methods, `slice()` vs `splice()`, default string `.sort()` trap, ES2023 `toSorted` | [21-most-common-array-methods-in-javascript.md](./JavaScript%20Notes/01-fundamentals/21-most-common-array-methods-in-javascript.md) |
+| **22** | **Multidimensional Arrays** | 2D matrices, `grid[row][col]`, Jagged arrays, `new Array(3).fill([])` reference duplication trap | [22-multidimensional-arrays.md](./JavaScript%20Notes/01-fundamentals/22-multidimensional-arrays.md) |
+| **23** | **The Right Way to Copy** | Reference copy vs Shallow copy vs Deep copy, `structuredClone()`, 5 fatal flaws of `JSON.parse(JSON.stringify())` | [23-right-way-to-copy-objects-and-arrays.md](./JavaScript%20Notes/01-fundamentals/23-right-way-to-copy-objects-and-arrays.md) |
+| **24** | **Compound & Update Operators** | `+=`, `-=`, Prefix `++x` vs Postfix `x++`, `x = x++` self-reset bug, ES2021 Logical Assignment (`??=`, `\|\|=`) | [24-combined-assignment-operators.md](./JavaScript%20Notes/01-fundamentals/24-combined-assignment-operators.md) |
+| **25** | **The while Loop in JavaScript** | 4 Loop pillars, infinite loop thread freeze, `break` vs `continue`, Two-Pointer algorithmic pattern | [25-while-loop-in-javascript.md](./JavaScript%20Notes/01-fundamentals/25-while-loop-in-javascript.md) |
+
+---
 
 #### Module 08: [DOM, Modern Events & Web Storage](./JavaScript%20Notes/08-dom-events-storage/00-master-index.md)
 A lecture-derived, interview-grade knowledge base covering **Episodes 51 through 68** of Anurag Singh's *Complete JavaScript Course (ProCodrr)*. Structured using the **14-Section Progressive Learning Architecture** with physical mental models, step-by-step traces, ASCII memory diagrams, defensive edge cases, "Predict first" output tracing, and Chromium engine mechanics.
