@@ -1,6 +1,6 @@
 # Episode 18 — Objects in JavaScript Explained in Depth (Object Literals, Property Access, References)
 
-> **One-Line Mental Model:** An object is a custom filing cabinet in the heap; its keys are labeled drawer handles, and its values can be any data type—even other filing cabinets.
+> **One-Line Mental Model:** An object is a custom filing cabinet; its keys are labeled drawer handles, and its values can be any data type—even other filing cabinets.
 
 ---
 
@@ -11,7 +11,7 @@
 - The exact rules for choosing between **Dot Notation (`obj.prop`)** and **Bracket Notation (`obj['prop']`)**.
 - When bracket notation is strictly mandatory: dynamic expressions, variables, spaces, and hyphens.
 - Adding, updating, and deleting properties (`delete obj.prop`).
-- Traversing deeply **nested objects** and understanding reference storage in the Heap.
+- Traversing deeply **nested objects** and understanding shared object identity.
 - Why object keys in JavaScript are fundamentally coerced to Strings (or Symbols).
 
 ---
@@ -23,7 +23,7 @@ Primitives (like numbers or strings) only store a single piece of information: `
 An **Object** groups all of these related variables into one organized package under a single name.
 
 ### Technical Explanation
-An Object in ECMAScript is an unordered collection of properties. Each property consists of a key (either a String or a Symbol) and a value (any ECMAScript language value). Objects are non-primitive reference types allocated dynamically on the Memory Heap. When passed or assigned, objects are manipulated **by reference**, never by copying values.
+An Object in ECMAScript is an unordered collection of properties. Each property consists of a key (either a String or a Symbol) and a value (any ECMAScript language value). Object values possess distinct identities; multiple variable bindings can be associated with the exact same object value. When passed or assigned, the value association is shared, meaning mutations are visible across all bindings referencing that object identity.
 
 ### Before vs After Motivation
 - **Before:** Keeping track of 5 separate variables for each user (`userName1`, `userAge1`, `userName2`, `userAge2`) is messy, impossible to scale, and fragile.
@@ -304,7 +304,7 @@ console.log(Object.hasOwn(user, "toString")); // false
 
 1. **Key-Value Collections:** Objects are dynamic reference types mapping String or Symbol keys to arbitrary values.
 2. **Dot vs Bracket Access:** Dot notation (`obj.key`) requires an exact identifier name; bracket notation (`obj[key]`) evaluates dynamic expressions, variables, spaces, and numbers.
-3. **Reference Semantics:** Object variables hold references to heap-allocated objects; assigning `b = a` copies the reference, so mutations through `b` affect `a`.
+3. **Object Identity & Reference Semantics:** Object values possess unique identities; assigning `b = a` associates both bindings with the same object value, so mutating properties through `b` is reflected through `a`.
 4. **Key Coercion:** Object literal keys are coerced to strings (or Symbols). An object used as a key evaluates to `"[object Object]"`.
 5. **Existence Checks:** Prefer `Object.hasOwn(obj, key)` over `in` to verify own properties without walking the prototype chain.
 6. **Deletion:** The `delete obj.key` operator removes a property from the object itself and returns a boolean.
@@ -314,13 +314,13 @@ console.log(Object.hasOwn(user, "toString")); // false
 ## ⚡ 30-Second Revision
 
 - **Essential Facts:**
-  - Objects are composite reference types mapping String or Symbol keys to arbitrary values.
+  - Objects are composite values mapping String or Symbol keys to arbitrary values.
   - Dot notation (`obj.key`) requires valid identifier tokens; bracket notation (`obj[key]`) evaluates dynamic expressions.
   - Object keys are automatically converted to strings (or Symbols).
-  - Variables hold object references; assigning `const b = a` copies the reference, sharing mutations.
+  - Variables hold bindings to values; assigning `const b = a` shares the same object identity, sharing mutations.
   - Optional chaining (`?.`) allows safe navigation across nested properties without throwing TypeErrors.
   - Use `Object.hasOwn(obj, "prop")` to check direct properties without prototype chain lookups.
-- **Key Mental Model:** An object is a collection of named slots in heap memory; variables store a reference ticket to access that collection.
+- **Key Mental Model:** An object is a keyed collection of properties with its own unique identity; multiple variable bindings can share that identity.
 - **Common Trap:** Using an object as a property key in another object (`obj[anotherObj] = 123`), which coerces the key to string `"[object Object]"` and unintentionally overwrites other object keys.
 - **Interview Question:** *"Does `const` make an object immutable?"* $\to$ No. `const` creates an immutable variable binding (preventing reassignment to a new reference), but the contents of the object itself remain fully mutable unless sealed or frozen with `Object.freeze()`.
 - **Code Pattern:**

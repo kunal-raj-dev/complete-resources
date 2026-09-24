@@ -231,7 +231,7 @@ flowchart TD
 <details>
 <summary><b>1. Why is <code>typeof null === 'object'</code> in JavaScript?</b></summary>
 
-In the original 1995 JavaScript implementation, values were stored with a 3-bit type tag. The tag `000` represented an Object reference. `null` was represented as the NULL pointer (`0x00`), which had all zero bits, causing the engine to read its tag as `000` (Object). This is permanently standardized for web backward compatibility.
+A commonly cited historical explanation is that early JavaScript implementations used tagged value representations in which `null` interacted with the object type tag. The exact internal representation is implementation-specific and is not an ECMAScript requirement. The behavior is permanently standardized to maintain web backward compatibility.
 </details>
 
 <details>
@@ -291,7 +291,7 @@ Placing a semicolon directly after the `if (...)` condition (e.g. `if (age >= 18
 <details>
 <summary><b>11. What is the difference between a Statement and an Expression?</b></summary>
 
-An Expression produces and resolves to a concrete value (e.g. `5 + 2`, ternary `a ? b : c`). A Statement performs an action or controls program execution flow (e.g. `if-else`, `while`, `switch`) and cannot be assigned to variables or used inside `${}`.
+Expressions evaluate to values. Statements are syntactic constructs that perform actions or control execution. JavaScript grammar determines where expressions and statements may appear; a statement itself is not generally usable where an expression is required.
 </details>
 
 <details>
@@ -351,7 +351,7 @@ A shallow copy duplicates the top-level container, but any nested objects or arr
 <details>
 <summary><b>21. What is the modern native standard for deep copying in JavaScript?</b></summary>
 
-`structuredClone(value)`. It creates true deep clones and handles circular references, but throws a `DataCloneError` if the object contains functions or DOM nodes.
+`structuredClone()` performs structured cloning for supported cloneable values and preserves circular references, creating an independent structured copy of supported data. Functions are not cloneable and cause `DataCloneError`. For platform/DOM objects, cloneability depends on the specific object type.
 </details>
 
 <details>

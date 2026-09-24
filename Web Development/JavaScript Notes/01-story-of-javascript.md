@@ -25,7 +25,7 @@ Netscape realized browsers needed a lightweight, easy-to-learn programming langu
 ### Technical Explanation
 JavaScript was created in May 1995 by Brendan Eich at Netscape Communications Corporation under the code name **Mocha**, later renamed **LiveScript**, and finally marketed as **JavaScript**. To avoid vendor lock-in by Microsoft (who reverse-engineered JavaScript as *JScript* in Internet Explorer 3.0), Netscape submitted the language specifications to **ECMA International** in November 1996, producing the standardized specification known as **ECMAScript (ECMA-262)**. 
 
-Architecturally, JavaScript combines Scheme's first-class functions, Self's prototype-based inheritance, and Java's curly-brace syntax. Originally executed purely via line-by-line interpreters, modern engines (Chromium V8, Firefox SpiderMonkey, WebKit JavaScriptCore) leverage adaptive **Just-In-Time (JIT) compilation**, translating hot JavaScript bytecode directly into optimized native machine instructions at runtime.
+Architecturally, JavaScript combines Scheme's first-class functions, Self's prototype-based inheritance, and Java's curly-brace syntax. The ECMAScript specification defines language grammar and runtime semantics, leaving execution strategy to individual engine implementations. While early engines executed code using pure interpreters, modern production engines (such as Chromium V8, Firefox SpiderMonkey, and WebKit JavaScriptCore) leverage adaptive **Just-In-Time (JIT) compilation** as an engine optimization technique, compiling hot bytecode paths directly into optimized native machine instructions at runtime.
 
 ### Before vs After Motivation
 - **Before:** Webpages were completely static documents. Any user interaction (such as calculating mortgage payments or checking empty input fields) required a full HTTP roundtrip to a backend server.
@@ -133,7 +133,13 @@ User enters numbers and clicks 'Calculate Instantly'
 
 ## 6. Visual Explanation: Language Translation Pipeline
 
-### Interpreted vs Compiled vs Just-In-Time (JIT) Compilation
+### Interpreted vs Compiled vs JIT Compilation (Specification vs Engine Architecture)
+
+> ⚙️ **Language Specification vs Engine Implementation:**
+> - **ECMAScript** is the formal language specification defining language syntax and runtime semantics. It does not mandate how an engine executes code and does not require JIT compilation.
+> - A **JavaScript Engine** is a concrete software program (e.g., Google V8, Mozilla SpiderMonkey, Apple JavaScriptCore) that implements the ECMAScript standard.
+> - **V8** is one specific open-source engine implementation used in Chromium browsers and Node.js.
+> - **JIT (Just-In-Time) compilation** is an engine-level optimization technique, not an ECMAScript specification requirement.
 
 ```
 1. TRADITIONAL COMPILED LANGUAGE (C, C++, Rust, Go):
@@ -147,13 +153,13 @@ User enters numbers and clicks 'Calculate Instantly'
    * Pro: Platform-independent; runs immediately anywhere without prior compilation.
    * Con: Slower execution because expressions are repeatedly re-parsed and evaluated.
 
-3. MODERN JAVASCRIPT JIT HYBRID (V8, SpiderMonkey):
-   [ Source Code ]
-          │
-          ▼
+3. ⚫ IMPLEMENTATION DETAIL — V8 HYBRID JIT PIPELINE (Ignition + TurboFan):
+   [ JavaScript Source Code ]
+               │
+               ▼
    [ Parser / AST ] ──> [ Bytecode Interpreter (Ignition) ] ──> Runs code immediately
                                   │
-                                  ▼ (Watches for "hot" loops & functions)
+                                  ▼ (Watches for "hot" loops & monomorphic functions)
                         [ JIT Compiler (TurboFan) ] ──> Emits optimized Native Machine Code!
 ```
 
@@ -200,10 +206,10 @@ User enters numbers and clicks 'Calculate Instantly'
 
 ## 8. Common Mistakes & Anti-Patterns
 
-### 1. Thinking JavaScript is an "Interpreted-Only" Language
-- **❌ WRONG:** "JavaScript is slow because it is an interpreted language that reads code line-by-line."
-- **Why it's wrong:** Modern engines do not run pure interpreters. They parse source code into an Abstract Syntax Tree (AST), generate bytecode, profile running code, and compile hot paths directly into machine code using JIT compilers.
-- **✅ CORRECT:** JavaScript is specified as a dynamically typed language with runtime semantics. Modern engines use adaptive Just-In-Time (JIT) compilation to compile heavily executed code into optimized machine instructions.
+### 1. Thinking ECMAScript Mandates How Code is Executed
+- **❌ WRONG:** "JavaScript is inherently an interpreted language" OR "ECMAScript mandates JIT compilation."
+- **Why it's wrong:** ECMAScript specifies language syntax and runtime semantics, not the execution mechanism. A conforming engine may interpret bytecode, compile ahead of time, or use adaptive JIT compilation.
+- **✅ CORRECT:** ECMAScript is the language specification; JIT compilation (like V8's Ignition interpreter and TurboFan compiler) is an engine-level implementation technique used to optimize execution speed.
 
 ### 2. Confusing ECMAScript Specification with Engine Implementation
 - **❌ WRONG:** "V8 is ECMAScript."
@@ -231,7 +237,7 @@ If Brendan Eich originally called it "Mocha" and then "LiveScript", why rename i
 
 ### 1. The Undying `typeof null === 'object'` Bug
 `typeof null === 'object'` is a historical JavaScript compatibility quirk inherited from early implementations:
-In the original 1995 prototype implementation, values were represented with type tags in their lower bits, where tag `000` designated an Object. `null` was represented as all zero bits, causing the engine's type check routine to read its tag as `000` (Object).
+A commonly cited historical explanation is that early JavaScript implementations used tagged value representations in which `null` interacted with the object type tag. The exact internal representation is implementation-specific and is not an ECMAScript requirement.
 ```javascript
 console.log(typeof null); // "object" (Historical quirk from early engine implementation!)
 ```
@@ -310,8 +316,8 @@ In 2009, Ryan Dahl extracted Google's open-source V8 engine from the browser, co
 1. **Origins:** Created in May 1995 by Brendan Eich at Netscape in 10 days under the name Mocha, briefly renamed LiveScript, then marketed as JavaScript.
 2. **Java vs JavaScript:** Completely different languages; the name was a 1995 marketing partnership with Sun Microsystems ("Java is to JavaScript as Car is to Carpet").
 3. **ECMAScript (ECMA-262):** The standardized language specification governed by TC39; JavaScript is a concrete implementation of that standard.
-4. **Execution Model:** JavaScript is not purely interpreted in modern runtimes; engines use JIT (Just-In-Time) compilation combining fast interpretation with machine-code compilation.
-5. **V8 & Node.js:** Google V8 (2008) brought high-speed JIT execution; Ryan Dahl created Node.js (2009) by taking V8 outside the browser with an event loop (`libuv`).
+4. **Specification vs Engine:** ECMAScript defines the language standard; engines (V8, SpiderMonkey, JavaScriptCore) are concrete software implementations. ECMAScript does not mandate JIT compilation—adaptive JIT is an engine optimization technique.
+5. **V8 & Node.js:** Google V8 (2008) introduced high-speed JIT execution; Ryan Dahl created Node.js (2009) by pairing V8 outside the browser with an event-driven I/O loop (`libuv`).
 6. **Backward Compatibility:** "Don't break the web" is the prime directive; features are almost never removed, which is why historical artifacts like `typeof null === 'object'` remain permanently.
 
 ---
@@ -322,7 +328,7 @@ In 2009, Ryan Dahl extracted Google's open-source V8 engine from the browser, co
   - Brendan Eich created JavaScript at Netscape in 10 days in May 1995.
   - ECMAScript is the language specification; V8, SpiderMonkey, and JavaScriptCore are concrete implementations.
   - TC39 evolves ECMAScript through a 5-stage proposal pipeline (Stages 0–4).
-  - Modern engines are hybrid JIT systems (bytecode interpretation + speculative optimizing compilation), not pure line-by-line interpreters.
+  - ECMAScript specifies runtime semantics, not the execution mechanism. JIT compilation is an engine optimization technique, not a spec requirement.
   - The web enforces strict backward compatibility: historical quirks like `typeof null === 'object'` remain permanently.
 - **Key Mental Model:** ECMAScript is the architectural blueprint; the JavaScript engine is the factory building and running the machine.
 - **Common Trap:** Assuming JavaScript is compiled AOT like C++ or purely interpreted line-by-line like early shell scripts.

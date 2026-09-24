@@ -26,7 +26,7 @@ Think of building a website like building a house:
 Without JavaScript, a webpage can only sit there looking pretty. With JavaScript, the webpage can listen to clicks, calculate shopping cart totals, validate passwords, and talk to servers in the background.
 
 ### Technical Explanation
-JavaScript is a high-level, dynamically typed, garbage-collected programming language. In a standard browser environment, script execution runs on the browser's main JavaScript thread, while the browser itself uses multiple background threads for network fetching, parsing, and rendering. When the HTML parser processes markup sequentially from top to bottom, encountering an external `<script src="...">` tag without attributes causes the parser to halt DOM construction, fetch the script across the network, and execute it on the main thread before resuming HTML parsing. The modern standard provides the `defer` attribute, instructing the browser to download the script in parallel in the background and execute it only after the DOM tree is fully constructed.
+JavaScript is a high-level, dynamically typed, garbage-collected programming language. In a standard browser environment, JavaScript script execution runs on the main thread. When the HTML parser processes markup sequentially from top to bottom, encountering an external `<script src="...">` tag without attributes causes the parser to halt DOM construction, fetch the script across the network, and execute it before resuming HTML parsing. The modern standard provides the `defer` attribute, indicating that the browser can fetch the script resource while HTML parsing continues, executing the script in document order only after HTML parsing is complete and before `DOMContentLoaded`.
 
 ### Before vs After Motivation
 - **Before:** Webpages could only submit forms synchronously, causing jarring white-screen flashes and full-page reloads. Calculations and UI state updates were impossible on the client.
@@ -116,8 +116,8 @@ Browser loads index.html
          │
          ▼
 [2] Hits `<script src="script.js" defer>`.
-    - Browser background networking thread initiates download of `script.js`.
-    - Main thread HTML parser DOES NOT STOP; continues parsing <body> and <h1>.
+    - The browser can fetch the script resource while HTML parsing continues.
+    - The HTML parser does not block; it continues constructing the DOM tree (parsing <body> and <h1>).
          │
          ▼
 [3] HTML Parser reaches </html> — DOM construction is fully complete.
@@ -319,7 +319,7 @@ Modern browser engines (WebKit, Blink) utilize a background secondary thread cal
   - Standard `<script>` halts HTML parsing while the file downloads and executes.
   - `<script defer>` downloads in parallel without blocking parsing, executes after HTML parsing finishes in document order, and runs before `DOMContentLoaded`.
   - `<script async>` downloads in parallel; the moment it arrives, it pauses HTML parsing to execute, and runs out of order as soon as ready.
-  - JavaScript single-threading applies to the execution thread; browser networking, parsing, and rendering are multi-threaded.
+  - JavaScript single-threading applies to script execution; the browser environment can fetch resources while HTML parsing continues.
   - Division by zero yields `Infinity` or `-Infinity`, while `0 / 0` produces `NaN`.
 - **Key Mental Model:** HTML is the structure, CSS is the style, JavaScript is the nervous system.
 - **Common Trap:** Placing un-deferred `<script>` tags in `<head>`, blocking the parser and preventing users from seeing the webpage until scripts finish executing.

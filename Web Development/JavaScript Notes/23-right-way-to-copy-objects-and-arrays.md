@@ -27,7 +27,7 @@ To make an independent duplicate, you must choose between:
 Under ECMAScript and HTML specifications:
 - **Reference Assignment (`=`)** copies the object reference directly.
 - **Shallow Copy** copies own enumerable properties. For primitives, values are copied; for object properties, the object reference is copied into the new container.
-- **Deep Copy via `structuredClone()`** invokes the HTML Structured Clone Algorithm. It creates recursive copies for composite structures, handles circular references, preserves typed arrays, Dates, RegExps, Maps, and Sets, but throws a `DataCloneError` on functions and DOM nodes.
+- **Deep Copy via `structuredClone()`:** `structuredClone()` performs structured cloning for supported cloneable values and preserves circular references, creating an independent structured copy of supported data. Functions are not cloneable and cause `DataCloneError`. For platform/DOM objects, cloneability depends on the specific object type.
 
 ### Before vs After Motivation
 - **Before:** Developers use `{ ...state }` in Redux or React and are shocked when mutating `state.user.preferences` causes bizarre, unpredictable bugs due to shared references.
@@ -279,8 +279,8 @@ In modern JavaScript (2022+), you can replace `cloneDeep` with native `structure
 
 1. **Three Levels of Copying:** Reference assignment (`b = a`) copies only the object reference; shallow copying (`{ ...a }`) copies top-level properties but shares nested references; deep copying (`structuredClone(a)`) duplicates nested objects recursively.
 2. **Shallow Copy Limitations:** Spread operators and `Object.assign()` only clone the outermost layer; modifying nested objects or arrays mutates the original data.
-3. **The `structuredClone()` Standard:** The native web/Node API for deep cloning serializable structures; safely handles circular references, Dates, Sets, Maps, and TypedArrays.
-4. **`structuredClone()` Non-Cloneables:** Throws `DataCloneError` when encountering functions, class methods, or DOM nodes.
+3. **The `structuredClone()` Standard:** `structuredClone()` performs structured cloning for supported cloneable values and preserves circular references, creating an independent structured copy of supported data.
+4. **`structuredClone()` Limitations:** Functions are not cloneable and cause `DataCloneError`. For platform/DOM objects, cloneability depends on the specific object type.
 5. **Flaws of JSON Serialization:** `JSON.parse(JSON.stringify(x))` silently strips `undefined`, functions, and Symbols, converts `Date` to a string, coerces `NaN` to `null`, and throws on circular structures.
 6. **Framework Immutability:** State management frameworks (React, Redux) rely on shallow copying each updated branch to maintain referential equality checks.
 
@@ -291,12 +291,12 @@ In modern JavaScript (2022+), you can replace `cloneDeep` with native `structure
 - **Essential Facts:**
   - Reference assignment (`b = a`) copies only the object reference; no new object is created.
   - Shallow copies (`{ ...obj }`, `Object.assign()`) clone top-level properties, but nested objects remain shared references.
-  - Native `structuredClone()` produces deep clones, correctly handling circular references, Dates, Sets, Maps, and TypedArrays.
-  - `structuredClone()` throws a `DataCloneError` on functions, class instances, or DOM nodes.
+  - `structuredClone()` performs structured cloning for supported cloneable values and preserves circular references, creating an independent structured copy of supported data.
+  - Functions are not cloneable and cause `DataCloneError`. For platform/DOM objects, cloneability depends on the specific object type.
   - Avoid `JSON.parse(JSON.stringify())` due to data loss (functions, `undefined`, `Symbol`, `BigInt`, `Date` methods) and crashing on circular references.
 - **Key Mental Model:** Reference copy gives another person your car keys; shallow copy duplicates the car body but keeps the original engine inside; deep copy manufactures an entirely separate car from scratch.
 - **Common Trap:** Mutating a nested property in a shallow copy (`{ ...user }`), mistakenly believing that spreading an object deeply clones nested child objects.
-- **Interview Question:** *"What are the limitations of `structuredClone()` compared to a custom cloner?"* $\to$ `structuredClone()` cannot clone functions, methods, or DOM nodes (throws `DataCloneError`), ignores Symbol properties, and drops custom prototype chains (instances become plain objects).
+- **Interview Question:** *"What are the limitations of `structuredClone()` compared to a custom cloner?"* $\to$ `structuredClone()` performs structured cloning for supported cloneable values and preserves circular references, creating an independent structured copy of supported data. Functions are not cloneable and cause `DataCloneError`. For platform/DOM objects, cloneability depends on the specific object type. In addition, Symbols are not cloned and custom class prototype chains are dropped (cloned objects become plain objects).
 - **Code Pattern:**
   ```javascript
   // Deep clone a nested structure safely

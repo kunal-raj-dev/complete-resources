@@ -100,7 +100,7 @@ V8 evaluates `typeof` on different values
 [3] `typeof undefined`: Engine checks type descriptor -> matches Undefined type -> returns "undefined".
          │
          ▼
-[4] `typeof null`: Engine reads type tag bits `000` (pointer tag) -> incorrectly returns "object"!
+[4] `typeof null`: Early type tag interaction -> returns "object" (permanent historical legacy quirk)!
 ```
 
 1. **First:** The `typeof` operator inspects the internal runtime type tag of the supplied operand.
@@ -232,7 +232,7 @@ console.log(10n + BigInt(5)); // ✅ 15n
 
 ### Conceptual: Explain the `typeof null === 'object'` Bug and Why it Cannot be Fixed
 **Question:** Why does `typeof null` evaluate to `"object"`, and why didn't TC39 fix it in ES6?
-**Answer:** In the initial 1995 implementation of JavaScript, values were represented with type tags in their lower bits. The type tag `000` designated an Object. `null` was represented as the C-style NULL pointer address (`0x00000000`), whose bits were all zeros. Because its tag bits were `000`, the `typeof` check categorized it as an object. In 2013, a formal proposal to fix this to return `"null"` was tested, but major websites across the internet broke because legacy libraries contained checks like `if (typeof x === "object" && x !== null)`. To preserve the web's universal backward-compatibility guarantee, the bug is permanently standardized in the ECMAScript specification.
+**Answer:** A commonly cited historical explanation is that early JavaScript implementations used tagged value representations in which `null` interacted with the object type tag. The exact internal representation is implementation-specific and is not an ECMAScript requirement. Later, when a formal proposal to correct `typeof null` to return `"null"` was tested, significant portions of the existing web broke because existing production code and libraries relied on `typeof null === "object"`. To preserve the web's fundamental backward-compatibility guarantee, the behavior remains permanently standardized in the ECMAScript specification.
 
 ### Output Tracing: Type Coercion Challenge
 ```javascript
@@ -307,7 +307,7 @@ console.log(id1 === id2); // false! Every Symbol is unique.
   - `parseInt("10px", 10)` parses leading digits to `10`, whereas `Number("10px")` evaluates to `NaN`.
 - **Key Mental Model:** Variables holding primitives hold the value itself; variables holding objects hold a reference pointing to an object identity.
 - **Common Trap:** Trying to mutate a string in-place (`str[0] = 'a'`), which fails silently in non-strict mode or throws in strict mode.
-- **Interview Question:** *"Why does `typeof null` return `'object'` and how do you accurately test for `null`?"* $\to$ In JS 1.0, type tags were stored in the bottom 3 bits of values, and `000` represented both object references and the null pointer. Test with `val === null`.
+- **Interview Question:** *"Why does `typeof null` return `'object'` and how do you accurately test for `null`?"* $\to$ A commonly cited historical explanation is that early implementations used tagged value representations where `null` interacted with the object type tag (the exact internal representation is engine-specific and not a spec guarantee). It is preserved for web backward compatibility. Always test accurately with `val === null` or `Object.is(val, null)`.
 - **Code Pattern:**
   ```javascript
   const isRealObject = (val) => typeof val === "object" && val !== null;

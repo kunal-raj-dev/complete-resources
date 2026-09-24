@@ -286,7 +286,7 @@ function setPixel(x, y, val) {
   - `new Array(3).fill([])` duplicates the same inner array reference across all rows; mutating one row mutates all rows.
   - Safe matrix initialization uses mapping functions: `Array.from({ length: R }, () => Array(C).fill(0))`.
   - The native `.flat(depth)` method flattens nested arrays into a 1D array.
-- **Key Mental Model:** A 2D array is an array of pointers to row arrays; rows are independent objects and can have unequal lengths.
+- **Key Mental Model:** A 2D array is an array whose elements are themselves array references; rows are independent objects and can have unequal lengths.
 - **Common Trap:** Using `new Array(rows).fill([])` to create a grid, which shares a single inner array reference across every row.
 - **Interview Question:** *"Why is `new Array(3).fill([])` dangerous when creating a matrix?"* $\to$ `.fill()` copies the exact argument value into every slot. Because `[]` is an object reference, all 3 outer slots point to the exact same array in heap memory. Pushing an element into `grid[0]` reflects in `grid[1]` and `grid[2]`.
 - **Code Pattern:**
