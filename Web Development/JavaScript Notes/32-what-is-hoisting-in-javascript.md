@@ -35,12 +35,12 @@ Imagine a theater director arriving at a stage in the morning before an evening 
 
 In many textbooks, you will read: *"JavaScript moves all variable and function declarations to the top of the file."* 
 
-**This is a myth!** Your JavaScript source file is never physically rearranged or rewritten. Hoisting is simply the observable result of **Phase 1 (The Memory Creation Phase)** of the Execution Context: the engine already allocated memory for declarations before Phase 2 executed Line 1.
+**This is a myth!** Your JavaScript source file is never physically rearranged, manipulated, or rewritten. Hoisting is simply the observable result of **Declaration Processing**: before statement code executes, the JavaScript engine processes all declarations within the scope according to ECMAScript language rules.
 
 ### Technical Explanation
 In ECMAScript, **Hoisting** describes the behavior where identifier declarations are bound to their respective Environment Records during the instantiation phase of an Execution Context, before runtime code evaluation begins.
 
-Because declarations are processed during creation:
+Because declarations are processed before statement execution:
 1. **`FunctionDeclaration`s:** The identifier is bound and immediately initialized to the function object.
 2. **`var` Declarations:** The identifier is bound to the VariableEnvironment and initialized to `undefined`.
 3. **`let`, `const`, and `class` Declarations:** The identifiers are bound to the LexicalEnvironment, but remain in an **uninitialized** state. Any attempt to read or write to them before their syntactic declaration line evaluates triggers an engine-level `ReferenceError` (the **Temporal Dead Zone**).
@@ -58,15 +58,15 @@ MYTH: Physical Code Rearranging (False!)
 │ username = "Alice";                      │
 └──────────────────────────────────────────┘
 
-REALITY: 2-Phase Execution Context (True!)
+REALITY: Declaration Processing Before Statement Run (True!)
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Phase 1: Memory Allocation (Before Execution)                          │
+│ Conceptual Phase 1: Declaration Binding (Before Execution)             │
 │ • greet: Bound directly to Function Object                             │
 │ • username (var): Bound & initialized to undefined                     │
-│ • age (let): Bound in memory, but LOCKED in TDZ (Uninitialized)        │
+│ • age (let): Bound, but LOCKED in TDZ (Uninitialized)                  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ Phase 2: Code Execution (Line-by-Line Run)                             │
-│ • Line 1: greet(); ───> Works! (Function exists in memory)             │
+│ Conceptual Phase 2: Statement Execution (Line-by-Line Run)             │
+│ • Line 1: greet(); ───> Works! (Function binding exists and is ready)  │
 │ • Line 2: console.log(username); ───> Logs "undefined"                 │
 │ • Line 3: console.log(age); ───> Throws ReferenceError (TDZ Lock)      │
 └────────────────────────────────────────────────────────────────────────┘
@@ -281,23 +281,23 @@ Every variable binding lifecycle in ECMAScript consists of 3 distinct stages:
 2. **Initialization:** The binding is allocated memory and given an initial value (`var` gets `undefined` in Phase 1; `let`/`const` wait until Phase 2).
 3. **Assignment:** A runtime value is written into the initialized binding (`x = 5`).
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Parser AST Hoisting
-During lexical analysis in V8, the parser builds an **Abstract Syntax Tree (AST)**. The AST collects all `Declaration` nodes into a `Scope` object before code generation. No bytecode is emitted to "move" instructions; the compiler simply references the pre-allocated scope variables by their index offsets.
+### ⚫ Implementation Detail — V8 Engine
+During parsing in V8, the parser builds an **Abstract Syntax Tree (AST)** and collects all `Declaration` nodes into a `Scope` object before bytecode generation. No instructions are generated to "move" physical source code; the engine simply references the declared scope bindings by index offsets.
 
 ---
 
 ## 🧠 What You Actually Need to Remember
-1. Hoisting is the result of Phase 1 Memory Creation, **not** physical code movement.
+1. Hoisting is the observable result of **Declaration Processing** before statement execution, **not** physical code movement.
 2. **Function Declarations** are hoisted completely with their code body.
 3. **`var`** is hoisted and initialized to `undefined`.
 4. **`let` and `const`** are hoisted into the **Temporal Dead Zone (TDZ)**; accessing them before initialization throws a `ReferenceError`.
 5. Invoking a `var` function expression before its definition line throws `TypeError: fn is not a function`.
-6. Function declarations take precedence over `var` declarations with the same name during memory creation.
+6. Function declarations take precedence over `var` declarations with the same name during scope binding.
 
 ---
 
 ## ⚡ 30-Second Revision
-- **Cause:** Phase 1 (Memory Creation) of Execution Context.
+- **Cause:** Declaration binding instantiation before statement execution.
 - **Function Declaration:** Fully hoisted $\to$ can be called anywhere.
 - **`var`:** Hoisted with `undefined`.
 - **`let`/`const`/`class`:** Hoisted into TDZ $\to$ throws `ReferenceError`.

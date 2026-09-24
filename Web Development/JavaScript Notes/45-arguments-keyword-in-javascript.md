@@ -282,8 +282,8 @@ While new code should always use Rest parameters, you will encounter `arguments`
 ### 🔵 DEEP DIVE: The Arguments Exotic Object
 Under ECMAScript (§10.4.4), `arguments` is defined as an *Arguments Exotic Object*. It overrides internal methods like `[[Get]]` and `[[Set]]` in non-strict mode to link property keys directly to the function's local execution registers.
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Arguments Allocation Elimination
-In V8, if a function references `arguments[0]` directly without leaking the `arguments` object (e.g. not passing it to another function or saving it to a variable), TurboFan completely eliminates allocating the `arguments` object on the heap, reading the values directly from CPU registers.
+### ⚫ Implementation Detail — V8 Arguments Allocation Elimination
+In modern V8 engines, if a function only accesses indexed properties like `arguments[i]` or `arguments.length` without "leaking" the `arguments` object (such as returning it or passing it to an external function), the optimizing compiler (TurboFan) can avoid allocating the arguments exotic object, reading argument values directly from the function invocation's stack frame.
 
 ---
 

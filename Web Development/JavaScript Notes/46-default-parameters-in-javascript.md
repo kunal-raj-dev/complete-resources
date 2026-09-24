@@ -299,9 +299,9 @@ renderButton(); // Rendering blue button: Click Me
 ### 🔵 DEEP DIVE: Parameter Scope vs. Body Scope
 Under ES6 specification (§14.1.20), if a function contains parameter initializers, a separate declarative environment record is created for the parameter list. Variable declarations inside the function body do not shadow parameters in the same environment.
 
-### ⚫ IMPLEMENTATION DETAIL: Bytecode Initialization Branch
-In V8 Ignition bytecode, default parameters emit a test instruction:
-`Ldar a0` $\to$ `TestUndetectable / TestReferenceEqual (undefined)` $\to$ `JumpIfFalse`. If not undefined, it jumps past the default expression bytecode.
+### ⚫ Implementation Detail — V8 Ignition Bytecode Branching
+In V8 Ignition bytecode, default parameters compile into an explicit conditional branch:
+`Ldar a0` $\to$ `TestReferenceEqual (undefined)` $\to$ `JumpIfFalse`. If the incoming register value is not `undefined`, it branches past the default initialization expression bytecode.
 
 ---
 

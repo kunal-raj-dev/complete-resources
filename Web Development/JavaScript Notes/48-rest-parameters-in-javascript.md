@@ -266,8 +266,8 @@ demo(1, 2, 3, 4);
 - Rest + Spread forwarding pattern: `function wrapper(...args) { return target(...args); }`.
 - Contrast between `arguments.callee` (banned in strict mode) and explicit recursion with rest parameters.
 
-### ⚫ IMPLEMENTATION DETAIL
-- V8 engine creates the rest parameter array via an internal `AllocateArguments` stub that bypasses the non-strict `arguments` property reflection overhead.
+### ⚫ Implementation Detail — V8 Engine Rest Parameter Optimization
+- V8 engine creates the rest parameter array via an internal allocation stub that pre-sizes the array buffer without non-strict `arguments` property reflection overhead.
 
 ---
 

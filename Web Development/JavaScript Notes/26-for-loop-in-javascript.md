@@ -375,7 +375,7 @@ for (let i = 0; i < N; i++) {
 ```
 If $N = 10,000$, the inner body runs $100,000,000$ times. In algorithmic interviews, look for opportunities to replace nested loops with Hash Maps / Objects or Two-Pointer techniques.
 
-### ⚫ IMPLEMENTATION DETAIL: Per-Iteration Binding in ECMAScript Specification
+### ⚫ Implementation Detail — Per-Iteration Environment Binding in Specification
 Per ECMAScript specification (§14.7.4.3), when a `for` loop uses lexical declarations (`let`/`const`), the engine creates a `perIterationBindings` list. Before every iteration, a brand-new declarative environment record is instantiated and initialized with the values from the previous iteration.
 
 ---

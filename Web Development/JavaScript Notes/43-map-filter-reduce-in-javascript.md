@@ -183,6 +183,14 @@ If you call `reduce()` on an empty array with **NO initial value**, JavaScript t
 // 💥 Uncaught TypeError: Reduce of empty array with no initial value!
 ```
 
+### The 4-Case `reduce()` Execution Matrix:
+| Array State | `initialValue` Provided? | Starting `accumulator` | Starting Index | Result / Behavior |
+|:---|:---:|:---|:---:|:---|
+| **Non-empty** (`[10, 20]`) | **Yes** (`0`) | `0` (`initialValue`) | `0` | Callback invoked for every item; returns accumulated result |
+| **Non-empty** (`[10, 20]`) | **No** | `10` (`arr[0]`) | `1` | First element becomes initial accumulator; callback starts at index 1 |
+| **Empty** (`[]`) | **Yes** (`0`) | `0` (`initialValue`) | None | Callback is **never called**; immediately returns `initialValue` (`0`) |
+| **Empty** (`[]`) | **No** | — | None | 💥 Throws `TypeError: Reduce of empty array with no initial value` |
+
 > 🔥 **Golden Rule:** **ALWAYS provide an `initialValue`** (e.g. `0`, `""`, `{}`, `[]`) to make your `reduce()` calls 100% crash-proof!
 
 ---
@@ -333,8 +341,8 @@ Chaining `.filter().map().filter()` allocates intermediate arrays in memory at e
 ### 🔵 DEEP DIVE: The `reduceRight()` Sister Method
 `Array.prototype.reduceRight()` works identically to `reduce()`, except it traverses the array in reverse order (from index `arr.length - 1` down to `0`). Useful for composing mathematical functions right-to-left.
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Typed Arrays & Numeric Reduction
-In V8, reducing primitive numerical arrays uses specialized SIMD vectorization routines in TurboFan to accumulate values in hardware registers, bypassing function call overhead for hot mathematical loops.
+### ⚫ Implementation Detail — V8 Engine Optimization
+In V8, when running heavily optimized numeric loops (such as operations over contiguous typed arrays or packed double arrays), TurboFan can inline callback operations and take advantage of vectorized CPU instructions, avoiding function call boundary overhead for tight mathematical loops.
 
 ---
 

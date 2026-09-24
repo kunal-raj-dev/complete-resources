@@ -340,11 +340,11 @@ console.log(triple(10)); // 30
 ```
 
 ### 🔵 DEEP DIVE: Declarative vs. Imperative Programming
-- **Imperative:** Telling the computer *how* to do every single step (`for` loop with index pointers, increments, and array bounds checks).
+- **Imperative:** Telling the computer *how* to do every single step (`for` loop with index counters, manual increments, and array bounds checks).
 - **Declarative (HOF):** Telling the computer *what* you want to accomplish (`arr.map(fn)`).
 
-### ⚫ IMPLEMENTATION DETAIL: Inlining Higher-Order Functions in V8
-Modern JIT engines (like TurboFan) perform an optimization called **Function Inlining**. If a small callback function (such as `x => x * 2`) is repeatedly passed into a hot HOF loop, TurboFan removes the function call overhead completely and compiles the callback body directly into native machine instructions inside the loop!
+### ⚫ Implementation Detail — V8
+Modern JavaScript engines may optimize hot code using techniques such as function inlining. When a small callback function (such as `x => x * 2`) is repeatedly passed into a hot loop, JIT compilers (like V8 TurboFan) may inline the callback body to reduce function call overhead. This is an engine implementation optimization, not something JavaScript code should rely on.
 
 ---
 

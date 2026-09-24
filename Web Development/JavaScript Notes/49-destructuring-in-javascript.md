@@ -337,8 +337,8 @@ console.log(first, second, third); // 1, 2, 3
 - Array destructuring consumes iterables lazily via `@@iterator`.
 - Dynamic computed key destructuring: `{ [dynamicKey]: alias } = obj`.
 
-### ⚫ IMPLEMENTATION DETAIL
-- V8 decomposes destructuring into individual bytecode property accesses (`LdaNamedProperty`) and variable initializations, optimizing them away completely during TurboFan JIT compilation.
+### ⚫ Implementation Detail — V8 Ignition Bytecode & TurboFan Lowering
+- V8 decomposes destructuring patterns into individual bytecode property accesses (`LdaNamedProperty`) and variable bindings, optimizing redundant property loads away during TurboFan JIT compilation.
 
 ---
 

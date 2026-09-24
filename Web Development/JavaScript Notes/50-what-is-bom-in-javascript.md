@@ -44,6 +44,8 @@ Through the BOM, JavaScript can:
 ### Technical Explanation
 The Browser Object Model (BOM) consists of the host objects exposed by browser user agents to JavaScript scripts. While ECMAScript defines the syntax and standard built-in objects, the Web Hypertext Application Technology Working Group (WHATWG) HTML specification standardizes the BOM interfaces under the `Window` interface and related specifications.
 
+> 🖥️ **Browser / Environment Note:** BOM interfaces (`window`, `navigator`, `location`, `history`, `screen`) are host environment facilities provided specifically by web browsers. They are not part of core ECMAScript. Consequently, executing `window` in non-browser environments (such as Node.js runtime or standalone Web Workers) throws a `ReferenceError: window is not defined`. For cross-environment compatibility, modern ECMAScript provides `globalThis` to access whatever global environment object is active.
+
 ---
 
 ## 2. 🧠 Mental Model: The JavaScript Web Triad
@@ -319,8 +321,8 @@ Due to the **Same-Origin Policy (SOP)**, if your page opens a window pointing to
 - Same-Origin Policy restrictions on `window.open` and cross-origin iframes.
 - The `window.name` string coercion quirk.
 
-### ⚫ IMPLEMENTATION DETAIL
-- Browsers isolate each tab into separate OS processes (Site Isolation) so heavy BOM operations or crashes in one tab do not compromise the renderer of another origin.
+### ⚫ Implementation Detail — Browser Process Isolation & Host Security Boundaries
+- Modern desktop browsers isolate distinct origins and tabs into separate operating system processes (Site Isolation) so heavy BOM operations or renderer crashes in one tab do not compromise the execution context of another origin.
 
 ---
 

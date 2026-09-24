@@ -54,9 +54,9 @@ Why? Because when a function is created inside another function, it doesn't just
 Even though `outer()` is gone from the Call Stack, `inner()` keeps that backpack alive in memory forever! This combination of a function and its lexical environment is called a **Closure**.
 
 ### Technical Explanation
-A **Closure** is the combination of a function object and a reference to its surrounding **Lexical Environment**. In ECMAScript (§9.4), every function instance possesses an internal slot named `[[Scope]]` that retains a live pointer to the active environment record at the time the function was instantiated.
+A **Closure** is the combination of a function object and a reference to its surrounding **Lexical Environment**. In ECMAScript (§9.4), every function instance possesses an internal slot named `[[Scope]]` that retains a reference to the active environment record at the time the function was instantiated.
 
-When the parent execution context returns and is popped off the Call Stack, its local stack frame is removed. However, if any inner function references bindings within that environment record, the JavaScript engine (such as V8) allocates that environment on the **Heap** instead of the Stack. Because the returned function holds an active reference to this Heap `Context`, the Garbage Collector cannot reclaim it. The inner function maintains live, read/write access to those persistent bindings.
+When the parent execution context finishes executing and pops off the Call Stack, its lexical environment remains alive and accessible as long as the returned inner function retains a reference to it. Because the inner function holds an active reference, the bindings cannot be reclaimed by garbage collection. The inner function maintains live, read/write access to those persistent outer bindings.
 
 ---
 
@@ -326,8 +326,8 @@ const add = (a) => (b) => (c) => a + b + c;
 console.log(add(1)(2)(3)); // 6
 ```
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Context Deserialization & Allocation
-In V8, when an outer variable is captured by an inner function, V8 allocates a `Context` object on the heap. If multiple sibling closures exist, V8 creates a single shared `Context` object for all closures inside that parent execution context.
+### ⚫ Implementation Detail — V8 Engine
+In Google V8, when an outer variable is captured by an inner function, V8's scope analysis detects that the variable outlives its stack frame and allocates an internal `Context` object on its managed heap. If multiple sibling closures exist within the same parent context, V8 creates a single shared `Context` object for all of them. This is an engine optimization strategy, not something defined by ECMAScript semantics.
 
 ---
 
@@ -343,7 +343,7 @@ In V8, when an outer variable is captured by an inner function, V8 allocates a `
 
 ## ⚡ 30-Second Revision
 - **Definition:** Function + Lexical Scope reference.
-- **Persistence:** Lives on the Heap even after the Call Stack pops the parent frame.
+- **Persistence:** Retains lexical bindings even after the Call Stack pops the parent frame.
 - **Data Encapsulation:** Private variables hidden from global modification.
 - **Factory Pattern:** `const double = makeMultiplier(2)`.
 - **Inspection:** Visible under `[[Scopes]]` $\to$ `Closure` in DevTools.

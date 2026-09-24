@@ -291,7 +291,7 @@ if (cond) {
 }
 ```
 
-### ⚫ IMPLEMENTATION DETAIL: Engine Jump Instructions
+### ⚫ Implementation Detail — Engine Bytecode Branching & Jump Instructions
 In engine bytecode (such as V8 Ignition), a `while` loop emits a conditional branch at the top jumping past the loop body. A `do...while` loop avoids the initial branch instruction, executing straight into the loop body bytecode and evaluating a single conditional jump backwards at the end of the block.
 
 ---

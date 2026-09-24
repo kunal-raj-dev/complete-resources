@@ -84,23 +84,25 @@ Every execution context is evaluated in two strictly distinct sequential phases:
 ┌───────────────────────────────────────────────────────────────┐
 │              LIFECYCLE OF AN EXECUTION CONTEXT                │
 ├───────────────────────────────┬───────────────────────────────┤
-│ 1. MEMORY CREATION PHASE      │ 2. CODE EXECUTION PHASE       │
-│    (Variable Allocation)      │    (Line-by-Line Run)         │
+│ 1. CREATION PHASE             │ 2. CODE EXECUTION PHASE       │
+│    (Binding Instantiation)    │    (Line-by-Line Run)         │
 ├───────────────────────────────┼───────────────────────────────┤
 │ • Scans the code block        │ • Executes line-by-line       │
-│ • Allocates memory addresses  │ • Assigns real values         │
+│ • Sets up variable bindings   │ • Assigns real values         │
 │ • Binds identifiers           │ • Evaluates expressions       │
-│ • No actual logic executes!   │ • Invokes functions           │
+│ • No business logic runs!     │ • Invokes functions           │
 └───────────────────────────────┴───────────────────────────────┘
 ```
 
-### Phase 1: Memory Creation Phase (Creation Phase)
-Before executing code, the engine scans the scope:
-1. **Global Object:** Creates the host object (`window` in browser, `global` in Node.js).
-2. **`this` Binding:** In the global context, points `this` to the Global Object.
-3. **`var` Declarations:** Allocates memory and immediately assigns the primitive value **`undefined`**.
-4. **`let` and `const` Declarations:** Allocates memory bindings, but leaves them **uninitialized** (entering the **Temporal Dead Zone (TDZ)** from [Episode 04](./04-javascript-variables-explained-in-depth.md) and [Episode 05](./05-watch-your-code-running-line-by-line-in-dev-tools.md)).
-5. **Function Declarations:** Allocates memory and stores the **entire function body** directly into the binding!
+> **Specification Note:** The "Creation Phase vs. Code Execution Phase" is a standard conceptual model reflecting the ECMAScript specification's *Declaration Binding Instantiation* process, where environments and bindings are initialized prior to evaluating the statement body. It does not mandate any specific physical hardware layout.
+
+### Phase 1: Creation Phase (Declaration Binding Instantiation)
+Before executing statement code, the JavaScript engine processes declarations according to language rules:
+1. **Global Object:** Establishes the global host environment object (`window` in browsers, `global` in Node.js).
+2. **`this` Binding:** In the global context, binds `this` to the Global Object.
+3. **`var` Declarations:** Initializes bindings in the environment record with the primitive value **`undefined`**.
+4. **`let` and `const` Declarations:** Creates bindings in the environment record, but leaves them **uninitialized** (entering the **Temporal Dead Zone (TDZ)** from [Episode 04](./04-javascript-variables-explained-in-depth.md) and [Episode 05](./05-watch-your-code-running-line-by-line-in-dev-tools.md)).
+5. **Function Declarations:** Creates bindings and immediately initializes them with the **entire function object**!
 
 ### Phase 2: Code Execution Phase
 The engine places the execution needle at line 1 and steps line-by-line:
@@ -303,16 +305,16 @@ The specification (§9.1) divides Environment Records into:
 1. **Declarative Environment Record:** Stores language bindings (variables, constants, classes, functions).
 2. **Object Environment Record:** Binds identifiers to the properties of a specific object (used for the global object and legacy `with` statements).
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Stack Frames vs Heap Allocations
-In engines like V8, primitive function locals in an execution context are typically mapped directly to CPU stack frames and machine registers. However, if a function forms a **closure** over a local variable, V8 dynamically allocates a `Context` object on the **V8 Managed Heap** so the variable survives stack destruction.
+### ⚫ Implementation Detail — V8
+In Google V8, primitive function locals in an execution context may be mapped directly to CPU stack frames and machine registers during execution. When a function forms a **closure** over a local variable, V8 dynamically allocates an internal `Context` object on its managed heap so the variable survives call stack frame destruction. This is an engine-specific implementation strategy, not a language specification mandate.
 
 ---
 
 ## 🧠 What You Actually Need to Remember
 1. Execution Context is the environment where JavaScript code runs.
 2. **GEC** is created once when the program starts; **FEC** is created every time a function is called.
-3. Every context has 2 phases:
-   - **Phase 1 (Creation):** Allocates memory for variables and functions.
+3. Every context has 2 conceptual phases:
+   - **Phase 1 (Creation):** Instantiates bindings for variables and functions before code runs.
    - **Phase 2 (Execution):** Runs code line-by-line and assigns values.
 4. During Phase 1: `var` is set to `undefined`; `let`/`const` are uninitialized (TDZ); function declarations are fully stored.
 5. Functions get an isolated execution context on every single call.

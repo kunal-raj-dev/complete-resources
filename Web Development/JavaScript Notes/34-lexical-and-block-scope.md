@@ -1,6 +1,6 @@
 # Episode 34 — Lexical Scope and Block Scope Explained in Depth
 
-> **One-Line Mental Model:** Lexical scope is a family tree etched in stone at author-time: where a function is physically written determines what it can see, and block scope creates private fences around any pair of curly braces for `let` and `const`.
+> **One-Line Mental Model:** Lexical scope is a family tree established at author-time: where a function is defined in the source code determines what it can see, and block scope creates private fences around any pair of curly braces for `let` and `const`.
 
 ---
 
@@ -33,16 +33,16 @@ In [Episode 33](./33-global-scope-vs-local-scope.md), you learned that functions
 Think of Russian nesting dolls (Matryoshka):
 - A tiny inner doll sits inside a medium doll, which sits inside a large outer doll.
 - The tiny inner doll can look out and see the medium doll and the outer doll.
-- But crucially, this relationship is decided by **where the doll was carved in the woodshop** (where you physically typed the code in your editor), NOT where you place the doll later!
+- But crucially, this relationship is decided by **where the doll was carved in the woodshop** (where you define the code in your source file), NOT where you invoke the function later!
 
-This is **Lexical Scope**: *"Lexical"* simply means *"related to the physical written text"*.
+This is **Lexical Scope**: *"Lexical"* simply refers to the structural arrangement of your written code.
 
 Meanwhile, **Block Scope** is the rule introduced in ES6 that allows any pair of curly braces `{ ... }`—such as an `if` statement or a `for` loop—to act as a private container for `let` and `const` variables.
 
 ### Technical Explanation
-In ECMAScript, **Lexical Scope** (or *Static Scope*) means identifier resolution depends entirely on the physical syntactic location of functions and blocks within the source code. Every Execution Context's `LexicalEnvironment` maintains an internal reference `[[OuterEnv]]` pointing to the environment record where that function was **defined**, not where it was invoked.
+In ECMAScript, **Lexical Scope** (or *Static Scope*) means identifier resolution depends entirely on the syntactic structure of functions and blocks within the source code. Every Execution Context's `LexicalEnvironment` maintains an internal specification reference `[[OuterEnv]]` referencing the environment record where that function was **defined**, not where it was invoked.
 
-The **Scope Chain** is the linked list formed by traversing these `[[OuterEnv]]` pointers from the innermost active environment record up to the Global Environment Record. If an identifier is not found after traversing to the global scope, a `ReferenceError` is thrown.
+The **Scope Chain** is the logical chain formed by traversing these `[[OuterEnv]]` links from the innermost active environment record up to the Global Environment Record. If an identifier is not found after traversing to the global scope, a `ReferenceError` is thrown.
 
 **Block Scope** is created whenever a `Block` statement (`{ ... }`) evaluates. It instantiates a new Declarative Environment Record for all scoped declarations (`let`, `const`, `class`), while legacy `var` declarations continue to bind to the nearest enclosing Function or Global VariableEnvironment.
 
@@ -323,7 +323,7 @@ fn();
 ### 🟢 MUST KNOW: The Invariant of Lexical Scoping
 A function's scope is locked in at the moment of **creation**, not invocation. It remembers the environment where it was born.
 
-### 🟡 SHOULD KNOW: The `[[OuterEnv]]` Pointer
+### 🟡 SHOULD KNOW: The `[[OuterEnv]]` Internal Specification Reference
 Every Declarative Environment Record contains an internal slot called `[[OuterEnv]]`. When an execution context is created, `[[OuterEnv]]` is populated from the function's internal `[[Scope]]` property, which was saved when the function was parsed.
 
 ### 🔵 DEEP DIVE: Catch Block Scope
@@ -338,13 +338,13 @@ try {
 console.log(typeof e); // "undefined"
 ```
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Context Allocation for Escaped Variables
-If an inner function references an outer lexical variable (forming a closure), V8 detects that the variable "escapes" stack lifetime during parsing. V8 does not store that variable in a stack register; it packages it into a heap-allocated `Context` structure so the inner function can access it even after the parent function has returned and its stack frame has been destroyed.
+### ⚫ Implementation Detail — V8 Engine
+If an inner function references an outer lexical variable (forming a closure), V8's scope analysis detects that the variable outlives its immediate stack frame. V8 allocates a heap-managed `Context` object so the inner function can access the binding even after the parent function returns.
 
 ---
 
 ## 🧠 What You Actually Need to Remember
-1. **Lexical Scope:** Where code is physically written determines what it can see.
+1. **Lexical Scope:** Where code is defined in the source code determines what it can see.
 2. JavaScript uses **Lexical (Static) Scope**, not Dynamic Scope.
 3. The **Scope Chain** searches local $\to$ parent $\to$ grandparent $\to$ global.
 4. **Block Scope:** Any `{}` creates a private scope for `let`, `const`, and `class`.

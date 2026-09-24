@@ -44,7 +44,7 @@ fruits.forEach((fruit) => {
 It is designed purely for **Side Effects**: actions like printing to the console, updating a database, sending emails, or mutating an external variable. It is **not** meant to transform and return a new array.
 
 ### Technical Explanation
-`Array.prototype.forEach(callbackFn [, thisArg])` is an iterative higher-order method defined on `Array.prototype`. It executes the provided `callbackFn` once for each assigned index in the array in ascending numerical order. 
+`Array.prototype.forEach(callbackFn [, thisArg])` is an iterative higher-order method defined on `Array.prototype`. It executes the provided `callbackFn` synchronously once for each assigned index in the array in ascending numerical order. 
 
 The callback receives three arguments:
 1. `element`: The current item being processed.
@@ -293,8 +293,8 @@ If you pass an arrow function as the callback, the `thisArg` parameter of `forEa
 ### 🔵 DEEP DIVE: The `i in this` Check for Holes
 ECMAScript specification (§23.1.3.13) mandates step 6.c: `Let kPresent be ? HasProperty(O, Pk)`. Only if `kPresent` is true is the callback invoked. That is why `[1, , 3]` skips index 1.
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Native Loop Inlining
-In V8, if the callback passed to `forEach` does not modify the array's prototype or length, TurboFan optimizes the call into a tight machine-code index increment loop with bounds-check elimination.
+### ⚫ Implementation Detail — V8 Engine Native Loop Inlining
+In modern V8 engines, when the callback passed to `forEach` is monomorphic and does not modify the array's prototype or length, the optimizing compiler (TurboFan) can inline the callback into a machine-level indexed loop with bounds-check elimination, avoiding per-iteration function call frame overhead.
 
 ---
 

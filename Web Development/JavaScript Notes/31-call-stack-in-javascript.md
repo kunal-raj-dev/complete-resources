@@ -33,12 +33,12 @@ Imagine you are writing a report at your desk.
 - While on the call, your assistant knocks on the door and asks for a signature: you pause the call, place a document on top of the notebook, and sign it.
 - Once signed, you hand the document back (removed from your desk), resume the phone call, finish it (notebook removed), and finally return to your original report.
 
-This "pile of active tasks" is exactly how JavaScript manages functions. Because JavaScript is single-threaded (it only has one main execution needle), it uses the **Call Stack** to remember exactly where it was before jumping into a function, and where it must return when that function finishes.
+This "pile of active tasks" is exactly how JavaScript manages functions. A JavaScript execution context executes synchronous JavaScript code on a single thread at a time; hosts such as web browsers and Node.js provide additional asynchronous capabilities and may utilize other threads internally. The engine uses the **Call Stack** to track synchronous progress: remembering where it was before entering a function, and where it must return when that function completes.
 
 ### Technical Explanation
 The **Call Stack** (officially termed the *Execution Context Stack* in the ECMAScript specification) is a LIFO (Last-In, First-Out) stack data structure that tracks the execution sequence of all active execution contexts. 
 
-When a script is loaded, the engine pushes the `Global Execution Context` to the bottom of the stack. When a function invocation expression is evaluated, a new `Function Execution Context` is instantiated and pushed onto the top of the stack. The engine's single thread of execution always executes instructions in the **running execution context** (the top of the stack). When a function returns or throws an unhandled exception, its context is popped off, and control resumes in the context directly beneath it.
+When a script is loaded, the engine pushes the `Global Execution Context` to the bottom of the stack. When a function invocation expression is evaluated, a new `Function Execution Context` is instantiated and pushed onto the top of the stack. The running JavaScript execution agent executes instructions in the **running execution context** (the top of the stack). When a function returns or throws an unhandled exception, its context is popped off, and control resumes in the context directly beneath it.
 
 ---
 
@@ -250,8 +250,8 @@ try {
 
 ## 10. 🧠 Brain Triggers
 
-> 🧠 **Brain Trigger 1:** If JavaScript is single-threaded, how many Call Stacks does a browser tab have for main script execution?
-> **Answer:** Exactly **one**. Only one statement can execute at a time on that main thread.
+> 🧠 **Brain Trigger 1:** How many Call Stacks does a JavaScript execution agent have for executing main synchronous code?
+> **Answer:** Exactly **one**. Only one statement can execute at a time within that execution context.
 
 > 🧠 **Brain Trigger 2:** When a function calls `return`, does it pop off the stack before or after handing the value to the caller?
 > **Answer:** It delivers the return value to the caller context, and then its stack frame is popped and cleaned up by the engine.
@@ -267,9 +267,9 @@ try {
 **Answer:** **No, never.**
 
 **The Architectural Reasoning:**
-- Web APIs (such as DOM click listeners, `fetch`, or `setTimeout`) run outside the JavaScript engine in browser background threads.
-- When their task completes, their callbacks are placed into the **Task Queue (Callback Queue)** or **Microtask Queue**.
-- The **Event Loop** constantly monitors the Call Stack. It is prohibited from pushing any callback onto the Call Stack until the Call Stack is **completely empty** (all synchronous code has finished).
+- The host environment provides APIs for asynchronous operations (such as DOM event listeners, `fetch`, or `setTimeout`). Their underlying implementations operate outside the immediate JavaScript execution thread (utilizing browser subsystems, operating system threads, or kernel timers).
+- When an operation completes, its callback is placed into the host's **Task Queue (Callback Queue)** or **Microtask Queue**.
+- The **Event Loop** constantly checks the Call Stack. It is prohibited from pushing any callback onto the Call Stack until the Call Stack is **completely empty** (all synchronous code has finished running).
 </details>
 
 ---
@@ -279,14 +279,14 @@ try {
 ### 🟢 MUST KNOW: LIFO Order Rules
 The Call Stack operates strictly on LIFO. A function cannot finish out of order; if function A calls function B, function B *must* exit (return or throw) before function A can continue.
 
-### 🟡 SHOULD KNOW: Call Stack Size Limits
-The maximum call stack size varies by engine and available system memory. In V8 (Chrome), it is typically around 10,000 to 20,000 recursive frames; in SpiderMonkey (Firefox), it can exceed 50,000.
+### 🟡 SHOULD KNOW: Call Stack Depth Limits
+The maximum call-stack depth is implementation-dependent and can vary by engine, environment, and runtime conditions. When recursive calls exceed the engine's permitted depth, a `RangeError: Maximum call stack size exceeded` is thrown.
 
 ### 🔵 DEEP DIVE: Synchronous Call Stack Blocking
-Because JavaScript runs on a single main Call Stack, running an expensive synchronous calculation ($O(N^3)$ loops or synchronous file reads) keeps a frame pinned at the top of the stack for seconds. During this time, the browser **cannot render frames, respond to clicks, or process animations**, causing the tab to freeze (Jank).
+Because synchronous JavaScript runs on a single main Call Stack, executing a long-running synchronous calculation keeps a frame pinned at the top of the stack. During this time, the browser **cannot update rendered layout, respond to user inputs, or process animations**, causing the tab to feel frozen.
 
-### ⚫ IMPLEMENTATION DETAIL: Native C++ Stack vs V8 Execution Stack
-In production engines like Chromium V8, JavaScript stack frames often map directly to native machine C++ stack frames when executing optimized TurboFan machine code. For unoptimized bytecode running in the Ignition interpreter, V8 uses an internal register-based virtual execution frame.
+### ⚫ Implementation Detail — V8 Engine
+In production engines like Google V8, JavaScript stack frames often map directly to native machine C++ stack frames when executing optimized TurboFan machine code. For unoptimized bytecode running in the Ignition interpreter, V8 manages an internal virtual execution frame.
 
 ---
 
@@ -296,7 +296,7 @@ In production engines like Chromium V8, JavaScript stack frames often map direct
 3. Returning from a function **pops** its context off the stack.
 4. The Global Execution Context sits permanently at the very bottom.
 5. Infinite recursion without a base case causes a **Stack Overflow**.
-6. JavaScript is single-threaded: it can only execute code in the frame currently on top of the stack.
+6. Synchronous JavaScript code executes one frame at a time in the running execution context on top of the stack.
 
 ---
 

@@ -307,14 +307,20 @@ console.log(title);           // Prints: "Global Master"
 <details>
 <summary><b>View Answer & Analysis</b></summary>
 
-**Answer:** JavaScript is strictly **Pass-by-Value** (more precisely termed **Call-by-Sharing** for objects).
+**Answer:** JavaScript is strictly **Pass-by-Value** (often described as **Call-by-Sharing** when dealing with objects).
 
-**The Architectural Reasoning:**
-- When passing a primitive (`number`, `string`, `boolean`), the primitive value is copied to the parameter. Reassignment does not affect the original.
-- When passing an object or array, the **reference pointer (the memory address value)** is copied by value to the parameter!
+**The Language-Level Mental Model:**
+In JavaScript, all arguments are passed by value:
+- When passing a primitive (`number`, `string`, `boolean`), the primitive value itself is copied to the parameter. Reassigning or operating on the parameter has zero effect on the caller's variable.
+- When passing an object or array, the value passed to the function is the **object reference value**:
+  ```text
+  caller variable  ──> [ object reference value ] ──> { name: "Alice" }
+                                │ (value copied)
+  parameter        ──> [ same reference value   ] ──> { name: "Alice" }
+  ```
 - Therefore:
-  - If you mutate a property via that reference (`param.name = "Bob"`), the original object reflects the change because both bindings point to the same object in memory.
-  - If you **reassign** the parameter to a new object (`param = { name: "Bob" }`), the original caller's variable remains completely unaffected!
+  - **Mutating properties:** `param.name = "Bob"` modifies the underlying object, so the change is visible through both references because both refer to the exact same object.
+  - **Reassigning the parameter:** `param = { name: "Bob" }` only changes what the parameter binding holds inside the function. It does **not** reassign the caller's variable, which continues pointing to the original object!
 </details>
 
 ---
@@ -336,7 +342,7 @@ Every function object automatically has built-in properties:
 - **Declaration:** `function greet() {}` (Hoisted completely with definition to top of scope).
 - **Expression:** `const greet = function() {}` (Variable is hoisted, but definition is evaluated at runtime line-by-line).
 
-### ⚫ IMPLEMENTATION DETAIL: Call Object / Activation Record
+### ⚫ Implementation Detail — Engine Stack Frame & Environment Record Evolution
 Under older ECMAScript specifications, invoking a function created an internal *Activation Object*. Modern specifications (§9.4) define this as a **Function Environment Record** containing `[[ThisValue]]`, formal parameter bindings, and a reference to the outer Lexical Environment.
 
 ---

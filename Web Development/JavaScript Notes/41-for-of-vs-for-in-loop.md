@@ -318,8 +318,8 @@ for (const { id, name } of users) {
 }
 ```
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Iteration Performance
-In V8, `for...of` over standard arrays is heavily optimized into direct pointer jumps identical to an optimized `for` loop. `for...in`, however, forces V8 to perform descriptor lookups and check prototype enumerable flags, making it significantly slower.
+### ⚫ Implementation Detail — V8 Engine Iteration Optimization
+In modern V8 engines, when the JIT compiler (TurboFan) optimizes a `for...of` loop over a contiguous packed array, it can frequently elide intermediate iterator object allocations and lower the loop into fast indexed element accesses similar to a numeric indexed `for` loop. Conversely, `for...in` requires property key enumeration and prototype chain traversal with enumerable property checks, which involves more complex lookup paths.
 
 ---
 

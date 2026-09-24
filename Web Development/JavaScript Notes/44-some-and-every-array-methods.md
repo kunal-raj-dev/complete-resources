@@ -252,8 +252,8 @@ ECMAScript specification (§23.1.3.6) states:
    - Increment `k`.
 3. **Return `true`**.
 
-### ⚫ IMPLEMENTATION DETAIL: TurboFan Predicate Inlining
-If the predicate callback in `some()` is a simple comparison (like `x > 0`), V8's optimizing compiler unrolls the loop into vectorized SIMD instructions that compare 4 to 8 numbers per CPU clock cycle.
+### ⚫ Implementation Detail — V8 Engine Predicate Inlining
+When the predicate callback passed to `some()` or `every()` is monomorphic and simple (such as a primitive comparison `x > 0`), V8's optimizing compiler (TurboFan) can inline the predicate directly into the loop body, eliminating callback invocation overhead and emitting early-exit branch instructions upon short-circuiting.
 
 ---
 

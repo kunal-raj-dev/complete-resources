@@ -41,9 +41,9 @@ ES6 introduced **Arrow Functions** (`=>`), nicknamed the "fat arrow". It turns t
 const square = (x) => x * x;
 ```
 
-Even more importantly, traditional functions had a notorious flaw: their `this` keyword changed dynamically depending on who called them. If you used a traditional function inside a timer or callback, it would lose track of the parent object and crash. 
+Even more importantly, traditional functions had dynamic `this` binding: their `this` keyword changed depending on how they were called. If you used a traditional function inside a timer or callback, it would resolve its `this` based on invocation context or default to the global object/`undefined`, rather than retaining the surrounding context. 
 
-Arrow functions fix this permanently: **they have no `this` of their own**. They effortlessly inherit `this` from the surrounding code where they were written.
+Arrow functions solve this: **they do not bind their own `this`**. Instead, they resolve `this` lexically from their enclosing lexical scope where they were defined.
 
 ### Technical Explanation
 An **Arrow Function** (`ArrowFunction`) is an ECMAScript 2015 syntactic construct that creates a callable function object without an internal `[[Construct]]` method, without an active `[[ThisMode]]` of lexical/global binding, and without a `prototype` property.
@@ -61,9 +61,9 @@ Arrow functions resolve `this`, `arguments`, `super`, and `new.target` lexically
  ┌───────────────────────────┐               ┌───────────────────────────┐
  │ function()                │               │ () => {}                  │
  │                           │               │                           │
- │ Has its OWN 'this'        │               │ Has NO 'this'!            │
- │ (Changes dynamically      │               │ (Looks straight through   │
- │ based on who called it!)  │               │ to the enclosing parent!) │
+ │ Has its OWN 'this'        │               │ Has NO 'this' binding!    │
+ │ (Binds dynamically        │               │ (Resolves lexically from  │
+ │ based on call-site!)      │               │ enclosing lexical scope!) │
  └───────────────────────────┘               └───────────────────────────┘
 ```
 
@@ -209,14 +209,26 @@ Arrow functions are intentionally lightweight. They omit several features of sta
 Arrow functions are not a drop-in replacement for all functions. Avoid them in these scenarios:
 
 ### 1. Object Methods (Use Concise Method Shorthand)
+Never use arrow functions for methods on object literals if you need access to the object's properties via `this`:
+
 ```javascript
-const user = {
-  name: "Bob",
-  // ❌ WRONG: 'this' will point to window/global, NOT user!
-  greet: () => console.log(this.name) 
+const obj = {
+  value: 10,
+  regular() {
+    return this.value;
+  },
+  arrow: () => {
+    return this.value;
+  }
 };
-user.greet(); // "undefined"
+
+console.log(obj.regular()); // 10
+console.log(obj.arrow());   // undefined (in non-strict mode) or TypeError (if strict mode outer this is undefined)
 ```
+
+**Why this happens:**
+- `regular()` is invoked via property access (`obj.regular()`), so dynamic `this` binding binds `this` directly to `obj`.
+- `arrow()` does NOT bind a dynamic `this`. An object literal `{ ... }` creates an object, **not a lexical scope**. Therefore, `arrow()`'s enclosing lexical scope is the outer scope (such as global or module scope), where `this.value` resolves against the outer environment (evaluating to `undefined`).
 
 ### 2. Event Handlers That Rely on `this`
 ```javascript
@@ -320,7 +332,7 @@ Arrow functions are always **Function Expressions**. They cannot be declared as 
 ### 🔵 DEEP DIVE: `new.target` in Arrow Functions
 Just like `this`, the `new.target` meta-property in an arrow function is lexically inherited from its surrounding parent function.
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Bytecode Representation
+### ⚫ Implementation Detail — V8 Ignition Bytecode
 In V8 Ignition bytecode, traditional functions emit an initial opcode to setup the receiver register (`Ldar a0` or context this). Arrow functions completely omit this setup instruction, resolving `this` directly through context register lookups (`LdaContextSlot`).
 
 ---

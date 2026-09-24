@@ -33,10 +33,10 @@ Think of an action like "running":
 - If that same athlete joins a soccer team, the team's playbook can list: `team.run()`. Now the action belongs to that specific team. That is a **method**.
 
 In JavaScript:
-- A **Function** is a standalone, reusable block of code defined on its own (`function greet() {}`).
-- A **Method** is simply a function that has been attached as a property of an **Object** (`user.greet()`).
+- A **Function** is a callable value that can be defined independently and invoked on its own (`function greet() {}`).
+- A **Method** is a function used as a property of an **Object** (`user.greet()`).
 
-When you call a method through its object (`user.greet()`), JavaScript automatically informs the function: *"Hey, you are working for `user` right now!"*, making the `user` object accessible inside via the special keyword **`this`**.
+When you invoke a function as an object method (`user.greet()`), JavaScript automatically binds `this` to the object reference preceding the dot at call-time. Note that a function is not permanently fused to an object: the value of `this` depends dynamically on the invocation form!
 
 ### Technical Explanation
 In ECMAScript, all methods are callable function objects. A function is classified as a **Method** when it is defined as the value of an object property or declared using concise method syntax in object literals or classes (`MethodDefinition`).
@@ -158,7 +158,7 @@ company.identify();
 |:---|:---|:---|
 | **Definition** | Declared independently | Defined inside/attached to an Object |
 | **Invocation** | `myFunction()` | `myObject.myMethod()` |
-| **`this` Binding** | `undefined` (strict) or `window` | Points to the parent object (`myObject`) |
+| **`this` Binding** | `undefined` (strict) or global | Resolves to calling receiver object (`myObject` in `myObject.myMethod()`) |
 | **Encapsulation** | Operates on passed arguments | Operates on internal object properties via `this` |
 | **Class Membership**| Free-floating | Member of an object instance or class prototype |
 | **Examples** | `parseInt()`, `isNaN()`, custom `add()` | `console.log()`, `arr.push()`, `str.trim()` |
@@ -312,8 +312,8 @@ calculator.add(5).multiply(2);
 console.log(calculator.total); // 10
 ```
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Shape Transitions and Method Inlining
-When an object is initialized with methods, V8 creates a hidden class (**Map/Shape**). If methods are added after instantiation (`obj.newMethod = fn`), V8 triggers a **Shape Transition**. To maximize engine optimization and hidden class stability, always define all methods inside the initial object literal or class declaration.
+### ⚫ Implementation Detail — V8 Hidden Classes & Method Inlining
+When an object is initialized with methods, V8 creates a hidden class (**Map/Shape**). If methods are added dynamically after instantiation (`obj.newMethod = fn`), V8 triggers a **Shape Transition**. To maximize engine optimization and hidden class stability, always define all methods inside the initial object literal or class declaration.
 
 ---
 

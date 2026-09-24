@@ -16,15 +16,14 @@
 ---
 
 ## 🎯 What You Will Learn
-- How JavaScript achieves asynchronous non-blocking behavior despite being **strictly single-threaded**.
-- The 4 core components of the runtime architecture:
-  1. **Call Stack** (Engine)
-  2. **Web APIs** (Browser Background Environment)
-  3. **Callback Queue / Task Queue** (FIFO Waiting Room)
-  4. **The Event Loop** (The Coordinator)
+- The layered architecture of asynchronous execution:
+  - **Layer 1: Synchronous Execution** (Call Stack / Execution Contexts)
+  - **Layer 2: Host Environment APIs** (Timers, Network requests, DOM Event listeners)
+  - **Layer 3: Asynchronous Queues** (Task Queue vs. Microtask Queue)
+  - **The Coordinator:** **The Event Loop**
 - The absolute rule governing when queued callbacks are allowed to execute.
 - Why a busy Call Stack starves the Event Loop (Main Thread Blocking).
-- The distinction between the **Macrotask Queue** (`setTimeout`, `setInterval`, DOM events) and the VIP **Microtask Queue** (Promises).
+- The priority difference between the **Task Queue (Macrotasks)** (`setTimeout`, DOM events) and the **Microtask Queue** (Promise reactions).
 - Step-by-step output tracing for complex interview execution riddles.
 
 ---
@@ -33,27 +32,26 @@
 
 ### Simple Explanation
 JavaScript has a famous superpower and a famous limitation:
-- **The Limitation:** It has only **one Call Stack** (one execution needle). It can only do one single thing at any given microsecond.
-- **The Superpower:** It never freezes while waiting for long tasks (like downloading a 10MB image or waiting for a 5-second timer).
+- **The Limitation:** A JavaScript execution agent executes synchronous code on a single thread at a time. It cannot calculate two synchronous functions simultaneously on that thread.
+- **The Superpower:** It never freezes while waiting for long asynchronous operations (like downloading a large file or waiting for a 5-second timer).
 
-How can a single-threaded language wait for a timer without stopping everything else?
+How does it wait for an asynchronous task without stopping everything else?
 
-Because **JavaScript does not run in a vacuum**! It runs inside a rich host environment (the Web Browser or Node.js). 
+Because **JavaScript executes inside a host environment** (such as a Web Browser or Node.js). 
 
-When you call `setTimeout`, JavaScript doesn't count the seconds itself. It delegates the job to the browser's background system: *"Hey Chrome, count 5 seconds for me, I have other work to do!"*
+When you call `setTimeout`, JavaScript doesn't count the seconds on its main execution needle. It delegates the job to the host environment: *"Please track 5 seconds for me while I continue running other synchronous code."*
 
-When the 5 seconds are up, Chrome places the callback into a waiting line called the **Callback Queue**. A watchful coordinator called the **Event Loop** waits until the JavaScript Call Stack is completely clear of all work, and only then moves the callback into the stack to be executed!
+When the 5 seconds elapse, the host environment places the callback into a waiting line called the **Task Queue (Callback Queue)**. A coordinator called the **Event Loop** watches the JavaScript Call Stack. When the Call Stack is completely clear of all synchronous code, the Event Loop takes the callback from the queue and pushes it onto the Call Stack to run!
 
 ### Technical Explanation
-The **Event Loop** is the concurrency mechanism defined in the HTML Living Standard (§8.1.6) that coordinates execution, events, user interactions, script evaluation, rendering, and task scheduling.
+The **Event Loop** is the scheduling and concurrency mechanism defined in the HTML Living Standard (§8.1.6) that coordinates script evaluation, events, user interactions, rendering, and task scheduling.
 
-The JavaScript engine evaluates synchronous script within its single execution stack. Asynchronous operations initiated by host APIs (such as `setTimeout`, `fetch`, or event listeners) are offloaded to host-managed threads. Upon completion, host threads wrap the callback in a **Task (Macrotask)** and enqueue it into the **Task Queue**. 
+The host environment provides APIs for asynchronous operations. Their underlying implementation may involve other threads, processes, operating system kernel facilities, or hardware clocks. Upon completion, the host wraps the callback and enqueues it into a task queue.
 
-The Event Loop continuously executes a loop:
-1. Check if the Call Stack is empty.
-2. If empty, check the **Microtask Queue** and execute all pending microtasks until empty.
-3. Perform any required UI render updates.
-4. Dequeue the oldest Task from the **Task Queue** (Macrotask Queue) and push its execution context onto the Call Stack.
+The Event Loop operates in strict layers:
+1. **Layer 1 (Synchronous Execution):** The engine executes code on the Call Stack until the stack is empty.
+2. **Layer 2 (Microtask Draining):** If microtasks exist (such as Promise reactions), the engine executes microtasks one by one until the Microtask Queue is completely exhausted.
+3. **Layer 3 (Rendering & Task Processing):** The host may perform rendering opportunities, then dequeues the oldest eligible task from the Task Queue (Macrotask Queue) and pushes it onto the Call Stack.
 
 ---
 
@@ -67,20 +65,20 @@ The Event Loop continuously executes a loop:
  │     • Can only cook one order at a time.                    │
  │     • Executes synchronous code line-by-line.               │
  │                                                             │
- │  2. WEB APIs (The Industrial Ovens / Dishwashers)           │
- │     • Chrome background threads.                            │
- │     • Bakes timers, downloads images, waits for clicks.     │
+ │  2. WEB APIs / HOST FACILITIES (The Industrial Ovens)       │
+ │     • Host environment facilities (timers, network, events) │
+ │     • Manages clocks, downloads, listens for hardware.      │
  │                                                             │
  │  3. CALLBACK QUEUE (The Order Ticket Spindle)               │
- │     • When oven dings, waiter pins ticket on spindle (FIFO).│
+ │     • When task completes, callback is queued (FIFO).       │
  │     • Orders wait patiently in line.                        │
  │                                                             │
  │  4. THE EVENT LOOP (The Expediter / Traffic Cop)            │
- │     • Watches the Chef.                                     │
+ │     • Watches the Chef (Call Stack).                        │
  │     • IS THE CHEF BUSY?                                     │
  │       - YES ──> Wait. Do nothing.                           │
- │       - NO  ──> Pull oldest ticket from spindle and         │
- │                 hand it to the Chef!                        │
+ │       - NO  ──> Check Microtasks first; if empty, pull      │
+ │                 oldest ticket from Task Queue to Chef!      │
  └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -258,7 +256,50 @@ The HTML5 standard dictates that after 5 consecutive nested calls to `setTimeout
 
 ## 11. 🔥 Interview Deep Dive
 
-### Q1: Predict the exact execution output order:
+### Q1: The Canonical Event Loop Riddle (Synchronous vs Microtask vs Task)
+Predict the exact console output order:
+```javascript
+console.log("A");
+
+setTimeout(() => {
+  console.log("B");
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log("C");
+});
+
+console.log("D");
+```
+<details>
+<summary><b>View Answer & Step-by-Step Breakdown</b></summary>
+
+**Output:**
+```text
+A
+D
+C
+B
+```
+
+**Why this exact order occurs:**
+1. **Synchronous Execution:**
+   - `console.log("A")` runs on the Call Stack $\to$ logs **`A`**.
+   - `setTimeout(..., 0)` schedules a timer with the host environment. The callback is enqueued into the **Task Queue (Macrotask Queue)**.
+   - `Promise.resolve().then(...)` resolves and enqueues its reaction callback into the **Microtask Queue**.
+   - `console.log("D")` runs on the Call Stack $\to$ logs **`D`**.
+2. **Call Stack is now completely empty.**
+3. **Microtask Queue Draining:**
+   - The Event Loop prioritizes the Microtask Queue before any standard task.
+   - The Promise callback executes on the Call Stack $\to$ logs **`C`**.
+   - Microtask Queue is now empty.
+4. **Task Queue Processing:**
+   - The Event Loop dequeues the timer callback from the Task Queue and pushes it onto the Call Stack.
+   - The timer callback executes $\to$ logs **`B`**.
+</details>
+
+### Q2: Complex Chained Microtasks & Nested Timers
+Predict the output of this chained snippet:
 ```javascript
 console.log("A");
 
@@ -288,46 +329,40 @@ B
 D
 ```
 **Step-by-Step Breakdown:**
-1. Synchronous execution: Logs `"A"`, schedules `"B"` (Macrotask Queue), schedules Promise (Microtask Queue), logs `"F"`. Stack is now empty!
+1. Synchronous execution: Logs `"A"`, schedules `"B"` (Task Queue), schedules Promise (Microtask Queue), logs `"F"`. Stack is now empty!
 2. Microtask Queue drains:
-   - First microtask runs: logs `"C"`, schedules `"D"` (Macrotask Queue).
+   - First microtask runs: logs `"C"`, schedules `"D"` (Task Queue).
    - Second chained microtask runs: logs `"E"`.
    - Microtask Queue is empty!
-3. Event Loop processes Macrotask Queue:
-   - Macrotask 1 runs: logs `"B"`.
-   - Macrotask 2 runs: logs `"D"`.
+3. Event Loop processes Task Queue:
+   - Task 1 runs: logs `"B"`.
+   - Task 2 runs: logs `"D"`.
 </details>
 
 ---
 
 ## 12. 🔬 Optional Deep Dive
 
-### 🟢 MUST KNOW: The Golden Invariant of the Event Loop
+### 🟢 MUST KNOW: The Run-to-Completion Invariant
 The Event Loop can **never** interrupt running code. JavaScript guarantees **Run-to-Completion**: once a function starts executing on the Call Stack, it runs until it finishes before any other queued task can touch the thread.
 
-### 🟡 SHOULD KNOW: Node.js vs Browser Event Loop
-While browsers follow the WHATWG HTML event loop specification, Node.js uses **`libuv`**, which organizes its event loop into distinct phases:
-1. Timers (`setTimeout`, `setInterval`)
-2. Pending I/O callbacks
-3. Idle / Prepare
-4. Poll (incoming network connections & disk I/O)
-5. Check (`setImmediate`)
-6. Close callbacks
+### 🖥️ Browser Environment: WHATWG HTML Event Loop
+Browsers follow the WHATWG HTML event loop specification. Between macrotasks, the browser evaluates whether to execute a rendering update (style calculation, layout reflow, paint) to maintain 60fps/120fps display refresh rates.
 
-### 🔵 DEEP DIVE: Starvation of Macrotasks
-If new microtasks are continuously queued (e.g. nested resolved promises), the Event Loop will keep draining microtasks forever, starving user click handlers and rendering, leading to a frozen UI.
+### 🖥️ Host Environment Comparison: Node.js `libuv`
+While browsers follow the WHATWG event loop model, Node.js uses **`libuv`**, which organizes its event loop into distinct phases: Timers (`setTimeout`), Pending I/O callbacks, Poll phase, Check phase (`setImmediate`), and Close callbacks.
 
-### ⚫ IMPLEMENTATION DETAIL: Chromium MessagePump & Task Tracing
-In Chromium, the event loop is driven by `base::MessagePumpDefault` or `base::MessagePumpForUI`. In Chrome DevTools Performance tab, macrotasks appear as yellow `Task` blocks, while microtasks appear as nested sub-bars labeled `Run Microtasks`.
+### ⚫ Implementation Detail — Chromium MessagePump
+In Chromium-based browsers, the event loop is driven by internal message pumps (such as `base::MessagePumpForUI`). In Chrome DevTools Performance profiles, macrotasks appear as top-level `Task` blocks, while Promise reactions appear as nested `Run Microtasks` sub-blocks.
 
 ---
 
 ## 🧠 What You Actually Need to Remember
-1. JavaScript is single-threaded; asynchronous behavior is powered by the **Browser Web APIs**.
-2. **Call Stack** runs synchronous code (LIFO).
-3. **Web APIs** handle timers, network requests, and DOM events in the background.
-4. **Callback Queue** holds completed callbacks (FIFO).
-5. **Event Loop** pushes callbacks from queue to stack **only when stack is 100% empty**.
+1. Synchronous JavaScript code runs on a single thread at a time on the **Call Stack**.
+2. **Host APIs** manage asynchronous operations (timers, network requests, events).
+3. **Microtasks** (Promises) run immediately when synchronous code finishes, before any standard Task.
+4. **Task Queue** (Timers, DOM callbacks) runs after the Microtask Queue is completely empty.
+5. The Event Loop pushes callbacks to the stack **only when the Call Stack is 100% empty**.
 6. **Microtasks** (Promises) have higher priority and drain before Macrotasks (`setTimeout`).
 7. `setTimeout(fn, delay)` guarantees minimum delay before queuing, not execution time.
 

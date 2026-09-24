@@ -340,7 +340,7 @@ In clean code architecture, a **Pure Function** always returns the exact same ou
 ### 🔵 DEEP DIVE: The `[[CompletionRecord]]` in ECMAScript
 Under the ECMAScript specification (§6.2.4), a `return` statement returns an internal `Completion Record` of type `return` with a `[[Value]]` field. Control-flow structures (like loops or try-blocks) examine this record to unwind the call stack.
 
-### ⚫ IMPLEMENTATION DETAIL: Tail Call Optimization (TCO)
+### ⚫ Implementation Detail — Engine Support for Proper Tail Calls (PTC)
 ES6 specified proper Tail Call Optimization (TCO) for recursive functions returning a function call in strict mode (`return fn()`). In practice, among major engines, only WebKit (Safari) implements TCO, while V8 (Chrome/Node.js) and SpiderMonkey (Firefox) chose not to implement it for error-stack clarity and debugging reasons.
 
 ---

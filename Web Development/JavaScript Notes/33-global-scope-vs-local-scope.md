@@ -273,8 +273,8 @@ Historically, different runtimes had different names for the global object (`win
 - **Scope:** Refers to the *visibility and accessibility of variables* (lexical structure).
 - **Context:** Refers to the *value of the `this` keyword* (who owns or invokes the code).
 
-### ⚫ IMPLEMENTATION DETAIL: V8 Scope Tree
-During parsing, V8 creates a hierarchical C++ `Scope` tree (`DeclarationScope`, `ModuleScope`, `ScriptScope`). When resolving an identifier, V8 walks up this linked list of `Scope` pointers until it finds the variable or reaches the root global scope.
+### ⚫ Implementation Detail — V8 Engine
+During parsing in Google V8, the compiler builds an internal hierarchical C++ Scope representation (`DeclarationScope`, `ModuleScope`, `ScriptScope`). When resolving an identifier at parse time, V8 traverses this scope chain until it locates the binding or reaches the root global scope. This internal compiler structure is an implementation strategy for emitting optimized bytecode variable references.
 
 ---
 

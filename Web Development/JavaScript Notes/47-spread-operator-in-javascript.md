@@ -266,12 +266,12 @@ However:
 ### Q2: Can spread exceed the JavaScript Call Stack when spreading huge arrays into a function?
 **Answer:**
 **Yes!**
-When calling `Math.max(...hugeArray)` with an array of $200,000$ elements, JavaScript passes every single element as a physical argument on the call stack frame.
-Most JavaScript engines (V8, JavaScriptCore) have a maximum argument limit (typically $\approx 65,536$ arguments). If you exceed it, the engine throws:
+When calling `Math.max(...hugeArray)` with a very large array (e.g., hundreds of thousands of elements), JavaScript expands each element as an individual argument on the call stack frame.
+JavaScript engines place an implementation-dependent limit on the maximum number of arguments a single function call frame can accept (which varies across engines, platforms, and stack depth). If exceeded, the engine throws:
 ```
 RangeError: Maximum call stack size exceeded
 ```
-**Fix:** For large collections, use `.reduce((max, cur) => cur > max ? cur : max, -Infinity)` instead of `Math.max(...arr)`.
+**Fix:** For large collections, use `.reduce((max, cur) => cur > max ? cur : max, -Infinity)` instead of spreading into `Math.max(...)`.
 
 ---
 
@@ -290,10 +290,10 @@ RangeError: Maximum call stack size exceeded
 
 ### 🔵 DEEP DIVE
 - Array spread requires the `Iteration Protocol` (`[Symbol.iterator]`).
-- Spreading huge arrays into functions can crash with `RangeError: Maximum call stack size exceeded` due to V8 call frame argument limits.
+- Spreading excessively large arrays into function invocations can crash with `RangeError: Maximum call stack size exceeded` due to engine-level argument count thresholds.
 
-### ⚫ IMPLEMENTATION DETAIL
-- V8 compiles object spread using inline caches and fast-path property copies when shapes (hidden classes) match, optimizing shallow object copies to near-native memory copy speeds.
+### ⚫ Implementation Detail — V8 Hidden Classes & Object Spread
+- V8 compiles object spread using inline caches and fast-path property copies when hidden classes match, optimizing shallow object copies without full generic dictionary lookups.
 
 ---
 
@@ -304,7 +304,7 @@ RangeError: Maximum call stack size exceeded
 3. Order matters: later properties override earlier ones in object spread.
 4. Spread is **shallow**: nested objects remain shared references.
 5. Plain objects cannot be spread into arrays (`TypeError: not iterable`).
-6. Do not spread arrays of $>65,000$ elements into function arguments to avoid call stack limits.
+6. Do not spread excessively large arrays into function arguments (call stack argument limits vary across engines).
 
 ---
 

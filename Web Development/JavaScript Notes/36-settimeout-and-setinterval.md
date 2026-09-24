@@ -36,12 +36,21 @@ JavaScript code runs fast—usually within microseconds. But in real-world appli
 
 Because JavaScript has only one thread, if you used a `while` loop to pause execution for 3 seconds (`while(time < 3000)`), the entire browser tab would completely freeze: buttons couldn't be clicked, scrolling would die, and animations would stutter.
 
-To solve this, browsers give JavaScript timer APIs: `setTimeout` and `setInterval`. You hand the browser a callback and a duration, and the browser tracks the clock in the background while your JavaScript thread stays free to respond to the user.
+To solve this, the host environment (the browser or Node.js) provides timer APIs: `setTimeout` and `setInterval`. You schedule a timer through the host environment, which manages the clock externally while your JavaScript execution thread remains free to evaluate synchronous code.
 
 ### Technical Explanation
-`setTimeout` and `setInterval` are host environment APIs defined by the **HTML / WHATWG specification**, implemented in browsers and Node.js (`globalThis.setTimeout`). They are **not** part of the core ECMA-262 specification.
+`setTimeout` and `setInterval` are host environment APIs standardized by the **HTML / WHATWG specification** (and implemented in Node.js on `globalThis`). They are **not** defined in the core ECMA-262 ECMAScript language specification.
 
-When invoked, the host environment registers a timer in its background timing subsystem and returns a positive integer identifier (`timerId`). The JavaScript engine continues executing synchronous code without pausing. When the timer expires, the host environment moves the callback function into the **Macrotask Queue (Callback Queue)**. The callback executes only when the Call Stack becomes completely empty.
+The lifecycle follows this distinct chain:
+```text
+JavaScript Language ──> Host Environment ──> Timer API Registration
+                                                   │
+                                                   ▼ (Time elapses)
+Callback Executes  <──  Event Loop Task  <──  Callback Becomes Eligible
+(On Call Stack)         Processing           (Enters Task Queue)
+```
+
+When invoked, `setTimeout` schedules a timer through the host environment and returns a numeric identifier token (`timerId`). When the timer has expired, its callback becomes eligible to be processed by being placed into the host's **Task Queue (Macrotask Queue)**. The callback does not execute immediately upon timer expiration; it waits until the JavaScript execution model allows it to run (i.e. when the Call Stack is completely clear of synchronous code).
 
 ### Before vs After Motivation
 - **Before (Thread-Freezing Synchronous Sleep - Anti-Pattern):**
@@ -169,13 +178,16 @@ B
 ```
 
 ### 🧠 Why Does "B" Print Last Even with 0 Milliseconds?
+`setTimeout(fn, 0)` does **not** mean "run immediately". It means: schedule the callback with a minimum delay of approximately zero milliseconds; actual execution occurs later when the relevant task can be processed.
 1. `console.log("A")` runs synchronously on the Call Stack.
-2. `setTimeout(..., 0)` registers with the browser. Even though the delay is $0\text{ ms}$, the callback is placed into the **Callback Queue**.
-3. **The Event Loop Golden Rule:** Callbacks in the queue **cannot enter the Call Stack** until the Call Stack has completely finished all synchronous code!
-4. `console.log("C")` runs on the Call Stack.
-5. The Call Stack is now empty.
-6. The Event Loop dequeues the timer callback and pushes it onto the Call Stack.
+2. `setTimeout(..., 0)` registers the timer with the host. The callback becomes eligible and is placed into the **Task Queue (Callback Queue)**.
+3. **The Event Loop Rule:** Callbacks in the task queue **cannot enter the Call Stack** until the Call Stack has completely finished executing all currently running synchronous code!
+4. `console.log("C")` runs synchronously on the Call Stack.
+5. The Call Stack becomes completely empty.
+6. The Event Loop dequeues the timer callback from the Task Queue and pushes it onto the Call Stack.
 7. `console.log("B")` executes!
+
+> **Timing Reality:** In real-world runtimes, timers are subject to minimum delay clamping (e.g., HTML specifies a 4ms minimum floor for timers nested more than 5 levels deep) and system load. JavaScript timers specify a *minimum delay threshold*, never a guaranteed execution timestamp.
 
 ---
 
@@ -307,8 +319,8 @@ setTimeout(sendEmail, 1000, "user@domain.com", "Welcome!");
 ### 🔵 DEEP DIVE: Maximum 32-bit Integer Timeout Overflow
 In Chromium/V8, timer delays are stored as 32-bit signed integers. The maximum delay is $2^{31} - 1 = 2,147,483,647\text{ ms}$ (approx. $24.8\text{ days}$). Passing a delay larger than this causes integer overflow, making the timer execute **immediately** ($0\text{ ms}$)!
 
-### ⚫ IMPLEMENTATION DETAIL: Chromium Timer Wheel & Task Posting
-Chromium manages timers using an internal timing queue sorted by deadline. When the deadline passes, Chromium's thread scheduler posts a `Task` to the `V8::MessageLoop` queue, which is evaluated during the renderer process's idle time.
+### ⚫ Implementation Detail — Chromium Timer Tasks & MessageLoop Posting
+Chromium manages timers using an internal timing queue sorted by deadline. When the deadline passes, Chromium's scheduler posts a task to the renderer message loop queue, which is evaluated when the main thread call stack becomes clear.
 
 ---
 
