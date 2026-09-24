@@ -1,18 +1,19 @@
 # ⚡ JavaScript Notes — Complete Curriculum & Study Guide
 
 > **Curriculum Source:** Anurag Singh — *Complete JavaScript Course (ProCodrr)*  
-> **Total Lectures Covered:** **43 In-Depth Lectures**  
+> **Total Lectures Covered:** **68 Comprehensive In-Depth Lectures (Ep. 01 → Ep. 68)**  
 > **Modules Included:**  
 > - **Module 01: Core JavaScript Fundamentals (Ep. 01 – Ep. 25)**  
-> - **Module 08: DOM, Modern Events Architecture & Web Storage (Ep. 51 – Ep. 68)**  
+> - **Module 02: Advanced Loops, Execution Context, Scopes, Closures, Functional Patterns & ES6+ (Ep. 26 – Ep. 50)**  
+> - **Module 03: DOM, Modern Events Architecture & Web Storage (Ep. 51 – Ep. 68)**  
 > **Language & Standard:** 100% Technical English | ECMAScript 2024+ & WHATWG DOM Standard  
 
 ---
 
 ## 📖 Master Index & Comprehensive Guide
 
-👉 **[Open Complete 43-Episode Master Curriculum Index (`00-master-index.md`)](./00-master-index.md)**  
-*(Includes 6-Phase Learning Roadmap, Cross-Topic Dependency Graphs, 50-Question FAANG Active-Recall Cheat Sheet, and Master Anti-Pattern Bug Matrix).*
+👉 **[Open Complete 68-Episode Master Curriculum Index (`00-master-index.md`)](./00-master-index.md)**  
+*(Includes 8-Phase Learning Roadmap, Cross-Topic Dependency Graphs, 65-Question FAANG Active-Recall Question Bank, and Master Anti-Pattern Bug Matrix).*
 
 ---
 
@@ -32,7 +33,7 @@
 | **08** | The Math Object | Static Namespace, Float Precision, Uniform Random Formula | [Read Notes](./08-math-object-in-javascript.md) |
 | **09** | Truthy and Falsy Values | Exactly 8 Falsy Values, `ToBoolean`, Objects/Arrays Truthy | [Read Notes](./09-truthy-and-falsy-values.md) |
 | **10** | Comparison Operators | `===` vs `==`, Abstract Coercion, Relational `null >= 0` | [Read Notes](./10-comparison-operators-in-javascript.md) |
-| **11** | Logical Operators | Short-Circuit Evaluation, Value Returns (`&&`, `\|\|`, `??`) | [Read Notes](./11-logical-operators-in-javascript.md) |
+| **11** | Logical Operators | Short-Circuit Evaluation, Value Returns (`&&`, `||`, `??`) | [Read Notes](./11-logical-operators-in-javascript.md) |
 | **12** | Decision Making with if | Branching, Block Scope, Accidental Assignment, Semicolon Trap | [Read Notes](./12-decision-making-using-if-statement.md) |
 | **13** | Optimizing with else if | Cascading Waterfall, Short-Circuiting, Specificity Ordering | [Read Notes](./13-optimize-decision-making-using-else-if-and-else.md) |
 | **14** | Nested if-else Statements | Multi-tier Preconditions, Arrow Anti-Pattern, Guard Clauses | [Read Notes](./14-nested-if-else-statement-in-javascript.md) |
@@ -50,7 +51,39 @@
 
 ---
 
-### 🔹 Module 08: DOM, Modern Events Architecture & Web Storage (Ep. 51 → Ep. 68)
+### 🔹 Module 02: Advanced Loops, Execution Context, Scopes, Closures, FP & ES6+ (Ep. 26 → Ep. 50)
+
+| Ep. | Lecture Title | Key Topic | Note Link |
+|:---:|:---|:---|:---:|
+| **26** | For Loop in JavaScript | 3-Part Header, `let` Per-Iteration Scoping, Closure Loop Bug | [Read Notes](./26-for-loop-in-javascript.md) |
+| **27** | Do-While Loop in JavaScript | Post-Test Execution, Guaranteed Single Run, Semicolon Syntax | [Read Notes](./27-do-while-loop-in-javascript.md) |
+| **28** | Introduction to Functions | Declarations, Parameters vs Arguments, Default `undefined` | [Read Notes](./28-introduction-to-functions.md) |
+| **29** | The return Keyword | Ejection Seat, Call Site Value Delivery, Omitted Return | [Read Notes](./29-return-keyword-in-javascript.md) |
+| **30** | Execution Context Explained | Memory Creation vs Code Execution, GEC vs FEC, Environments | [Read Notes](./30-execution-context-in-javascript.md) |
+| **31** | The Call Stack in JavaScript | LIFO Stack, Frame Allocation, Recursion, Stack Overflow | [Read Notes](./31-call-stack-in-javascript.md) |
+| **32** | What is Hoisting? | Variable/Function Allocation, `var` vs `let`/`const` in TDZ | [Read Notes](./32-what-is-hoisting-in-javascript.md) |
+| **33** | Global Scope vs Local Scope | One-Way Scope Glass, Privacy Boundaries, Variable Shadowing | [Read Notes](./33-global-scope-vs-local-scope.md) |
+| **34** | Lexical & Block Scope | Author-Time Nesting, Scope Chain Traversal, Block Bounds | [Read Notes](./34-lexical-and-block-scope.md) |
+| **35** | Higher-Order Functions & Callbacks | First-Class Citizens, Functions as Data, Inversion of Control | [Read Notes](./35-higher-order-functions-and-callbacks.md) |
+| **36** | setTimeout and setInterval | Web API Timers, Timer Tokens, Cancellation, 4ms Clamping | [Read Notes](./36-settimeout-and-setinterval.md) |
+| **37** | Event Loop & Callback Queue | Single-Thread Concurrency, Call Stack Starvation, Task Queue | [Read Notes](./37-event-loop-and-callback-queue.md) |
+| **38** | Returning Functions with Closures | Lexical Backpack, Retained Outer State, Data Encapsulation | [Read Notes](./38-returning-functions-with-closures.md) |
+| **39** | Methods vs Functions | Object Method Properties, Invocation Context, Implicit `this` | [Read Notes](./39-difference-between-methods-and-functions.md) |
+| **40** | Arrow Functions in JavaScript | Lexical `this`, Concise Syntax, Constructor & `arguments` Ban | [Read Notes](./40-arrow-functions-in-javascript.md) |
+| **41** | for-of vs for-in Loop | Iterables vs Enumerable Keys, Prototype Leaks, `Symbol.iterator` | [Read Notes](./41-for-of-vs-for-in-loop.md) |
+| **42** | forEach Array Method | Declarative Traversal, `(el, idx, arr)`, Non-Breakable Iteration | [Read Notes](./42-foreach-array-method.md) |
+| **43** | map, filter & reduce | FP Trinity, 1:1 Mapping, Boolean Filtering, Rolling Accumulator | [Read Notes](./43-map-filter-reduce-in-javascript.md) |
+| **44** | some & every Array Methods | Short-Circuit Boolean Predicates, Vacuous Truth Semantics | [Read Notes](./44-some-and-every-array-methods.md) |
+| **45** | The arguments Keyword | Legacy Array-Like Object, Arity Reflection, Arrow Incompatibility | [Read Notes](./45-arguments-keyword-in-javascript.md) |
+| **46** | Default Parameters (ES6) | Strictly `undefined` Trigger, Dynamic Expressions, Parameter TDZ | [Read Notes](./46-default-parameters-in-javascript.md) |
+| **47** | Spread Operator in JavaScript | Unpacking Iterables, Shallow Copy Nature, Key Precedence | [Read Notes](./47-spread-operator-in-javascript.md) |
+| **48** | Rest Parameters in JavaScript | Genuine Array Condensation, Trailing Position Rule, Arity Impact | [Read Notes](./48-rest-parameters-in-javascript.md) |
+| **49** | Destructuring in JavaScript | Positional Array Swap, Key Aliasing, Defaults, Nested Unboxing | [Read Notes](./49-destructuring-in-javascript.md) |
+| **50** | What is BOM in JavaScript? | `window` Host Root, `location`, `history`, `navigator`, `screen` | [Read Notes](./50-what-is-bom-in-javascript.md) |
+
+---
+
+### 🔹 Module 03: DOM, Modern Events Architecture & Web Storage (Ep. 51 → Ep. 68)
 
 | Ep. | Lecture Title | Key Topic | Note Link |
 |:---:|:---|:---|:---:|
@@ -81,4 +114,4 @@
 - **Debugger-First Tracing:** Complete line-by-line DevTools execution flows and ASCII memory diagrams showing exactly what happens in the Call Stack, Heap, Scope Chain, and Render Tree.
 - **Specification vs Implementation Clarity:** Clear badges distinguishing universal ECMAScript/W3C guarantees from browser engine implementation details (e.g. V8 TurboFan, Blink reflow triggers).
 - **Interactive "Predict First" Interview Puzzles:** Code challenges with hidden answers to test true technical comprehension before looking at explanations.
-- **Standardized ⚡ 30-Second Revision:** Every note concludes with 5 standardized revision pillars (Essential Facts, Key Mental Model, Common Trap, Interview Question, and Production Code Pattern).
+- **Standardized ⚡ 30-Second Revision:** Every note concludes with 5 standardized revision pillars (Essential Facts, Key Mental Model, Common Trap, Interview Question, and Production Code Pattern).\n

@@ -20,8 +20,9 @@ Complete-Resources/
 │   ├── README.md                          # Web Development Track Guide
 │   └── JavaScript Notes/
 │       ├── README.md                      # JavaScript Notes Directory Guide
-│       ├── 00-master-index.md             # Complete 43-Episode Master Manifest & Study Guide
+│       ├── 00-master-index.md             # Complete 68-Episode Master Manifest & Study Guide
 │       ├── 01-story-of-javascript.md ... 25-while-loop-in-javascript.md
+│       ├── 26-for-loop-in-javascript.md ... 50-what-is-bom-in-javascript.md
 │       └── 51-introduction-to-dom.md ... 68-local-storage-explained-in-depth.md
 ├── .gitignore
 └── README.md                              # Root Repository Index
@@ -34,9 +35,9 @@ Complete-Resources/
 ### 🔹 Web Development
 
 #### [JavaScript Notes (Ep.01 → Ep.68)](./Web%20Development/JavaScript%20Notes/README.md)
-An exhaustive, lecture-derived, interview-grade knowledge base covering **43 comprehensive lectures** from Anurag Singh's *Complete JavaScript Course (ProCodrr)*. Structured using the **14-Section Progressive Learning Architecture** with physical mental models, Chrome DevTools memory heap snapshots, execution phase walkthroughs, truthy/falsy evaluation tables, Chromium rendering mechanics, and FAANG output tracing puzzles.
+An exhaustive, lecture-derived, interview-grade knowledge base covering **68 comprehensive lectures (Ep.01 → Ep.68)** from Anurag Singh's *Complete JavaScript Course (ProCodrr)*. Structured using the **14-Section Progressive Learning Architecture** with physical mental models, Chrome DevTools memory heap snapshots, execution context walkthroughs, scope chain diagrams, event loop mechanics, Chromium rendering pipelines, and FAANG output tracing puzzles.
 
-👉 **[Open Complete 43-Episode Master Curriculum Index (`00-master-index.md`)](./Web%20Development/JavaScript%20Notes/00-master-index.md)**
+👉 **[Open Complete 68-Episode Master Curriculum Index (`00-master-index.md`)](./Web%20Development/JavaScript%20Notes/00-master-index.md)**
 
 ---
 
@@ -71,6 +72,38 @@ An exhaustive, lecture-derived, interview-grade knowledge base covering **43 com
 | **25** | The while Loop in JavaScript | 4 Loop pillars, infinite loop thread freeze, `break` vs `continue`, Two-Pointer algorithmic pattern | [25-while-loop-in-javascript.md](./Web%20Development/JavaScript%20Notes/25-while-loop-in-javascript.md) |
 
 ---
+
+
+
+#### Module 02: Advanced Loops, Execution Context, Scopes, Closures, FP & ES6+ (Ep.26 → Ep.50)
+
+| # | Episode Title | Core Topic & Pedagogical Focus | Note Link |
+|:---:|:---|:---|:---:|
+| **26** | For Loop in JavaScript | 3-Part Header, `let` Per-Iteration Scoping, Asynchronous Closure Loop Bug | [26-for-loop-in-javascript.md](./Web%20Development/JavaScript%20Notes/26-for-loop-in-javascript.md) |
+| **27** | Do-While Loop in JavaScript | Post-Test Execution, Guaranteed Single Run, Semicolon Syntax Rule | [27-do-while-loop-in-javascript.md](./Web%20Development/JavaScript%20Notes/27-do-while-loop-in-javascript.md) |
+| **28** | Introduction to Functions | Declarations, Parameters vs Arguments, Return Defaults, Call-Site Semantics | [28-introduction-to-functions.md](./Web%20Development/JavaScript%20Notes/28-introduction-to-functions.md) |
+| **29** | The return Keyword | Ejection Seat, Call Site Value Delivery, Omitted Return `undefined` | [29-return-keyword-in-javascript.md](./Web%20Development/JavaScript%20Notes/29-return-keyword-in-javascript.md) |
+| **30** | Execution Context Explained | Memory Creation vs Code Execution Phase, GEC vs FEC, Variable Environment | [30-execution-context-in-javascript.md](./Web%20Development/JavaScript%20Notes/30-execution-context-in-javascript.md) |
+| **31** | The Call Stack in JavaScript | LIFO Stack, Frame Allocation, Recursion Lifecycle, Stack Overflow | [31-call-stack-in-javascript.md](./Web%20Development/JavaScript%20Notes/31-call-stack-in-javascript.md) |
+| **32** | What is Hoisting? | Binding Allocation, `var` vs Function Declarations vs `let`/`const` TDZ | [32-what-is-hoisting-in-javascript.md](./Web%20Development/JavaScript%20Notes/32-what-is-hoisting-in-javascript.md) |
+| **33** | Global Scope vs Local Scope | One-Way Scope Glass, Privacy Boundaries, Variable Shadowing Mechanics | [33-global-scope-vs-local-scope.md](./Web%20Development/JavaScript%20Notes/33-global-scope-vs-local-scope.md) |
+| **34** | Lexical & Block Scope | Author-Time Nesting, Scope Chain Traversal, Block Bounds (`{}`) | [34-lexical-and-block-scope.md](./Web%20Development/JavaScript%20Notes/34-lexical-and-block-scope.md) |
+| **35** | Higher-Order Functions & Callbacks | First-Class Citizens, Functions as Data, Inversion of Control | [35-higher-order-functions-and-callbacks.md](./Web%20Development/JavaScript%20Notes/35-higher-order-functions-and-callbacks.md) |
+| **36** | setTimeout and setInterval | Web API Timers, Timer Tokens, Cancellation, 4ms Clamping Rule | [36-settimeout-and-setinterval.md](./Web%20Development/JavaScript%20Notes/36-settimeout-and-setinterval.md) |
+| **37** | Event Loop & Callback Queue | Single-Thread Concurrency, Call Stack Starvation, Task Queue Dispatch | [37-event-loop-and-callback-queue.md](./Web%20Development/JavaScript%20Notes/37-event-loop-and-callback-queue.md) |
+| **38** | Returning Functions with Closures | Lexical Backpack, Retained Outer State, Data Encapsulation & Factories | [38-returning-functions-with-closures.md](./Web%20Development/JavaScript%20Notes/38-returning-functions-with-closures.md) |
+| **39** | Methods vs Functions | Object Method Properties, Invocation Context, Implicit `this` Resolution | [39-difference-between-methods-and-functions.md](./Web%20Development/JavaScript%20Notes/39-difference-between-methods-and-functions.md) |
+| **40** | Arrow Functions in JavaScript | Lexical `this`, Concise Expression Syntax, Constructor & `arguments` Ban | [40-arrow-functions-in-javascript.md](./Web%20Development/JavaScript%20Notes/40-arrow-functions-in-javascript.md) |
+| **41** | for-of vs for-in Loop | Iterables vs Enumerable Keys, Prototype Leaks, `Symbol.iterator` Protocol | [41-for-of-vs-for-in-loop.md](./Web%20Development/JavaScript%20Notes/41-for-of-vs-for-in-loop.md) |
+| **42** | forEach Array Method | Declarative Traversal, `(el, idx, arr)`, Non-Breakable Iteration Rules | [42-foreach-array-method.md](./Web%20Development/JavaScript%20Notes/42-foreach-array-method.md) |
+| **43** | map, filter & reduce | FP Trinity, 1:1 Mapping, Boolean Filtering, Rolling Accumulator Aggregations | [43-map-filter-reduce-in-javascript.md](./Web%20Development/JavaScript%20Notes/43-map-filter-reduce-in-javascript.md) |
+| **44** | some & every Array Methods | Short-Circuit Boolean Predicates, Vacuous Truth Empty-Array Semantics | [44-some-and-every-array-methods.md](./Web%20Development/JavaScript%20Notes/44-some-and-every-array-methods.md) |
+| **45** | The arguments Keyword | Legacy Array-Like Object, Arity Reflection, Arrow Incompatibility | [45-arguments-keyword-in-javascript.md](./Web%20Development/JavaScript%20Notes/45-arguments-keyword-in-javascript.md) |
+| **46** | Default Parameters (ES6) | Strictly `undefined` Trigger, Dynamic Expressions, Parameter TDZ | [46-default-parameters-in-javascript.md](./Web%20Development/JavaScript%20Notes/46-default-parameters-in-javascript.md) |
+| **47** | Spread Operator in JavaScript | Unpacking Iterables, Shallow Copy Nature, Object Key Precedence | [47-spread-operator-in-javascript.md](./Web%20Development/JavaScript%20Notes/47-spread-operator-in-javascript.md) |
+| **48** | Rest Parameters in JavaScript | Genuine Array Condensation, Trailing Position Rule, Arity Impact | [48-rest-parameters-in-javascript.md](./Web%20Development/JavaScript%20Notes/48-rest-parameters-in-javascript.md) |
+| **49** | Destructuring in JavaScript | Positional Array Swap, Key Aliasing, Defaults, Safe Nested Unboxing | [49-destructuring-in-javascript.md](./Web%20Development/JavaScript%20Notes/49-destructuring-in-javascript.md) |
+| **50** | What is BOM in JavaScript? | `window` Host Root, `location`, `history`, `navigator`, `screen` Dimensions | [50-what-is-bom-in-javascript.md](./Web%20Development/JavaScript%20Notes/50-what-is-bom-in-javascript.md) |
 
 #### Module 08: DOM, Modern Events & Web Storage (Ep.51 → Ep.68)
 
