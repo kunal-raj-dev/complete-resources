@@ -195,6 +195,18 @@ cleanMode(10);
 Because `arguments` is array-like, confusing in arrow functions, and has legacy syncing quirks, modern ES6 introduced **Rest Parameters** ([Episode 48](./48-rest-parameters-in-javascript.md)):
 
 ```javascript
+// Side-by-side comparison:
+function testWithRest(...args) {
+  console.log(args); // [ 1, 2, 3 ] -> True Array instance (inherits Array.prototype)
+}
+
+function testWithArguments() {
+  console.log(arguments); // [Arguments] { '0': 1, '1': 2, '2': 3 } -> Array-like Object (lacks array methods)
+}
+
+testWithRest(1, 2, 3);
+testWithArguments(1, 2, 3);
+
 // ❌ OLD STYLE (arguments):
 function legacySum() {
   const arr = Array.from(arguments);

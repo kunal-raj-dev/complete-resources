@@ -31,27 +31,27 @@
 ## 1. The Idea in Simple Words
 
 ### Simple Explanation
-JavaScript has a famous superpower and a famous limitation:
-- **The Limitation:** A JavaScript execution agent executes synchronous code on a single thread at a time. It cannot calculate two synchronous functions simultaneously on that thread.
-- **The Superpower:** It never freezes while waiting for long asynchronous operations (like downloading a large file or waiting for a 5-second timer).
+A typical browser page executes its main JavaScript on the main thread, while JavaScript can also run in workers and other environments. On that main thread:
+- **Synchronous Execution:** Code executes sequentially line-by-line. The thread cannot calculate two synchronous functions simultaneously.
+- **Non-Blocking Asynchrony:** It never freezes while waiting for long asynchronous operations (like downloading a large file or waiting for a 5-second timer).
 
 How does it wait for an asynchronous task without stopping everything else?
 
 Because **JavaScript executes inside a host environment** (such as a Web Browser or Node.js). 
 
-When you call `setTimeout`, JavaScript doesn't count the seconds on its main execution needle. It delegates the job to the host environment: *"Please track 5 seconds for me while I continue running other synchronous code."*
+When you call `setTimeout`, JavaScript doesn't count the seconds on its main execution thread. It delegates the job to the host environment: *"Please track 5 seconds for me while I continue running other synchronous code."*
 
 When the 5 seconds elapse, the host environment places the callback into a waiting line called the **Task Queue (Callback Queue)**. A coordinator called the **Event Loop** watches the JavaScript Call Stack. When the Call Stack is completely clear of all synchronous code, the Event Loop takes the callback from the queue and pushes it onto the Call Stack to run!
 
 ### Technical Explanation
 The **Event Loop** is the scheduling and concurrency mechanism defined in the HTML Living Standard (§8.1.6) that coordinates script evaluation, events, user interactions, rendering, and task scheduling.
 
-The host environment provides APIs for asynchronous operations. Their underlying implementation may involve other threads, processes, operating system kernel facilities, or hardware clocks. Upon completion, the host wraps the callback and enqueues it into a task queue.
-
-The Event Loop operates in strict layers:
-1. **Layer 1 (Synchronous Execution):** The engine executes code on the Call Stack until the stack is empty.
-2. **Layer 2 (Microtask Draining):** If microtasks exist (such as Promise reactions), the engine executes microtasks one by one until the Microtask Queue is completely exhausted.
-3. **Layer 3 (Rendering & Task Processing):** The host may perform rendering opportunities, then dequeues the oldest eligible task from the Task Queue (Macrotask Queue) and pushes it onto the Call Stack.
+The operational flow proceeds in five strict steps:
+1. **Synchronous JavaScript runs:** The Call Stack executes statements to completion.
+2. **Asynchronous host APIs arrange future work:** Calls to `setTimeout`, `fetch`, or DOM listeners register tasks with host facilities.
+3. **Callbacks/tasks become eligible for later execution:** When timers expire or I/O completes, the host enqueues the associated callbacks into the Task Queue (or Microtask Queue for promises).
+4. **The Event Loop coordinates queued work:** It monitors the Call Stack, waiting until the synchronous context is fully cleared before dequeuing tasks.
+5. **Occupied thread prevents queued execution:** Any synchronous JavaScript currently occupying the execution thread prevents other queued work from executing there until the current script completes.
 
 ---
 

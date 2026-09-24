@@ -36,7 +36,7 @@ Imagine you are writing a report at your desk.
 This "pile of active tasks" is exactly how JavaScript manages functions. A JavaScript execution context executes synchronous JavaScript code on a single thread at a time; hosts such as web browsers and Node.js provide additional asynchronous capabilities and may utilize other threads internally. The engine uses the **Call Stack** to track synchronous progress: remembering where it was before entering a function, and where it must return when that function completes.
 
 ### Technical Explanation
-The **Call Stack** (officially termed the *Execution Context Stack* in the ECMAScript specification) is a LIFO (Last-In, First-Out) stack data structure that tracks the execution sequence of all active execution contexts. 
+The **Call Stack** (officially termed the *Execution Context Stack* in the ECMAScript specification) is a LIFO (Last-In, First-Out) stack data structure that tracks the execution sequence of all active execution contexts. In the common browser execution model, synchronous JavaScript execution follows a call-stack model. The concrete implementation is engine-specific.
 
 When a script is loaded, the engine pushes the `Global Execution Context` to the bottom of the stack. When a function invocation expression is evaluated, a new `Function Execution Context` is instantiated and pushed onto the top of the stack. The running JavaScript execution agent executes instructions in the **running execution context** (the top of the stack). When a function returns or throws an unhandled exception, its context is popped off, and control resumes in the context directly beneath it.
 
@@ -215,7 +215,7 @@ heavyTask();
 ### ❓ Is the Call Stack the same thing as the Scope Chain?
 **No.** 
 - The **Call Stack** tracks **temporal execution order** (who called whom right now).
-- The **Scope Chain** tracks **lexical variable access** (where a function was physically written in the code). A function can be called by another function, but its variables are resolved through its lexical parent!
+- The **Scope Chain** tracks **lexical variable access** (where a function is defined in the source code). A function can be called by another function, but its variables are resolved through its lexical parent!
 
 ### ❓ What is a "Stack Frame"?
 A **Stack Frame** is a single entry on the Call Stack. It contains all the memory allocated for that function call (local variables, arguments, and return address).

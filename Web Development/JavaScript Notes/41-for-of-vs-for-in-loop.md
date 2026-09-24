@@ -37,9 +37,9 @@ JavaScript provides two specialized loops with similar names but completely diff
 - **`for...in`:** Loops over the **keys (property names)** of an Object.
 - **`for...of`:** Loops over the **values** of an **Iterable** (like an Array, String, Map, or Set).
 
-A helpful mnemonic:
-- `for...in` $\to$ **I**ndexes / Keys (**in**spects keys).
-- `for...of` $\to$ **O**bjects / Values (**of**fers values).
+> 🎯 **Core Distinction:**
+> - `for...of` → **values from an iterable**
+> - `for...in` → **enumerable property keys**
 
 ### Technical Explanation
 The **`for...in`** statement traverses all **enumerable string-keyed properties** of an object, including properties inherited up its prototype chain. Property ordering is not guaranteed to follow insertion order for integer-like keys.

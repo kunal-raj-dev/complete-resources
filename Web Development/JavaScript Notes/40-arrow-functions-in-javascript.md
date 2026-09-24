@@ -43,7 +43,7 @@ const square = (x) => x * x;
 
 Even more importantly, traditional functions had dynamic `this` binding: their `this` keyword changed depending on how they were called. If you used a traditional function inside a timer or callback, it would resolve its `this` based on invocation context or default to the global object/`undefined`, rather than retaining the surrounding context. 
 
-Arrow functions solve this: **they do not bind their own `this`**. Instead, they resolve `this` lexically from their enclosing lexical scope where they were defined.
+Arrow functions solve this: **Arrow functions do not have their own `this` binding. They use the `this` value from their surrounding lexical context.**
 
 ### Technical Explanation
 An **Arrow Function** (`ArrowFunction`) is an ECMAScript 2015 syntactic construct that creates a callable function object without an internal `[[Construct]]` method, without an active `[[ThisMode]]` of lexical/global binding, and without a `prototype` property.
@@ -213,22 +213,24 @@ Never use arrow functions for methods on object literals if you need access to t
 
 ```javascript
 const obj = {
-  value: 10,
+  name: "Alice",
+
   regular() {
-    return this.value;
+    console.log(this.name);
   },
+
   arrow: () => {
-    return this.value;
+    console.log(this.name);
   }
 };
 
-console.log(obj.regular()); // 10
-console.log(obj.arrow());   // undefined (in non-strict mode) or TypeError (if strict mode outer this is undefined)
+obj.regular(); // "Alice"
+obj.arrow();   // undefined (in non-strict mode) or TypeError (if strict mode outer this is undefined)
 ```
 
 **Why this happens:**
-- `regular()` is invoked via property access (`obj.regular()`), so dynamic `this` binding binds `this` directly to `obj`.
-- `arrow()` does NOT bind a dynamic `this`. An object literal `{ ... }` creates an object, **not a lexical scope**. Therefore, `arrow()`'s enclosing lexical scope is the outer scope (such as global or module scope), where `this.value` resolves against the outer environment (evaluating to `undefined`).
+- `regular()` is an ordinary method invoked with `obj` as receiver (`obj.regular()`), so dynamic `this` binding binds `this` directly to `obj`, logging `"Alice"`.
+- `arrow()` does NOT bind its own `this`. An object literal `{ ... }` creates a data structure, **not a lexical scope**. Therefore, `arrow()` uses the `this` value from its surrounding lexical context (such as the outer global or module scope), where `this.name` evaluates to `undefined` (or throws a `TypeError` if outer `this` is `undefined`).
 
 ### 2. Event Handlers That Rely on `this`
 ```javascript

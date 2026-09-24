@@ -41,7 +41,9 @@ fruits.forEach((fruit) => {
 });
 ```
 
-It is designed purely for **Side Effects**: actions like printing to the console, updating a database, sending emails, or mutating an external variable. It is **not** meant to transform and return a new array.
+> 🎯 **Anchor:** `forEach` → **perform an action for each element**
+
+It is designed purely for **Side Effects**: actions like printing to the console, updating a database, sending emails, or mutating an external variable. It is **not** meant to transform and return a new array (it always returns `undefined`).
 
 ### Technical Explanation
 `Array.prototype.forEach(callbackFn [, thisArg])` is an iterative higher-order method defined on `Array.prototype`. It executes the provided `callbackFn` synchronously once for each assigned index in the array in ascending numerical order. 
@@ -131,7 +133,7 @@ In standard loops (`for`, `while`, `for...of`), you can exit early using `break`
 ```
 
 ### 🧠 Why?
-`break` only works on physical loop statements (`for`, `while`). Inside `forEach`, your code is inside a **function callback**. You cannot `break` out of a function. Writing `return` inside the callback only skips that single iteration (behaving like `continue`), but the loop continues rolling through the remaining items!
+`break` only works on loop statements (`for`, `while`). You cannot directly terminate a `forEach()` loop using `break` because `break` cannot jump across function boundaries. Furthermore, writing `return` inside a `forEach()` callback only returns from that specific callback invocation (behaving like `continue` in a traditional loop); it does not stop the overall `forEach()` execution!
 
 ### ✅ How to Exit Early:
 If you need to break early, use **`for...of`**, **`Array.prototype.some()`**, or **`Array.prototype.find()`**:

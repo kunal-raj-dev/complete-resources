@@ -35,7 +35,7 @@ Think of Russian nesting dolls (Matryoshka):
 - The tiny inner doll can look out and see the medium doll and the outer doll.
 - But crucially, this relationship is decided by **where the doll was carved in the woodshop** (where you define the code in your source file), NOT where you invoke the function later!
 
-This is **Lexical Scope**: *"Lexical"* simply refers to the structural arrangement of your written code.
+This is **Lexical Scope**: **Lexical scope is determined by where code is defined, not by where the function is called.** *"Lexical"* simply refers to the structural arrangement of your written code.
 
 Meanwhile, **Block Scope** is the rule introduced in ES6 that allows any pair of curly braces `{ ... }`—such as an `if` statement or a `for` loop—to act as a private container for `let` and `const` variables.
 
@@ -140,7 +140,7 @@ caller();
 ```
 
 ### 🧠 Why?
-Even though `printX()` was invoked inside `caller()`, `printX()` was physically defined in the **Global Scope**. Its lexical parent reference permanently points to the Global Environment, not `caller()`!
+Even though `printX()` was invoked inside `caller()`, `printX()` was defined in the **Global Scope** in the source code. Its lexical parent reference permanently resolves to the Global Environment, not `caller()`!
 
 ---
 

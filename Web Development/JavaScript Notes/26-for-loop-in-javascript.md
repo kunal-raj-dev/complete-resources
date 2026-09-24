@@ -310,11 +310,12 @@ for (let i = 3; i >= 0; i--) {
 }
 ```
 
-### 2. Array Length Re-Evaluation in Hot Loops
-In standard JavaScript engines, evaluating `arr.length` in the condition header is practically instant ($O(1)$ property access on exotic array object). However, caching length can be useful if the array is modified during iteration:
+### 2. Array Length Evaluation in Loops
+Reading `arr.length` is normally inexpensive. Do not cache it solely as a performance optimization unless there is a specific reason (such as avoiding re-evaluating length if elements are dynamically added/removed during iteration):
 ```javascript
 const arr = [1, 2, 3, 4];
-for (let i = 0, len = arr.length; i < len; i++) {
+// Standard, clean pattern:
+for (let i = 0; i < arr.length; i++) {
   console.log(arr[i]);
 }
 ```

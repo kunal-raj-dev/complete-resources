@@ -1,6 +1,6 @@
 # Episode 36 — setTimeout and setInterval in JavaScript
 
-> **One-Line Mental Model:** `setTimeout` is a kitchen oven timer that rings once and stops; `setInterval` is a repeating metronome that ticks endlessly until you grab the arm and physically stop it.
+> **One-Line Mental Model:** `setTimeout` is a kitchen oven timer that rings once and stops; `setInterval` is a repeating metronome that ticks endlessly until you grab the arm and manually stop it.
 
 ---
 
@@ -50,7 +50,9 @@ Callback Executes  <──  Event Loop Task  <──  Callback Becomes Eligible
 (On Call Stack)         Processing           (Enters Task Queue)
 ```
 
-When invoked, `setTimeout` schedules a timer through the host environment and returns a numeric identifier token (`timerId`). When the timer has expired, its callback becomes eligible to be processed by being placed into the host's **Task Queue (Macrotask Queue)**. The callback does not execute immediately upon timer expiration; it waits until the JavaScript execution model allows it to run (i.e. when the Call Stack is completely clear of synchronous code).
+When invoked, `setTimeout` schedules a timer through the host environment and returns a numeric identifier token (`timerId`). When the timer has expired, its callback becomes eligible to be processed by being placed into the host's **Task Queue (Macrotask Queue)**. 
+
+> **Important Rule:** **The delay is not an exact execution time.** A timer callback may execute later if the event loop cannot process it immediately (for instance, when the Call Stack is busy executing synchronous statements). Never assume that `setTimeout(fn, 1000)` executes at exactly 1000.0 milliseconds.
 
 ### Before vs After Motivation
 - **Before (Thread-Freezing Synchronous Sleep - Anti-Pattern):**
@@ -319,8 +321,8 @@ setTimeout(sendEmail, 1000, "user@domain.com", "Welcome!");
 ### 🔵 DEEP DIVE: Maximum 32-bit Integer Timeout Overflow
 In Chromium/V8, timer delays are stored as 32-bit signed integers. The maximum delay is $2^{31} - 1 = 2,147,483,647\text{ ms}$ (approx. $24.8\text{ days}$). Passing a delay larger than this causes integer overflow, making the timer execute **immediately** ($0\text{ ms}$)!
 
-### ⚫ Implementation Detail — Chromium Timer Tasks & MessageLoop Posting
-Chromium manages timers using an internal timing queue sorted by deadline. When the deadline passes, Chromium's scheduler posts a task to the renderer message loop queue, which is evaluated when the main thread call stack becomes clear.
+### ⚫ Implementation Detail — Chromium/V8 Timer Queue Management
+Chromium manages timers using an internal timing queue sorted by deadline. When the deadline passes, Chromium's scheduler posts a task to the renderer message loop queue, which is evaluated when the main thread call stack becomes clear. Note that this queue mechanism is implementation-specific to Chromium/V8; other engines (such as Gecko in Firefox or WebKit in Safari) implement timer firing through their own platform-specific event loops.
 
 ---
 

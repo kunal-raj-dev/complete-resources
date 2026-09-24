@@ -94,7 +94,7 @@ Every execution context is evaluated in two strictly distinct sequential phases:
 └───────────────────────────────┴───────────────────────────────┘
 ```
 
-> **Specification Note:** The "Creation Phase vs. Code Execution Phase" is a standard conceptual model reflecting the ECMAScript specification's *Declaration Binding Instantiation* process, where environments and bindings are initialized prior to evaluating the statement body. It does not mandate any specific physical hardware layout.
+> 💡 **Pedagogical Note:** "Creation Phase" and "Execution Phase" are useful teaching models for understanding declaration/binding setup and subsequent execution. They should not be interpreted as ECMAScript requiring a literal two-phase physical memory-allocation process. In ECMAScript specification terminology, this setup is formalized under *Declaration Binding Instantiation (DBI)*, where environments and identifier bindings are established prior to evaluating the statement body.
 
 ### Phase 1: Creation Phase (Declaration Binding Instantiation)
 Before executing statement code, the JavaScript engine processes declarations according to language rules:

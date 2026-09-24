@@ -44,7 +44,7 @@ Through the BOM, JavaScript can:
 ### Technical Explanation
 The Browser Object Model (BOM) consists of the host objects exposed by browser user agents to JavaScript scripts. While ECMAScript defines the syntax and standard built-in objects, the Web Hypertext Application Technology Working Group (WHATWG) HTML specification standardizes the BOM interfaces under the `Window` interface and related specifications.
 
-> 🖥️ **Browser / Environment Note:** BOM interfaces (`window`, `navigator`, `location`, `history`, `screen`) are host environment facilities provided specifically by web browsers. They are not part of core ECMAScript. Consequently, executing `window` in non-browser environments (such as Node.js runtime or standalone Web Workers) throws a `ReferenceError: window is not defined`. For cross-environment compatibility, modern ECMAScript provides `globalThis` to access whatever global environment object is active.
+> 🖥️ **Browser / Environment Note:** **The BOM is browser-environment terminology, not part of the ECMAScript language specification itself.** BOM interfaces (`window`, `navigator`, `location`, `history`, `screen`) are host environment facilities provided specifically by web browsers under WHATWG specifications. Consequently, executing `window` in non-browser environments (such as Node.js runtime or standalone Web Workers) throws a `ReferenceError: window is not defined`. For cross-environment compatibility, modern ECMAScript provides `globalThis` to access whatever global environment object is active.
 
 ---
 
@@ -235,7 +235,7 @@ console.log(userName);
 ```
 
 > ⚠️ **Critical Production Note:**  
-> These dialogs are **synchronous and thread-blocking**. While an `alert()` or `prompt()` modal is open, the JavaScript Event Loop is paused, all CSS animations freeze, timers stop firing, and user interaction on the tab is completely paralyzed. Modern web applications almost exclusively use custom HTML/CSS modal dialogs (such as `<dialog>`) instead.
+> These APIs are synchronous and pause the JavaScript execution flow that invoked them while the modal dialog is active. Exact effects on rendering, timers, and other browser activity are browser-dependent. Modern web applications almost exclusively use accessible custom HTML/CSS modal dialogs (such as the native `<dialog>` element) instead.
 
 ### 6.2 Window Control Methods
 ```javascript

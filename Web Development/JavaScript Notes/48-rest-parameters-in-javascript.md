@@ -54,6 +54,8 @@ Crucially:
 
 ## 2. 🧠 Mental Model: Rest vs. Spread Duality
 
+> 🧠 **Core Brain Trigger:** **Spread expands. Rest collects.**
+
 Rest and Spread share the exact same symbol (`...`), but they do the exact **opposite** jobs depending on where you put them:
 
 ```

@@ -36,6 +36,12 @@ Imagine you have an orchard basket containing 10 apples:
 
 None of these methods destroy your original basket; they always produce fresh outputs!
 
+> 🎯 **Core Anchors:**
+> - `forEach` → **perform an action for each element** (returns `undefined`)
+> - `map`     → **transform every element** (returns a new array of identical length)
+> - `filter`  → **keep elements that pass a test** (returns a new array with matching elements)
+> - `reduce`  → **accumulate values into one result** (returns the single accumulated value)
+
 ### Technical Explanation
 - **`Array.prototype.map(callbackFn)`**: Projects each element through a transformer function, constructing a **brand-new array of identical length** containing the return values.
 - **`Array.prototype.filter(callbackFn)`**: Evaluates each element against a predicate function, constructing a **new array containing only elements** where `callbackFn` evaluated to a truthy value via `ToBoolean`.

@@ -39,6 +39,8 @@ const allFood = [...fruits, "bread", "milk"];
 ```
 It looks like three simple dots (`...`), but it acts like taking everything out of the container and placing each item individually into the destination.
 
+> 🧠 **Core Brain Trigger:** **Spread expands. Rest collects.**
+
 ### Technical Explanation
 In ECMAScript 2015+, the spread syntax (`...Expression`) unpacks values depending on the context:
 1. **In Array Literals and Function Calls:** It evaluates an iterable using the **Iteration Protocol** (calling `@@iterator`) and inserts each produced value as an element or formal argument.
@@ -181,7 +183,14 @@ console.log(uniqueNumbers); // [1, 2, 3, 4, 5]
 
 ## 7. ⚠️ The Critical Pitfall: Spread is ONLY a Shallow Copy!
 
-As established in [Episode 17](./17-stack-vs-heap-memory.md) and [Episode 23](./23-object-freeze-vs-seal.md), spread copies **references**, not nested objects.
+As established in [Episode 17](./17-stack-vs-heap-memory.md) and [Episode 23](./23-object-freeze-vs-seal.md), spread creates a **shallow copy**, never a deep or recursive copy:
+
+```javascript
+const arrayCopy = [...originalArray]; // Creates a SHALLOW array copy
+const objectCopy = { ...originalObject }; // Creates a SHALLOW object copy
+```
+
+Top-level primitive properties are copied by value, but nested objects and arrays remain shared references between the original and the copy!
 
 ### Visual Walkthrough of Shallow Spread
 ```javascript

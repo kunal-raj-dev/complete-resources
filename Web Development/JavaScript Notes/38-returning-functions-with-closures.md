@@ -54,7 +54,7 @@ Why? Because when a function is created inside another function, it doesn't just
 Even though `outer()` is gone from the Call Stack, `inner()` keeps that backpack alive in memory forever! This combination of a function and its lexical environment is called a **Closure**.
 
 ### Technical Explanation
-A **Closure** is the combination of a function object and a reference to its surrounding **Lexical Environment**. In ECMAScript (§9.4), every function instance possesses an internal slot named `[[Scope]]` that retains a reference to the active environment record at the time the function was instantiated.
+**A closure is a function together with access to the lexical environment in which it was created.** In ECMAScript (§9.4), every function instance possesses an internal slot named `[[Scope]]` that retains a reference to the active environment record at the time the function was instantiated.
 
 When the parent execution context finishes executing and pops off the Call Stack, its lexical environment remains alive and accessible as long as the returned inner function retains a reference to it. Because the inner function holds an active reference, the bindings cannot be reclaimed by garbage collection. The inner function maintains live, read/write access to those persistent outer bindings.
 
@@ -332,7 +332,7 @@ In Google V8, when an outer variable is captured by an inner function, V8's scop
 ---
 
 ## 🧠 What You Actually Need to Remember
-1. A **Closure** is an inner function bundled with references to its outer lexical environment.
+1. A **Closure** is a function together with access to the lexical environment in which it was created.
 2. Closures allow functions to access parent variables **after** the parent function has exited.
 3. Closures store **live bindings**, not static snapshots.
 4. Used to create **private variables**, **stateful counters**, and **function factories**.

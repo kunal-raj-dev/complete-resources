@@ -91,21 +91,19 @@ console.log(calculateBill(100, 0.10, 20)); // 100 + 10 + 20 = 130
 
 ## 4. The Critical Rule: ONLY `undefined` Triggers Defaults
 
-This is one of the most critical boundary cases in JavaScript:
+> **Core Rule:** **A default parameter is used when the corresponding argument value is `undefined`.** It does NOT activate for other falsy values like `null`, `0`, `false`, `NaN`, or `""`.
 
 ```javascript
-function testDefault(val = "Default Value") {
-  console.log(val);
+function test(x = 10) {
+  console.log(x);
 }
 
-testDefault();          // "Default Value" (Omitted -> undefined)
-testDefault(undefined);  // "Default Value" (Explicitly undefined)
-
-testDefault(null);      // null  <── DOES NOT TRIGGER DEFAULT!
-testDefault(0);         // 0     <── DOES NOT TRIGGER DEFAULT!
-testDefault("");        // ""    <── DOES NOT TRIGGER DEFAULT!
-testDefault(false);     // false <── DOES NOT TRIGGER DEFAULT!
-testDefault(NaN);       // NaN   <── DOES NOT TRIGGER DEFAULT!
+test();          // 10 (omitted argument evaluates to undefined)
+test(undefined); // 10 (explicit undefined triggers default)
+test(null);      // null (null is a valid value; does NOT trigger default!)
+test(0);         // 0 (0 is a valid number; does NOT trigger default!)
+test("");        // "" (empty string is preserved!)
+test(false);     // false (boolean false is preserved!)
 ```
 
 ### 🧠 Why the Legacy `||` Pattern Was Dangerous:
