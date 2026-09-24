@@ -299,13 +299,19 @@ console.log(id1 === id2); // false! Every Symbol is unique.
 
 ## ⚡ 30-Second Revision
 
-- **The 7 Primitives:** `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol`.
-- **Core Distinction:** Primitives are immutable values; objects are mutable reference types.
-- **`null` Check:** Always use `val === null` because `typeof null` misleadingly returns `"object"`.
-- **`NaN` Identity:** `NaN !== NaN`; always verify with `Number.isNaN()`.
-- **String Parsing:** `Number("10px")` $\to$ `NaN`; `parseInt("10px", 10)` $\to$ `10`.
-- **Numeric BigInt:** Cannot mix `bigint` directly with `number` in arithmetic expressions (`10n + 5` throws TypeError).
-- **Symbol Role:** Guaranteed unique identifier primitive (`Symbol("x") !== Symbol("x")`).
+- **Essential Facts:**
+  - JavaScript has 7 primitive types: `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol`.
+  - Primitives are immutable values; objects and arrays are mutable composite reference types.
+  - `typeof null === 'object'` is a permanent historical legacy quirk; verify `null` with `val === null`.
+  - `NaN` is of type `"number"` and is the only JavaScript value not equal to itself (`NaN === NaN` is `false`).
+  - `parseInt("10px", 10)` parses leading digits to `10`, whereas `Number("10px")` evaluates to `NaN`.
+- **Key Mental Model:** Variables holding primitives hold the value itself; variables holding objects hold a reference pointing to an object identity.
+- **Common Trap:** Trying to mutate a string in-place (`str[0] = 'a'`), which fails silently in non-strict mode or throws in strict mode.
+- **Interview Question:** *"Why does `typeof null` return `'object'` and how do you accurately test for `null`?"* $\to$ In JS 1.0, type tags were stored in the bottom 3 bits of values, and `000` represented both object references and the null pointer. Test with `val === null`.
+- **Code Pattern:**
+  ```javascript
+  const isRealObject = (val) => typeof val === "object" && val !== null;
+  ```
 
 ---
 

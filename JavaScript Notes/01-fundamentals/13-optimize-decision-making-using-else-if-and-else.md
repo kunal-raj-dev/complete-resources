@@ -297,11 +297,21 @@ In modern CPU architectures (x86, ARM) and JIT engines (V8), an `if...else if` c
 
 ## ⚡ 30-Second Revision
 
-- `else if` structures allow mutually exclusive multi-branch decision making.
-- The runtime stops evaluating conditions as soon as the first truthy condition is encountered.
-- Place more restrictive or higher-value ranges first to prevent unintended shadowing.
-- The final `else` block catches all cases where no preceding condition was satisfied (including `NaN`).
-- Replace repetitive equality ladders with object lookup dictionaries or `switch` statements where appropriate.
+- **Essential Facts:**
+  - `else if` creates mutually exclusive branching paths.
+  - The runtime evaluates conditions sequentially and halts immediately upon encountering the first truthy condition.
+  - Place more restrictive or specific conditions before broader conditions to avoid condition shadowing.
+  - The final `else` block catches all cases where no preceding condition was satisfied (including `NaN` and unexpected inputs).
+  - For discrete key-value equality branches, object lookup dictionaries or `switch` statements often provide cleaner alternatives.
+- **Key Mental Model:** An `else if` chain is a waterfall with locked gates: the first gate that opens catches the flow, and no downstream gates are ever tested.
+- **Common Trap:** Inverting threshold order (e.g. testing `score > 60` before `score > 90`), causing the broader condition to swallow cases meant for the narrower one.
+- **Interview Question:** *"Why is an `if...else if` chain more performant than multiple consecutive `if` statements?"* $\to$ In consecutive `if` statements, every single condition must be evaluated regardless of earlier outcomes. In an `else if` chain, evaluation short-circuits as soon as the first condition matches, skipping all subsequent checks.
+- **Code Pattern:**
+  ```javascript
+  if (score >= 90) grade = "A";
+  else if (score >= 80) grade = "B";
+  else grade = "C";
+  ```
 
 ---
 

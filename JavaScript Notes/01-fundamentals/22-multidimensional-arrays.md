@@ -154,7 +154,15 @@ badGrid[0].push("X");
 // Modifying row 0 modified ALL THREE ROWS!
 console.log(badGrid);
 // [ ["X"], ["X"], ["X"] ]
+```
 
+```text
+badGrid[0] ──┐
+badGrid[1] ──┼──► SAME array instance in heap memory: ["X"]
+badGrid[2] ──┘
+```
+
+```javascript
 // ✅ CORRECT: Generate unique inner arrays via map:
 const goodGrid = Array.from({ length: 3 }, () => []);
 goodGrid[0].push("X");
@@ -272,12 +280,20 @@ function setPixel(x, y, val) {
 
 ## ⚡ 30-Second Revision
 
-- Multidimensional arrays in JS are arrays containing references to other arrays.
-- Access coordinate values using `matrix[row][col]`.
-- Never initialize a 2D array with `.fill([])`; it duplicates the same array object reference across all rows.
-- Correct initialization: `Array.from({ length: R }, () => Array(C).fill(0))`.
-- JavaScript arrays are jagged, meaning rows can have varying numbers of columns.
-- Use `matrix.flat()` to flatten nested array levels into a 1D array.
+- **Essential Facts:**
+  - Multidimensional arrays in JavaScript are jagged arrays: outer arrays holding references to independent inner arrays.
+  - Cell coordinates are accessed via dual bracket notation: `matrix[row][col]`.
+  - `new Array(3).fill([])` duplicates the same inner array reference across all rows; mutating one row mutates all rows.
+  - Safe matrix initialization uses mapping functions: `Array.from({ length: R }, () => Array(C).fill(0))`.
+  - The native `.flat(depth)` method flattens nested arrays into a 1D array.
+- **Key Mental Model:** A 2D array is an array of pointers to row arrays; rows are independent objects and can have unequal lengths.
+- **Common Trap:** Using `new Array(rows).fill([])` to create a grid, which shares a single inner array reference across every row.
+- **Interview Question:** *"Why is `new Array(3).fill([])` dangerous when creating a matrix?"* $\to$ `.fill()` copies the exact argument value into every slot. Because `[]` is an object reference, all 3 outer slots point to the exact same array in heap memory. Pushing an element into `grid[0]` reflects in `grid[1]` and `grid[2]`.
+- **Code Pattern:**
+  ```javascript
+  // Safe matrix creation
+  const grid = Array.from({ length: 3 }, () => Array(3).fill(0));
+  ```
 
 ---
 

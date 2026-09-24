@@ -299,12 +299,19 @@ If `user` is `null` or `undefined`, execution stops immediately and assigns that
 
 ## ⚡ 30-Second Revision
 
-- `&&` evaluates left-to-right and returns the first falsy value (or the last value if all are truthy).
-- `||` evaluates left-to-right and returns the first truthy value (or the last value if all are falsy).
-- Neither operator guarantees a boolean return value; they return the settling operand.
-- Operator precedence: `!` > `&&` > `||`. Group complex logical conditions with parentheses.
-- Use nullish coalescing (`??`) when `0`, `false`, or `""` are legitimate values that should not trigger defaults.
-- Guarding properties with `&&` avoids TypeError crashes when parent objects are absent.
+- **Essential Facts:**
+  - `&&` evaluates left-to-right and returns the first falsy operand (or the last operand if all are truthy).
+  - `||` evaluates left-to-right and returns the first truthy operand (or the last operand if all are falsy).
+  - Logical operators return the settling operand itself, not necessarily a boolean.
+  - Precedence order: `!` binds tightest, followed by `&&`, and lastly `||`.
+  - Nullish coalescing (`??`) falls back only on `null` and `undefined`, preserving `0`, `false`, and `""`.
+- **Key Mental Model:** Logical operators are short-circuit decision valves that return raw operand values, skipping unused right-hand side expressions entirely.
+- **Common Trap:** In React JSX, `{count && <List />}` renders `0` when `count === 0` because `0 && <List />` evaluates to `0`. Use `{count > 0 && <List />}` instead.
+- **Interview Question:** *"Why does `'cat' && 'dog'` return `'dog'`, while `'cat' || 'dog'` returns `'cat'`?"* $\to$ `&&` searches for the first falsy operand; since `'cat'` is truthy, it moves forward and returns `'dog'`. `||` searches for the first truthy operand, so it immediately short-circuits and returns `'cat'`.
+- **Code Pattern:**
+  ```javascript
+  const port = process.env.PORT ?? 3000;
+  ```
 
 ---
 

@@ -315,13 +315,16 @@ Modern browser engines (WebKit, Blink) utilize a background secondary thread cal
 
 ## ⚡ 30-Second Revision
 
-- **HTML/CSS/JS Trinity:** Structure (HTML) + Appearance (CSS) + Behavior (JS).
-- **Default Script:** Blocks HTML parsing completely during network fetch and execution.
-- **`defer` Key Rules:** Non-blocking download, executes after DOM is parsed, strictly preserves source order.
-- **`async` Key Rules:** Non-blocking download, executes immediately upon arrival, does NOT preserve order.
-- **REPL Meaning:** Read-Eval-Print Loop inside browser DevTools.
-- **Operator Precedence:** Parentheses override all; `**` is right-associative; `*`, `/`, `%` precede `+`, `-`.
-- **Division by Zero:** Evaluates to `Infinity` or `-Infinity`, never throws an exception.
+- **Essential Facts:**
+  - Standard `<script>` halts HTML parsing while the file downloads and executes.
+  - `<script defer>` downloads in parallel without blocking parsing, executes after HTML parsing finishes in document order, and runs before `DOMContentLoaded`.
+  - `<script async>` downloads in parallel; the moment it arrives, it pauses HTML parsing to execute, and runs out of order as soon as ready.
+  - JavaScript single-threading applies to the execution thread; browser networking, parsing, and rendering are multi-threaded.
+  - Division by zero yields `Infinity` or `-Infinity`, while `0 / 0` produces `NaN`.
+- **Key Mental Model:** HTML is the structure, CSS is the style, JavaScript is the nervous system.
+- **Common Trap:** Placing un-deferred `<script>` tags in `<head>`, blocking the parser and preventing users from seeing the webpage until scripts finish executing.
+- **Interview Question:** *"What is the difference between `defer` and `async`?"* $\to$ Both download asynchronously without blocking HTML parsing. However, `defer` scripts execute after parsing completes in document order before `DOMContentLoaded`, whereas `async` scripts execute immediately upon download completion, interrupting parsing and running in random order.
+- **Code Pattern:** Use `<script src="app.js" defer></script>` in the `<head>` for application bundles that interact with the DOM.
 
 ---
 

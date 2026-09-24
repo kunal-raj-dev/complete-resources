@@ -327,12 +327,23 @@ Under the hood in V8's Ignition interpreter, an `if` statement is compiled into 
 
 ## ⚡ 30-Second Revision
 
-- `if` statements branch execution based on whether the condition evaluates to a truthy value.
-- Expressions inside `if (...)` undergo implicit `ToBoolean` coercion.
-- Always use curly braces `{}` to avoid accidental single-statement binding bugs.
-- A trailing semicolon (`if (cond); { ... }`) makes the subsequent block execute unconditionally.
-- Be vigilant against assignment in conditions (`if (x = 10)` vs `if (x === 10)`).
-- Use early return guard clauses to keep code readable and avoid deeply nested conditionals.
+- **Essential Facts:**
+  - `if` statements evaluate a condition through implicit `ToBoolean` coercion.
+  - If truthy, the body executes; if falsy, execution jumps past the block.
+  - Always wrap bodies in curly braces `{}` to avoid accidental single-statement binding bugs.
+  - A trailing semicolon (`if (cond);`) creates an empty statement, executing the subsequent block unconditionally.
+  - Multiple independent `if` statements evaluate every condition consecutively.
+- **Key Mental Model:** An `if` statement is a conditional railway switch: truthy diverts to the branch, falsy continues straight ahead.
+- **Common Trap:** Writing `if (x = 5)` instead of `if (x === 5)`, which accidentally reassigns `x` to `5` and evaluates as truthy.
+- **Interview Question:** *"What happens when a non-boolean is passed to an `if` condition?"* $\to$ ECMAScript evaluates the expression using the abstract operation `ToBoolean(argument)`. If the value is one of the 8 falsy values, the branch is skipped; otherwise, it executes.
+- **Code Pattern:**
+  ```javascript
+  // Early-return guard clause pattern
+  function process(user) {
+    if (!user) return null;
+    return user.name;
+  }
+  ```
 
 ---
 

@@ -24,7 +24,9 @@ In reality, the robot takes **two passes**:
 2. **Pass 2 (Action):** It goes back to line 1 and runs the code line-by-line, filling in values and performing calculations.
 
 ### Technical Explanation
-Before a JavaScript engine (such as V8) executes any code, it parses the source text into an Abstract Syntax Tree (AST) and generates bytecode via an interpreter (like Ignition). During this compilation and environment setup step—widely known pedagogically as the **Memory Creation Phase**—the engine creates the **Global Execution Context** (`GEC`). In formal ECMAScript specification terms, this process instantiates the environment records: the **VariableEnvironment** (for `var` declarations) and the **LexicalEnvironment** (for top-level `let`, `const`, and `class` declarations).
+> 🧠 **Teaching Model Notice:** The term "Memory Creation Phase" is an established pedagogical mental model (popularized in JavaScript education) for what the ECMAScript specification formalizes as **Execution Context creation and Environment Record instantiation**.
+
+Before a JavaScript engine (such as V8) executes any code, it parses the source text into an Abstract Syntax Tree (AST) and generates bytecode via an interpreter (like Ignition). During this compilation and environment setup step, the engine creates the **Global Execution Context** (`GEC`). In formal ECMAScript specification terms, this process instantiates the environment records: the **VariableEnvironment** (for `var` declarations) and the **LexicalEnvironment** (for top-level `let`, `const`, and `class` declarations).
 
 ### Before vs After Motivation
 - **Before:** Developers rely blindly on `console.log()` everywhere, guessing why a variable is `undefined` or throwing `ReferenceError`.
@@ -289,13 +291,21 @@ Under the hood, V8's Ignition interpreter generates bytecode registers (`r0`, `r
 
 ## ⚡ 30-Second Revision
 
-- JavaScript runs in two phases: environment setup (memory allocation) and synchronous line-by-line execution.
-- Hoisting does not physically move code lines; it registers bindings in memory prior to line execution.
-- `var` bindings initialize to `undefined`; `let` and `const` bindings remain uninitialized in the TDZ.
-- DevTools shows `var` in `Global` scope and top-level `let`/`const` in `Script` scope.
-- Use `debugger;` or DevTools line gutter breakpoints to pause execution and inspect scopes.
-- Shortcuts: `F8` (Resume), `F10` (Step Over), `F11` (Step Into), `Shift + F11` (Step Out).
-- Conditional breakpoints pause execution only when an expression evaluates to truthy, preventing tedious manual stepping.
+- **Essential Facts:**
+  - JavaScript executes code in two distinct phases: environment setup (parsing/instantiation) and synchronous line-by-line execution.
+  - "Memory Creation Phase" is the standard pedagogical teaching model for ECMAScript Environment Record instantiation.
+  - `var` bindings initialize to `undefined`; `let` and `const` bindings remain uninitialized in the TDZ.
+  - DevTools displays `var` under `Global` and top-level `let`/`const` in an isolated `Script` scope.
+  - Use `debugger;` statements or line gutter breakpoints to pause execution and inspect runtime scopes.
+  - DevTools shortcuts: `F8` (Resume), `F10` (Step Over), `F11` (Step Into), `Shift + F11` (Step Out).
+- **Key Mental Model:** Hoisting does not physically move code lines; the engine allocates and records declarations before line 1 runs.
+- **Common Trap:** Leaving raw `debugger;` statements in production source code, which freezes the web application if user DevTools is open.
+- **Interview Question:** *"What happens in the Memory Creation Phase vs the Code Execution Phase?"* $\to$ During context setup (pedagogically Memory Creation), identifier bindings are allocated in Variable/Lexical environments (`var` initialized to `undefined`, `let`/`const` uninitialized). In Code Execution, statements run sequentially, evaluating expressions and assigning values.
+- **Code Pattern:**
+  ```javascript
+  debugger; // Execution freezes here when DevTools is open
+  const user = "Anurag";
+  ```
 
 ---
 

@@ -144,8 +144,8 @@ User enters numbers and clicks 'Calculate Instantly'
 2. TRADITIONAL INTERPRETED LANGUAGE (Early JavaScript, Early Python):
    [ Source Code ] ──> [ Interpreter reads line 1 ] ──> Executes line 1
                    ──> [ Interpreter reads line 2 ] ──> Executes line 2
-   * Pro: Platform-independent; runs immediately anywhere.
-   * Con: Extremely slow (10x–50x slower than compiled machine code).
+   * Pro: Platform-independent; runs immediately anywhere without prior compilation.
+   * Con: Slower execution because expressions are repeatedly re-parsed and evaluated.
 
 3. MODERN JAVASCRIPT JIT HYBRID (V8, SpiderMonkey):
    [ Source Code ]
@@ -203,11 +203,11 @@ User enters numbers and clicks 'Calculate Instantly'
 ### 1. Thinking JavaScript is an "Interpreted-Only" Language
 - **❌ WRONG:** "JavaScript is slow because it is an interpreted language that reads code line-by-line."
 - **Why it's wrong:** Modern engines do not run pure interpreters. They parse source code into an Abstract Syntax Tree (AST), generate bytecode, profile running code, and compile hot paths directly into machine code using JIT compilers.
-- **✅ CORRECT:** JavaScript is specified as a dynamically typed language with runtime semantics. Modern engines use adaptive Just-In-Time (JIT) compilation to run code at near-native speeds.
+- **✅ CORRECT:** JavaScript is specified as a dynamically typed language with runtime semantics. Modern engines use adaptive Just-In-Time (JIT) compilation to compile heavily executed code into optimized machine instructions.
 
 ### 2. Confusing ECMAScript Specification with Engine Implementation
 - **❌ WRONG:** "V8 is ECMAScript."
-- **Why it's wrong:** ECMAScript is a written document (standardized by Ecma International's TC39 committee) specifying how language constructs must behave. V8 is a concrete software program written in C++ by Google that implements those rules.
+- **Why it's wrong:** ECMAScript is a written specification document (standardized by Ecma International's TC39 committee) specifying how language constructs must behave. V8 is a concrete software program written in C++ by Google that implements those rules.
 - **✅ CORRECT:** ECMAScript is the standard; V8, SpiderMonkey, and JavaScriptCore are concrete engine implementations of that standard.
 
 ### 3. Assuming Atwood's Law is a Technical Guarantee
@@ -230,11 +230,12 @@ If Brendan Eich originally called it "Mocha" and then "LiveScript", why rename i
 ## 10. ⚠️ Edge Cases & Historical Quirks
 
 ### 1. The Undying `typeof null === 'object'` Bug
-In the original 10-day implementation of JavaScript, values were stored with a 32-bit type tag prefix. Object references had a tag of `000`. The primitive value `null` was represented as a NULL pointer (`0x00`), which had all zero bits. Consequently, the type check read the first bits as `000` and reported `null` as an object:
+`typeof null === 'object'` is a historical JavaScript compatibility quirk inherited from early implementations:
+In the original 1995 prototype implementation, values were represented with type tags in their lower bits, where tag `000` designated an Object. `null` was represented as all zero bits, causing the engine's type check routine to read its tag as `000` (Object).
 ```javascript
-console.log(typeof null); // "object" (Historical artifact from 1995!)
+console.log(typeof null); // "object" (Historical quirk from early engine implementation!)
 ```
-When TC39 proposed fixing this in ECMAScript 6, the fix was rejected because fixing it would break thousands of existing websites that relied on `typeof null === 'object'`. This illustrates the web's golden rule: **"Don't break the web."**
+When TC39 considered fixing this in ECMAScript, testing revealed that existing web code relied on `typeof null === 'object'`, which would break backwards compatibility across the web. This illustrates the web's golden rule: **"Don't break the web."**
 
 ### 2. Automatic Semicolon Insertion (ASI)
 Because JavaScript was designed to be forgiving for beginners, the engine automatically inserts missing semicolons at line breaks under specific heuristic rules. However, this creates subtle bugs:
@@ -255,7 +256,7 @@ console.log(getUser()); // undefined! (ASI inserted a semicolon right after 'ret
 
 ### Conceptual: How V8 Revolutionized the Web in 2008
 **Question:** Why did Google create the V8 engine for Chrome in 2008, and how did it change web development?
-**Answer:** Prior to 2008, browser engines executed JavaScript through naive interpretation, making complex web applications (like Google Maps or Gmail) sluggish and memory-heavy. Led by Lars Bak, Google developed V8, an open-source high-performance engine written in C++. V8 compiled JavaScript directly into native machine code before executing it, using hidden classes for fast object property lookups and inline caching. This 10x–20x performance leap proved that web applications could rival native desktop software, directly paving the way for Single Page Applications (SPAs) and server-side runtimes like Node.js.
+**Answer:** Prior to 2008, browser engines executed JavaScript through naive interpretation, making complex web applications (like Google Maps or Gmail) slow and memory-heavy. Led by Lars Bak, Google developed V8, an open-source high-performance engine written in C++. V8 demonstrated that JavaScript could be compiled directly into optimized native machine code using hidden classes for fast property access and inline caching. This substantial performance leap proved that web applications could handle rich client-side logic, paving the way for modern Single Page Applications (SPAs) and server-side runtimes like Node.js.
 
 ### Output Tracing: Automatic Semicolon Insertion
 ```javascript
@@ -317,13 +318,16 @@ In 2009, Ryan Dahl extracted Google's open-source V8 engine from the browser, co
 
 ## ⚡ 30-Second Revision
 
-- **The Creator:** Brendan Eich created JavaScript at Netscape in 10 days in May 1995.
-- **Spec vs Language:** ECMAScript is the standard specification; JavaScript, SpiderMonkey, and V8 are implementations.
-- **Committee:** TC39 (Technical Committee 39) evolves ECMAScript through a 5-stage proposal pipeline (Stages 0–4).
-- **Execution Reality:** Modern engines are hybrid JIT systems (bytecode interpretation + speculative optimizing compilation), not pure line-by-line interpreters.
-- **Runtimes:** JavaScript runs both in browsers (via Web APIs + DOM) and standalone on servers/desktops (via Node.js, Deno, Bun).
-- **Golden Rule:** Absolute backward compatibility ensures 1996 code still executes in 2026+ browsers.
-- **Interview Reflex:** When asked about Java vs JS: cite James Gosling (Java, static OOP, JVM) vs Brendan Eich (JS, dynamic multi-paradigm, browser/JIT engine).
+- **Essential Facts:**
+  - Brendan Eich created JavaScript at Netscape in 10 days in May 1995.
+  - ECMAScript is the language specification; V8, SpiderMonkey, and JavaScriptCore are concrete implementations.
+  - TC39 evolves ECMAScript through a 5-stage proposal pipeline (Stages 0–4).
+  - Modern engines are hybrid JIT systems (bytecode interpretation + speculative optimizing compilation), not pure line-by-line interpreters.
+  - The web enforces strict backward compatibility: historical quirks like `typeof null === 'object'` remain permanently.
+- **Key Mental Model:** ECMAScript is the architectural blueprint; the JavaScript engine is the factory building and running the machine.
+- **Common Trap:** Assuming JavaScript is compiled AOT like C++ or purely interpreted line-by-line like early shell scripts.
+- **Interview Question:** *"What is the difference between ECMAScript and JavaScript?"* $\to$ ECMAScript is the standardized specification document (ECMA-262); JavaScript is a general-purpose programming language implementing that specification with host environment additions.
+- **Code Pattern:** Always write defensive type checks for objects: `typeof x === 'object' && x !== null`.
 
 ---
 

@@ -320,12 +320,21 @@ Variables holding small integers are stored inline as **SmI** (Small Integers, u
 
 ## ⚡ 30-Second Revision
 
-- **The Golden Hierarchy:** Use `const` by default; use `let` only when reassignment is required; never use `var`.
-- **Scope Rule:** `let` and `const` respect `{ ... }` blocks; `var` ignores blocks and leaks to the enclosing function or global scope.
-- **Re-declaration:** `var` permits accidental duplicate declarations; `let` and `const` immediately throw a `SyntaxError`.
-- **Initialization Rule:** `const` must be initialized on the line of declaration (`const x = 1;`); `let` can be declared without initialization (`let x;` starts as `undefined`).
-- **Object Mutability:** `const obj = { a: 1 }` allows `obj.a = 2`. To prevent mutation, wrap with `Object.freeze()`.
-- **TDZ Safety:** `let` and `const` cannot be read or written before declaration, preventing silent bug propagation.
+- **Essential Facts:**
+  - Modern rule: Use `const` by default, use `let` when reassignment is needed, never use `var`.
+  - `let` and `const` are block-scoped and cannot be re-declared within the same scope.
+  - `var` is function/globally scoped and leaks out of blocks (such as `if` and `for`).
+  - Accessing `let` or `const` before declaration triggers a TDZ `ReferenceError`.
+  - `const` creates an immutable variable binding, not an immutable object value.
+- **Key Mental Model:** A variable is a named binding pointing to a value or object identity; `const` locks the identifier binding, not the contents of an object.
+- **Common Trap:** Confusing `undefined` (declared variable with no value assigned) with `not defined` (`ReferenceError` because the identifier was never declared).
+- **Interview Question:** *"Does `const` make objects immutable?"* $\to$ No. `const` prevents reassigning the variable identifier to a different value or reference, but properties within a referenced object can still be mutated unless protected by `Object.freeze()`.
+- **Code Pattern:**
+  ```javascript
+  const user = { name: "Alice" };
+  user.name = "Bob"; // Permitted: mutating property
+  // user = { name: "Charlie" }; // TypeError: Assignment to constant variable
+  ```
 
 ---
 

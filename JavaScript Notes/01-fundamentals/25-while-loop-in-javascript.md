@@ -334,7 +334,7 @@ while (x > 0) {
 
 ### ⚫ IMPLEMENTATION DETAIL — V8 On-Stack Replacement (OSR)
 If a long-running `while` loop executes millions of times inside an unoptimized function, V8 does not wait for the function to return to optimize it. 
-Instead, V8's background compiler compiles optimized machine code for the loop body and swaps the running stack frame in-flight via **On-Stack Replacement (OSR)**, instantly boosting execution speed by up to 100x while the loop is still spinning!
+Instead, V8's background compiler compiles optimized machine code for the loop body and swaps the running stack frame in-flight via **On-Stack Replacement (OSR)**, optimizing execution speed while the loop is actively running!
 
 ---
 
@@ -351,12 +351,23 @@ Instead, V8's background compiler compiles optimized machine code for the loop b
 
 ## ⚡ 30-Second Revision
 
-- `while` checks its condition at the beginning of each iteration; if falsy initially, it never runs.
-- Always include an updater (e.g. `i++`) inside the loop body to avoid infinite loop freezes.
-- Synchronous infinite loops block the main execution thread, preventing UI rendering and input handling.
-- `break` exits the loop entirely; `continue` jumps directly to the next condition check.
-- When iterating an array of length $N$, valid indices run $0$ to $N-1$; guard with `i < arr.length`.
-- Two-pointer scans (`while (left < right)`) provide efficient $O(1)$-space solutions for in-place array tasks.
+- **Essential Facts:**
+  - `while (cond)` tests its condition before each iteration; if falsy initially, it executes zero times.
+  - Every reliable loop requires four parts: initialization, condition check, loop body, and state update.
+  - Omitting or misconfiguring the state update creates an infinite loop that freezes the browser main thread.
+  - `break` exits the loop immediately; `continue` skips to the next condition test.
+  - When traversing an array with `while`, valid index boundaries run from `0` to `arr.length - 1`.
+- **Key Mental Model:** A `while` loop is a repeating checkpoint: verify the entry pass before entering each round; if rejected, proceed past the gate.
+- **Common Trap:** Writing `while (i <= arr.length)`, which reads past the end of the array, returning `undefined` on the final iteration.
+- **Interview Question:** *"What happens to the browser tab if a synchronous infinite `while (true)` loop runs?"* $\to$ The single-threaded JavaScript execution thread is completely starved. Because the call stack never empties, the event loop cannot process UI clicks, timer callbacks, or layout reflows, causing the browser tab to hang and become unresponsive until terminated.
+- **Code Pattern:**
+  ```javascript
+  let i = 0;
+  while (i < items.length) {
+    console.log(items[i]);
+    i++;
+  }
+  ```
 
 ---
 

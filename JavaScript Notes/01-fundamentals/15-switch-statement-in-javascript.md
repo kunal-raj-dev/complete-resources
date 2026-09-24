@@ -344,11 +344,27 @@ When a `switch` statement has many contiguous integer cases (e.g. `0`, `1`, `2`,
 
 ## ⚡ 30-Second Revision
 
-- `switch` evaluates using strict equality (`===`) against each `case`.
-- Always conclude each case block with `break;` or `return` to prevent accidental fall-through.
-- Stack cases back-to-back (`case 1: case 2:`) for intentional fall-through with shared execution.
-- Wrap case contents in curly braces `{}` if defining `let` or `const` variables.
-- The `default:` case handles unmatched inputs, functioning like the trailing `else` of an if-ladder.
+- **Essential Facts:**
+  - `switch` evaluates using strict equality (`===`) against each `case` value.
+  - Conclude each case with `break;` or `return` to prevent accidental fall-through into following cases.
+  - Stack multiple cases together (`case 'A': case 'B':`) for intentional shared logic fall-through.
+  - The entire switch block shares one lexical scope; enclose cases declaring `let` or `const` in `{}`.
+  - The `default:` clause acts as the fallback branch if no cases match.
+- **Key Mental Model:** A `switch` statement is an elevator shaft: execution jumps directly to the matching floor and keeps sliding down floors until hitting a `break`.
+- **Common Trap:** Omitting `break;`, causing execution to spill into subsequent cases and corrupting application state.
+- **Interview Question:** *"Why does declaring `let message = 'hi'` inside two different cases in the same `switch` block throw a SyntaxError?"* $\to$ The entire `{ ... }` block of a `switch` is a single lexical scope. Declaring the same identifier with `let` in multiple cases is an illegal re-declaration; wrap each case body in its own block `{ ... }` to give it a private lexical scope.
+- **Code Pattern:**
+  ```javascript
+  switch (action) {
+    case "start": {
+      const msg = "Starting";
+      console.log(msg);
+      break;
+    }
+    default:
+      console.log("Idle");
+  }
+  ```
 
 ---
 

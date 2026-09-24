@@ -295,12 +295,20 @@ console.log("5:", Boolean(new Boolean(false)));
 
 ## ⚡ 30-Second Revision
 
-- The 8 falsy values: `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`.
-- All other values are truthy—including `"0"`, `" "`, `[]`, and `{}`.
-- All object types (arrays, plain objects, functions) evaluate to `true` under `ToBoolean`.
-- Use `Boolean(x)` or `!!x` to explicitly coerce any value to a primitive boolean.
-- Distinguish between falsy checks and strict value checks: `0` is falsy, but often a legitimate number.
-- `Boolean(new Boolean(false))` evaluates to `true` because the wrapper is an object.
+- **Essential Facts:**
+  - Exactly 8 values are falsy: `false`, `0`, `-0`, `0n`, `""` (empty string), `null`, `undefined`, and `NaN` (plus legacy host `document.all`).
+  - Everything else is truthy, including `"0"`, `"false"`, `[]`, and `{}`.
+  - All objects and arrays are unconditionally truthy in ECMAScript `ToBoolean`.
+  - `Boolean(x)` and `!!x` perform identical abstract `ToBoolean` coercion.
+  - `new Boolean(false)` is an object and therefore evaluates to `true` in conditional checks.
+- **Key Mental Model:** `ToBoolean` is an all-or-nothing check: if a value matches one of the 8 falsy values, it is `false`; every other value in the language is `true`.
+- **Common Trap:** Using truthiness checks for numbers (`if (itemsCount)`) where `0` is a valid quantity, accidentally triggering the fallback.
+- **Interview Question:** *"Why is `Boolean([])` true, but `[] == false` is also true?"* $\to$ `Boolean([])` applies `ToBoolean`, and all objects are truthy. But `[] == false` applies loose equality coercion: `false` coerces to number `0`, and `[]` coerces to primitive `""` which then coerces to `0`, resulting in `0 == 0` (`true`).
+- **Code Pattern:**
+  ```javascript
+  const count = 0;
+  const display = count ?? "No items"; // 0 is preserved
+  ```
 
 ---
 

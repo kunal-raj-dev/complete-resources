@@ -270,12 +270,22 @@ const clean = [5];
 
 ## ⚡ 30-Second Revision
 
-- Arrays are 0-indexed exotic objects whose `.length` tracks the highest index plus one.
-- `typeof [] === 'object'`; always use `Array.isArray(arr)` to test for array instances.
-- Setting `arr.length = 0` instantly empties the array and reclaims allocated elements.
-- The `delete` operator leaves empty holes (`<empty item>`) in arrays; use `splice()` to remove items.
-- Modern `arr.at(-1)` provides convenient negative indexing for the last element.
-- Avoid creating sparse arrays, as engines optimize packed, dense arrays much more effectively.
+- **Essential Facts:**
+  - Arrays are zero-indexed exotic objects whose `.length` property automatically synchronizes with the highest index plus one.
+  - `typeof [] === 'object'`; always use `Array.isArray(val)` to accurately verify array types.
+  - Modifying `.length` directly truncates the array (e.g., `arr.length = 0` clears the array).
+  - Never use `delete arr[i]` because it leaves an empty hole without decrementing `.length`; use `.splice()` instead.
+  - Modern `arr.at(-1)` provides clean negative indexing for accessing trailing elements.
+- **Key Mental Model:** An array is a specialized object whose keys are numerical index strings managed by internal length synchronization logic.
+- **Common Trap:** Writing `new Array(5)` and expecting `[5]`, when it actually constructs an array containing 5 unallocated holes (`[<5 empty slots>]`).
+- **Interview Question:** *"Why does `typeof []` return `'object'` and how do you reliably check for an array across execution realms?"* $\to$ In ECMAScript, arrays are exotic objects, so `typeof` evaluates to `'object'`. Use `Array.isArray(val)`, which inspects the internal `[[Class]]` / `[[ArrayData]]` slot and works reliably even across iframes where each window has a distinct `Array` constructor.
+- **Code Pattern:**
+  ```javascript
+  const list = [10, 20, 30];
+  if (Array.isArray(list)) {
+    console.log("Last element:", list.at(-1));
+  }
+  ```
 
 ---
 

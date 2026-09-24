@@ -20,7 +20,7 @@
 ### Simple Explanation
 If you have an object `user1` and write `const user2 = user1;`, you have NOT copied the object. You have simply made a second name pointing to the exact same object. Changing `user2.name` will change `user1.name`.
 To make an independent duplicate, you must choose between:
-1. **Shallow Copy:** Copies only top-level properties. If a property is an object or array, only its memory address is copied!
+1. **Shallow Copy:** Copies only top-level properties. If a property is an object or array, the object reference is copied, leaving nested objects shared!
 2. **Deep Copy:** Recursively clones every single level of nested objects and arrays so that absolutely zero memory is shared.
 
 ### Technical Explanation
@@ -116,7 +116,7 @@ Trace of Shallow vs Deep Copy:
 
 ---
 
-## 6. Visual Explanation: The 5 Fatal Flaws of `JSON.parse(JSON.stringify())`
+## 6. Visual Explanation: The Fatal Flaws of `JSON.parse(JSON.stringify())`
 
 Many developers still rely on the JSON stringify trick. Here is why it breaks in production:
 
@@ -125,8 +125,9 @@ const complexData = {
   func: () => "Hello",           // 1. FUNCTIONS: Discarded completely!
   un: undefined,                 // 2. UNDEFINED: Discarded completely!
   sym: Symbol("id"),             // 3. SYMBOLS: Discarded completely!
-  date: new Date(),              // 4. DATES: Converted to plain strings!
-  nan: NaN                       // 5. NaN: Converted to null!
+  date: new Date(),              // 4. DATES: Converted to plain strings (methods lost)!
+  nan: NaN,                      // 5. NaN & Infinity: Converted to null!
+  // big: 100n                  // 6. BIGINT: Throws TypeError (Cannot serialize BigInt)!
 };
 
 const brokenClone = JSON.parse(JSON.stringify(complexData));
@@ -135,7 +136,10 @@ console.log(brokenClone);
 // Notice: func, un, and sym were completely WIPED OUT!
 ```
 
-> **Circular Reference Crash:** If an object references itself (`obj.self = obj;`), `JSON.stringify(obj)` throws an unrecoverable `TypeError: Converting circular structure to JSON`!
+> ⚠️ **Further JSON Limitations:**
+> - **Circular References:** If an object references itself (`obj.self = obj;`), `JSON.stringify(obj)` throws `TypeError: Converting circular structure to JSON`.
+> - **Prototype Loss:** Custom class instances lose their prototypes, turning into plain object literals (`{}`).
+> - **BigInt Support:** Attempting to stringify a `BigInt` throws a fatal `TypeError`.
 
 ---
 
@@ -284,12 +288,20 @@ In modern JavaScript (2022+), you can replace `cloneDeep` with native `structure
 
 ## ⚡ 30-Second Revision
 
-- `=` duplicates the object reference without copying any data.
-- `{ ...obj }` and `Object.assign({}, obj)` create shallow copies; nested objects remain linked.
-- Native `structuredClone(obj)` produces deep clones of nested objects and arrays.
-- `structuredClone()` cannot clone functions or DOM nodes (`DataCloneError`).
-- Avoid `JSON.parse(JSON.stringify())` due to loss of Dates, undefined, Symbols, and crash on circular references.
-- Use shallow copying at the modified level for state updates in React to preserve unchanged references.
+- **Essential Facts:**
+  - Reference assignment (`b = a`) copies only the object reference; no new object is created.
+  - Shallow copies (`{ ...obj }`, `Object.assign()`) clone top-level properties, but nested objects remain shared references.
+  - Native `structuredClone()` produces deep clones, correctly handling circular references, Dates, Sets, Maps, and TypedArrays.
+  - `structuredClone()` throws a `DataCloneError` on functions, class instances, or DOM nodes.
+  - Avoid `JSON.parse(JSON.stringify())` due to data loss (functions, `undefined`, `Symbol`, `BigInt`, `Date` methods) and crashing on circular references.
+- **Key Mental Model:** Reference copy gives another person your car keys; shallow copy duplicates the car body but keeps the original engine inside; deep copy manufactures an entirely separate car from scratch.
+- **Common Trap:** Mutating a nested property in a shallow copy (`{ ...user }`), mistakenly believing that spreading an object deeply clones nested child objects.
+- **Interview Question:** *"What are the limitations of `structuredClone()` compared to a custom cloner?"* $\to$ `structuredClone()` cannot clone functions, methods, or DOM nodes (throws `DataCloneError`), ignores Symbol properties, and drops custom prototype chains (instances become plain objects).
+- **Code Pattern:**
+  ```javascript
+  // Deep clone a nested structure safely
+  const cloned = structuredClone(state);
+  ```
 
 ---
 

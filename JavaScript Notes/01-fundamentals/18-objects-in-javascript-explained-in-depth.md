@@ -209,7 +209,7 @@ console.log(profile.address?.city); // undefined (Safe, no crash!)
 > `obj[1]` and `obj["1"]` access the exact same property!
 
 - **Q: Does `const user = {}` prevent you from adding or modifying properties?**
-  - *Click Answer:* **No!** `const` only locks the memory address binding. You cannot reassign `user = {}` (pointing to a new address), but you can freely mutate properties inside the existing object.
+  - *Click Answer:* **No!** `const` only creates an immutable variable binding. You cannot reassign `user = {}` (rebinding the identifier to a new reference), but you can freely mutate properties inside the referenced object.
 - **Q: What does `delete obj.prop` return?**
   - *Click Answer:* It returns a boolean (`true` if deleted or if property never existed, `false` only if the property is non-configurable).
 
@@ -313,12 +313,22 @@ console.log(Object.hasOwn(user, "toString")); // false
 
 ## ⚡ 30-Second Revision
 
-- Objects group related properties and methods into key-value collections.
-- Dot notation is used for valid literal identifiers; bracket notation is mandatory for dynamic keys and non-identifier names.
-- Object keys are automatically converted to strings (or Symbols).
-- Objects are copied by reference, not by value; assigning one object variable to another shares mutations.
-- Check property existence using `Object.hasOwn(obj, "prop")` to avoid prototype pollution checks.
-- Optional chaining (`?.`) allows safe navigation across deeply nested, potentially absent object properties.
+- **Essential Facts:**
+  - Objects are composite reference types mapping String or Symbol keys to arbitrary values.
+  - Dot notation (`obj.key`) requires valid identifier tokens; bracket notation (`obj[key]`) evaluates dynamic expressions.
+  - Object keys are automatically converted to strings (or Symbols).
+  - Variables hold object references; assigning `const b = a` copies the reference, sharing mutations.
+  - Optional chaining (`?.`) allows safe navigation across nested properties without throwing TypeErrors.
+  - Use `Object.hasOwn(obj, "prop")` to check direct properties without prototype chain lookups.
+- **Key Mental Model:** An object is a collection of named slots in heap memory; variables store a reference ticket to access that collection.
+- **Common Trap:** Using an object as a property key in another object (`obj[anotherObj] = 123`), which coerces the key to string `"[object Object]"` and unintentionally overwrites other object keys.
+- **Interview Question:** *"Does `const` make an object immutable?"* $\to$ No. `const` creates an immutable variable binding (preventing reassignment to a new reference), but the contents of the object itself remain fully mutable unless sealed or frozen with `Object.freeze()`.
+- **Code Pattern:**
+  ```javascript
+  const user = { name: "Anurag", role: "Instructor" };
+  const property = "name";
+  console.log(user[property]); // Dynamic access: "Anurag"
+  ```
 
 ---
 

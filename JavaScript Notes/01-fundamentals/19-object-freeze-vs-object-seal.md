@@ -287,12 +287,19 @@ There is a three-tiered ladder of immutability in JavaScript:
 
 ## ⚡ 30-Second Revision
 
-- `const` secures the variable binding; `Object.freeze()` secures the object properties.
-- `Object.seal()` blocks addition and deletion of keys, while still allowing modifications to existing values.
-- `Object.freeze()` blocks adding, deleting, and modifying properties completely.
-- Freezing is strictly shallow; nested object references remain fully mutable without a recursive `deepFreeze`.
-- `Object.isFrozen(obj)` and `Object.isSealed(obj)` check protection status.
-- Once frozen, an object cannot be unfrozen; create a copy to make changes.
+- **Essential Facts:**
+  - `const` prevents identifier reassignment; `Object.freeze()` prevents mutating object properties.
+  - `Object.seal()` prevents adding and deleting keys, but permits mutating existing property values.
+  - `Object.freeze()` prevents adding, deleting, and updating properties entirely.
+  - Freezing and sealing are strictly shallow; nested objects remain mutable unless recursively frozen.
+  - In strict mode (`"use strict"`), attempting to mutate a frozen or sealed property throws a `TypeError`.
+- **Key Mental Model:** `Object.seal()` glues the door shut (no new rooms, no deleting rooms, but you can rearrange furniture); `Object.freeze()` encases the entire house in solid ice.
+- **Common Trap:** Assuming `Object.freeze()` protects nested child objects (`frozenParent.child.prop = "hacked"` succeeds unless a recursive deep freeze is used).
+- **Interview Question:** *"What is the difference between `Object.freeze()` and `Object.seal()`?"* $\to$ Both prevent adding and deleting properties (`configurable: false`). However, `seal()` keeps `writable: true` (existing properties can be modified), whereas `freeze()` sets `writable: false` (no modifications allowed).
+- **Code Pattern:**
+  ```javascript
+  const config = Object.freeze({ api: "https://api.com", timeout: 5000 });
+  ```
 
 ---
 

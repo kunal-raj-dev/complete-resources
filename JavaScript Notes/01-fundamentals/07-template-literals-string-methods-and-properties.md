@@ -314,12 +314,19 @@ console.log(result);
 
 ## ⚡ 30-Second Revision
 
-- String primitives are immutable; methods always return a new string, never modifying the original.
-- `.length` is an instance property, not a method (`str.length`, not `str.length()`).
-- Bracket access (`str[0] = "X"`) fails silently in non-strict mode and throws in strict mode without mutating the string.
-- Template literals (backticks) permit multi-line strings and inline expression interpolation (`${expr}`).
-- `slice(start, end)` handles positive and negative indices; `substring()` treats negative numbers as `0`.
-- Autoboxing is the language specification mechanism that exposes object wrapper methods on primitive types.
+- **Essential Facts:**
+  - String primitives are strictly immutable; methods always return a new string, never modifying the original.
+  - `.length` is a property, not a function (`str.length`, never `str.length()`).
+  - Indexing is zero-based; `str.at(-1)` cleanly retrieves the last character with negative indexing.
+  - Template literals (backticks) permit multi-line formatting and inline expression interpolation (`${expr}`).
+  - `slice(start, end)` supports negative indices from the end, whereas `substring()` coerces negative values to `0`.
+- **Key Mental Model:** Strings are immutable sequences of UTF-16 code units; property access triggers temporary wrapper object semantics (autoboxing).
+- **Common Trap:** Attempting in-place character assignment (`str[0] = "X"`), which fails silently in non-strict mode or throws in strict mode.
+- **Interview Question:** *"Why can you call methods like `.toUpperCase()` on primitive strings if they are not objects?"* $\to$ Autoboxing. When a property or method is accessed on a primitive string, ECMAScript specifies temporary object wrapper semantics (`new String(str)`) to resolve the method from `String.prototype`, which is then immediately discarded.
+- **Code Pattern:**
+  ```javascript
+  const format = (first, last) => `${first.trim()} ${last.trim().toUpperCase()}`;
+  ```
 
 ---
 

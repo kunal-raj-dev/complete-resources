@@ -307,12 +307,19 @@ console.log(formatted); // "₹12,50,000.75"
 
 ## ⚡ 30-Second Revision
 
-- `Math` is a static namespace object, not a constructor (`new Math()` is invalid).
-- `Math.floor()` rounds towards $-\infty$; `Math.ceil()` rounds towards $+\infty$.
-- `Math.trunc()` chops decimals towards $0$; `Math.round()` rounds to the nearest integer.
-- Exponentiation operator `**` evaluates right-to-left (`2 ** 3 ** 2 = 512`).
-- Standard random integer formula: `Math.floor(Math.random() * (max - min + 1)) + min`.
-- `Math.random()` is a pseudo-random generator; use `crypto.getRandomValues()` for cryptography or authentication.
+- **Essential Facts:**
+  - `Math` is a built-in static namespace object, not a constructor (`new Math()` throws a `TypeError`).
+  - `Math.floor()` rounds down toward $-\infty$, whereas `Math.trunc()` cuts off decimal fractions toward zero.
+  - `Math.ceil()` rounds up toward $+\infty$, and `Math.round()` rounds to the nearest integer.
+  - The exponentiation operator `**` is right-associative (`2 ** 3 ** 2` evaluates as `2 ** (3 ** 2) = 512`).
+  - `Math.random()` produces a pseudo-random floating-point value in $[0, 1)$ and is not cryptographically secure.
+- **Key Mental Model:** `Math` is a static toolkit of pure mathematical functions and constants operating on IEEE 754 64-bit numbers.
+- **Common Trap:** Assuming `Math.floor(-2.1)` produces `-2` (it produces `-3` because it rounds down toward negative infinity).
+- **Interview Question:** *"Why does `0.1 + 0.2 !== 0.3` in JavaScript and how do you handle monetary math safely?"* $\to$ Binary floating-point numbers (IEEE 754) cannot represent fractions like 1/10 exactly in base 2. In production, store currency values as integer cents/paise or use `Intl.NumberFormat` for presentation.
+- **Code Pattern:**
+  ```javascript
+  const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  ```
 
 ---
 

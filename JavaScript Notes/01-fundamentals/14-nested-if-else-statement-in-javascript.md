@@ -303,11 +303,24 @@ Refactoring to guard clauses or lookup objects keeps cognitive complexity near 1
 
 ## ⚡ 30-Second Revision
 
-- Inner `if` blocks execute only after all outer parent conditions evaluate to truthy.
-- Lexical scoping keeps `let` and `const` variables contained within their declared inner block.
-- Without braces, an `else` attaches to the immediately preceding `if` (the dangling else trap).
-- Deep nesting increases cognitive complexity; flatten code using early returns (guard clauses).
-- Combine straightforward interdependent conditions using logical `&&` to avoid excessive indentation.
+- **Essential Facts:**
+  - Nested `if` blocks execute only when all enclosing parent conditions have evaluated to truthy.
+  - Lexical scoping keeps `let` and `const` variables contained within their declared block `{}`.
+  - Without braces, an `else` attaches to the immediately preceding `if` (the dangling else trap).
+  - Deep nesting inflates cognitive complexity and creates hard-to-maintain "pyramids of doom".
+  - Flatten nested branches into linear code using early-return guard clauses or `&&` operators.
+- **Key Mental Model:** Nested `if` statements are Russian nesting dolls: each layer can only be reached if the outer layer opens.
+- **Common Trap:** Omitting braces around nested single-statement `if` structures, causing an `else` to bind to the wrong `if` condition.
+- **Interview Question:** *"How do you refactor deeply nested conditionals into clean, maintainable code?"* $\to$ Use guard clauses by inverting error/exit conditions and returning early, combine non-branching criteria with `&&`, or extract sub-decision logic into dedicated helper functions.
+- **Code Pattern:**
+  ```javascript
+  // Guard clause pattern
+  function check(user) {
+    if (!user) return false;
+    if (user.age < 18) return false;
+    return user.isActive;
+  }
+  ```
 
 ---
 

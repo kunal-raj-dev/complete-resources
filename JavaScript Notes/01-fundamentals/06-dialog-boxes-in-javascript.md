@@ -275,12 +275,22 @@ The modern HTML standard provides native, non-blocking, fully accessible modals 
 
 ## ⚡ 30-Second Revision
 
-- `alert()` broadcasts messages and returns `undefined`.
-- `confirm()` asks for user confirmation and returns `true` or `false`.
-- `prompt()` collects textual input, returning `string` on OK and `null` on Cancel/Escape.
-- Native dialogs synchronously freeze main-thread execution, animations, and timers.
-- Always check `input === null` first before validating `input.trim() === ""`.
-- Production applications favor HTML `<dialog>` (`showModal()`) or accessible UI component modals.
+- **Essential Facts:**
+  - `alert(msg)` displays information and returns `undefined`.
+  - `confirm(msg)` asks for confirmation and returns a boolean (`true`/`false`).
+  - `prompt(msg)` collects textual input, returning a string on OK and `null` on Cancel/Escape.
+  - Native dialogs synchronously freeze main-thread execution, timers, and animations in the tab.
+  - Modern production web applications use the HTML `<dialog>` element (`showModal()`) or accessible custom modals instead.
+- **Key Mental Model:** Native dialogs are modal synchronous pauses handled by the browser host, freezing the JavaScript event loop until closed.
+- **Common Trap:** Assuming `prompt()` returns `""` on Cancel (it returns `null`; calling `.trim()` on it without a null-check throws `TypeError`).
+- **Interview Question:** *"Why are `alert()`, `prompt()`, and `confirm()` discouraged in production web applications?"* $\to$ They synchronously block the main thread and event loop, cannot be styled or themed with CSS, disrupt accessibility/screen readers, and create poor user experience.
+- **Code Pattern:**
+  ```javascript
+  const input = prompt("Enter your name:");
+  if (input !== null && input.trim() !== "") {
+    console.log(`Hello, ${input.trim()}!`);
+  }
+  ```
 
 ---
 

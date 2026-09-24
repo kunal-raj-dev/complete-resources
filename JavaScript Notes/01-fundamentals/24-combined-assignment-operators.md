@@ -276,12 +276,21 @@ In V8's Ignition interpreter:
 
 ## ⚡ 30-Second Revision
 
-- `+=`, `-=`, `*=`, `/=` update variables in place without repeating the variable name.
-- Postfix `x++` yields the current value before incrementing `x`.
-- Prefix `++x` increments `x` first and yields the new value.
-- Reassignment operators require mutable `let` bindings (`const` throws `TypeError`).
-- `x += "text"` converts `x` to a string and concatenates.
-- Logical assignment operators (`??=`, `||=`) only execute the assignment if the logical condition passes.
+- **Essential Facts:**
+  - Compound assignment operators (`+=`, `-=`, `*=`, `/=`) evaluate the operation and reassign the result to the identifier.
+  - Postfix (`x++`) returns the current value before incrementing `x`.
+  - Prefix (`++x`) increments `x` first and returns the incremented value.
+  - Increment/assignment operators require reassignable variable bindings (`let`); applying them to `const` throws a `TypeError`.
+  - Logical assignment operators (`&&=`, `||=`, `??=`) short-circuit and perform the assignment only if the condition passes.
+- **Key Mental Model:** Postfix evaluates then increments ("use first, update later"); prefix increments then evaluates ("update first, use now").
+- **Common Trap:** Writing `x = x++`, which evaluates `x++` (returning the old value) and assigns that old value back into `x`, discarding the increment.
+- **Interview Question:** *"What is the difference between `let y = x++` and `let y = ++x`?"* $\to$ `x++` evaluates to `x`'s current value before incrementing, so `y` receives the un-incremented value. `++x` increments `x` first, so `y` receives the newly incremented value.
+- **Code Pattern:**
+  ```javascript
+  let count = 0;
+  count += 5; // count is 5
+  const current = count++; // current is 5, count is 6
+  ```
 
 ---
 

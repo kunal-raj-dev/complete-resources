@@ -151,7 +151,7 @@ The time window between entering a block scope and the physical execution of a `
 <details>
 <summary><b>4. Why does <code>const obj = {}</code> allow mutating properties inside the object?</b></summary>
 
-Because `const` creates an immutable binding between the variable identifier and its memory address on the heap. You cannot reassign the variable to point to a different address (`obj = {}`), but the contents of the heap object at that address remain fully mutable.
+Because `const` creates an immutable binding for the variable identifier. You cannot reassign the identifier to a different value or object reference (`obj = {}`), but the contents of the referenced object remain fully mutable unless protected by `Object.freeze()`.
 </details>
 
 <details>
@@ -247,7 +247,7 @@ Because `Object.freeze()` is strictly shallow. It freezes the immediate properti
 <details>
 <summary><b>20. What is the difference between a Shallow Copy and a Deep Copy?</b></summary>
 
-A shallow copy duplicates the top-level container, but any nested objects or arrays are copied by reference (sharing memory). A deep copy recursively duplicates every nested object and array so no memory addresses are shared.
+A shallow copy duplicates the top-level container, but any nested objects or arrays are copied by reference (sharing identity). A deep copy recursively duplicates every nested object and array so no composite object references are shared.
 </details>
 
 <details>

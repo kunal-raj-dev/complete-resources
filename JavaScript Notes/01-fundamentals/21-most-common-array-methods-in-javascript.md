@@ -270,12 +270,20 @@ Modern JavaScript introduced immutable counterparts to all mutating methods:
 
 ## ⚡ 30-Second Revision
 
-- `push()` and `pop()` add and remove items at the end of the array; `unshift()` and `shift()` work at the start.
-- `push()`/`unshift()` return the new array length; `pop()`/`shift()` return the removed element.
-- `slice(start, end)` returns a shallow copy of a portion of an array without mutating it.
-- `splice(start, count, ...items)` modifies the original array and returns the removed items as an array.
-- Always provide a compare callback `(a, b) => a - b` when sorting numbers with `sort()`.
-- Use ES2023 `toSorted()`, `toReversed()`, and `toSpliced()` when building pure/immutable state logic.
+- **Essential Facts:**
+  - `push()` and `pop()` append and remove items at the end; `unshift()` and `shift()` insert and remove at the start.
+  - `push()` and `unshift()` return the updated length; `pop()` and `shift()` return the removed element.
+  - `slice(start, end)` returns a shallow non-mutating copy; `splice(start, count, ...items)` mutates the array in-place.
+  - `sort()` converts elements to strings by default; numerical sorting requires a comparator callback `(a, b) => a - b`.
+  - ES2023 provides non-mutating counterparts: `toSorted()`, `toReversed()`, and `toSpliced()`.
+- **Key Mental Model:** Array methods divide strictly into in-place mutators (modifying the existing instance) and pure producers (returning a new instance).
+- **Common Trap:** Calling `[10, 2, 20].sort()` without a callback, resulting in `[10, 20, 2]` because numbers are sorted lexicographically as strings.
+- **Interview Question:** *"What is the difference between `slice()` and `splice()`?"* $\to$ `slice(start, end)` is non-mutating and returns a new shallow copy of elements between indices. `splice(start, deleteCount, ...items)` is mutating, modifying the original array by deleting and/or inserting elements, and returning an array of deleted elements.
+- **Code Pattern:**
+  ```javascript
+  const numbers = [40, 100, 1, 5, 25, 10];
+  const sorted = numbers.toSorted((a, b) => a - b); // Pure, non-mutating
+  ```
 
 ---
 

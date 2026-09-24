@@ -194,8 +194,8 @@ if (input === 0) { ... }
 
 ### Mistake 3: Comparing arrays or objects directly
 ```javascript
-// ❌ WRONG: Compares memory references, NOT contents!
-console.log([1, 2] === [1, 2]); // false! (Two different memory addresses)
+// ❌ WRONG: Compares object reference identities, NOT contents!
+console.log([1, 2] === [1, 2]); // false! (Different object identities in memory)
 console.log({} === {});         // false!
 ```
 
@@ -227,6 +227,18 @@ console.log([] == ![]); // true!
 4. Coercion converts `[]` to primitive string `""`: `"" == 0`.
 5. Coercion converts `""` to number `0`: `0 == 0`.
 6. Result: `true`!
+
+### The `null` Comparison Paradox (`null > 0`, `null == 0`, `null >= 0`)
+```javascript
+console.log(null > 0);  // false
+console.log(null == 0); // false
+console.log(null >= 0); // true!
+```
+**Why does this happen?**
+- **Equality (`==`):** Under ECMAScript specification rules, `null` only loosely equals `undefined` (`null == undefined`). The algorithm does not coerce `null` to a numeric value when compared with numbers. Hence, `null == 0` evaluates to `false`.
+- **Relational Comparisons (`<`, `>`, `<=`, `>=`):** Relational operators coerce operands via `ToNumeric()`. `ToNumeric(null)` becomes `+0`.
+  - For `null > 0`, the engine evaluates `+0 > 0`, which is `false`.
+  - For `null >= 0`, the specification algorithm evaluates the inverse relational check: `!(null < 0)`. Because `null < 0` evaluates `+0 < 0` (`false`), the expression resolves to `!(false)`, which is **`true`**!
 
 ---
 
@@ -294,12 +306,20 @@ In enterprise codebases and tech giants (Google, Meta, Amazon), the ESLint rule 
 
 ## ⚡ 30-Second Revision
 
-- Strict equality (`===`) requires matching types and values; loose equality (`==`) forces coercion.
-- Default to `===` in modern JavaScript to eliminate coercion anomalies.
-- `null == undefined` is `true`, but neither loosely equals any other value.
-- Strings compare lexicographically (`"10" < "9"` is `true`). Always coerce to numbers when comparing numeric strings.
-- `NaN` is not equal to itself (`NaN === NaN` is `false`); use `Number.isNaN()`.
-- Equality between objects tests whether both variables refer to the exact same object reference in memory.
+- **Essential Facts:**
+  - Strict equality (`===`) checks both value and type without type coercion.
+  - Loose equality (`==`) forces operands through the Abstract Equality Comparison algorithm.
+  - `null == undefined` is `true`, but neither loosely equals any other value.
+  - String comparisons are lexicographical: `"10" < "9"` is `true` because character code `"1"` precedes `"9"`.
+  - In relational checks (`>=`, `<=`), `null` coerces to `0`, making `null >= 0` evaluate to `true` while `null == 0` is `false`.
+- **Key Mental Model:** Strict equality tests identical values or shared object reference identities; loose equality transforms types before comparing.
+- **Common Trap:** Comparing two separate array or object instances directly (`[] === []` is `false` because they have distinct reference identities).
+- **Interview Question:** *"Why is `null >= 0` true when `null == 0` and `null > 0` are both false?"* $\to$ Equality `==` does not convert `null` to a number (it only equals `undefined`). Relational operators (`>=`) convert `null` via `ToNumeric()` to `0`, evaluating `!(null < 0)` which becomes `!(0 < 0) = true`.
+- **Code Pattern:**
+  ```javascript
+  // Safe comparison
+  if (typeof val === "number" && val >= 0) { /* ... */ }
+  ```
 
 ---
 
