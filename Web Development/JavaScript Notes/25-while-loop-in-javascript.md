@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #25  
+> **Video ID:** `IoDfreDgTgM`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=IoDfreDgTgM)  
+> **Duration:** 29:57  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - Why loops exist and how they eliminate repetitive copy-pasted code.

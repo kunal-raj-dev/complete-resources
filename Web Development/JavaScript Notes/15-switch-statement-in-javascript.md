@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #15  
+> **Video ID:** `ebJVbq6BDFI`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=ebJVbq6BDFI)  
+> **Duration:** 51:50  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The syntax and control flow of `switch`, `case`, `break`, and `default`.

@@ -1,5 +1,19 @@
 # Episode 55 — How to Apply Styles in JavaScript (Inline Styles, `cssText`, & `classList`)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #55  
+> **Video ID:** `KW9DiBSVC_c`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=KW9DiBSVC_c)  
+> **Duration:** 43:30  
+> **Transcript:** `.transcripts/55_KW9DiBSVC_c.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The 4 ways to style elements in JavaScript and which one is the modern industry standard.
 - How to write inline CSS using JavaScript camelCase properties (`backgroundColor`, `fontSize`).

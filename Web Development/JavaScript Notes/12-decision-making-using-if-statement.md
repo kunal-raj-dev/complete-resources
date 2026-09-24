@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #12  
+> **Video ID:** `6-dv7UETgJg`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=6-dv7UETgJg)  
+> **Duration:** 57:12  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How the `if` statement alters linear code execution to create dynamic decision branches.

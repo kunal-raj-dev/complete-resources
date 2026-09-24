@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #04  
+> **Video ID:** `RFx0PnTqxfI`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=RFx0PnTqxfI)  
+> **Duration:** 01:05:18  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What a variable is under the hood and how JavaScript allocates space for it in memory.

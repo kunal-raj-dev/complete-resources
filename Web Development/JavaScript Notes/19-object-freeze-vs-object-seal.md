@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #19  
+> **Video ID:** `K2v08vu-tK0`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=K2v08vu-tK0)  
+> **Duration:** 29:54  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - Why declaring an object with `const` does **NOT** prevent its properties from being modified or deleted.

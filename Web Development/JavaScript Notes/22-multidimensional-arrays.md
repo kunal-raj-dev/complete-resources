@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #22  
+> **Video ID:** `hhO8aiDgN9A`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=hhO8aiDgN9A)  
+> **Duration:** 14:40  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What **Multidimensional Arrays** are and why they are simply "arrays inside arrays".

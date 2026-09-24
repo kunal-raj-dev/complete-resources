@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #03  
+> **Video ID:** `-3H3XJHwzRI`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=-3H3XJHwzRI)  
+> **Duration:** 38:02  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The two fundamental data categories in JavaScript: **Primitives** vs **Non-Primitives (Objects)**.

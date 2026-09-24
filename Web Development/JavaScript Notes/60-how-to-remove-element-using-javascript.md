@@ -1,5 +1,19 @@
 # Episode 60 — How to Remove Elements Using JavaScript (`remove` vs. `removeChild`)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #60  
+> **Video ID:** `TBSNNHYwu1g`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=TBSNNHYwu1g)  
+> **Duration:** 14:08  
+> **Transcript:** `.transcripts/60_TBSNNHYwu1g.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The modern way to delete elements directly using `element.remove()`.
 - The legacy approach (`parent.removeChild(child)`) and why it still exists.

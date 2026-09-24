@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #17  
+> **Video ID:** `Gqlv6inCZqI`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=Gqlv6inCZqI)  
+> **Duration:** 53:31  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The JavaScript-level semantic model: **variables as bindings** and **object identity**.

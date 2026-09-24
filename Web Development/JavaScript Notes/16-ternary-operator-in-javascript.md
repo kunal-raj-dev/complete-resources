@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #16  
+> **Video ID:** `uO0RRCBsEIY`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=uO0RRCBsEIY)  
+> **Duration:** 22:45  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What makes the conditional operator **ternary** (the only operator in JavaScript that requires three operands).

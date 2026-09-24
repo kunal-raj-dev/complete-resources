@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #11  
+> **Video ID:** `hjSSoCRU_nc`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=hjSSoCRU_nc)  
+> **Duration:** 58:01  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The 3 logical operators: **Logical AND (`&&`)**, **Logical OR (`||`)**, and **Logical NOT (`!`)**.

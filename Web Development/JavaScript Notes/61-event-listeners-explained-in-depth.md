@@ -1,5 +1,19 @@
 # Episode 61 — Event Listeners Explained in Depth (`addEventListener` vs. `onclick`)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #61  
+> **Video ID:** `5mo0xQu4FOM`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=5mo0xQu4FOM)  
+> **Duration:** 58:57  
+> **Transcript:** `.transcripts/61_5mo0xQu4FOM.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - What an event listener actually is and how it powers web interactivity.
 - The 3 ways to bind events and why `addEventListener()` is the only one you should use in production.

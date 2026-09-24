@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #23  
+> **Video ID:** `l_YFa0SKqtY`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=l_YFa0SKqtY)  
+> **Duration:** 51:39  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The 3 levels of copying: **Reference Assignment**, **Shallow Copy**, and **Deep Copy**.

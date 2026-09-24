@@ -1,5 +1,19 @@
 # Episode 58 — Difference Between `append` and `appendChild` in JavaScript DOM
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #58  
+> **Video ID:** `rSX0sYwPnZg`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=rSX0sYwPnZg)  
+> **Duration:** 42:40  
+> **Transcript:** `.transcripts/58_rSX0sYwPnZg.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The 3 fundamental differences between `append()` and `appendChild()`.
 - Why `appendChild()` throws a `TypeError` if you pass it a plain text string.

@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #67  
+> **Video ID:** `-HUZBU0H1VA`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=-HUZBU0H1VA)  
+> **Duration:** 19:50  
+> **Transcript:** `.transcripts/67_-HUZBU0H1VA.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What event delegation is and why it forms the backbone of performant frontend applications.

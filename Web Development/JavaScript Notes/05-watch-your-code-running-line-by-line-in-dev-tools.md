@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #05  
+> **Video ID:** `FMhPjmO0ziE`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=FMhPjmO0ziE)  
+> **Duration:** 46:14  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How JavaScript executes code in **Two Distinct Phases**: The **Memory Creation Phase** and the **Code Execution Phase**.

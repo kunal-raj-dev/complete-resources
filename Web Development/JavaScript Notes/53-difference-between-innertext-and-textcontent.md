@@ -1,5 +1,19 @@
 # Episode 53 — `innerText` vs. `textContent` vs. `innerHTML` in JavaScript
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #53  
+> **Video ID:** `83u35YfNE1w`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=83u35YfNE1w)  
+> **Duration:** 16:42  
+> **Transcript:** `.transcripts/53_83u35YfNE1w.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The practical and architectural difference between `textContent`, `innerText`, and `innerHTML`.
 - Why `textContent` reads the raw DOM tree while `innerText` reads rendered screen pixels.

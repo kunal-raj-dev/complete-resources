@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #01  
+> **Video ID:** `5JFrFM3pj5s`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=5JFrFM3pj5s)  
+> **Duration:** 30:09  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The historical necessity that gave birth to JavaScript at Netscape in 1995.

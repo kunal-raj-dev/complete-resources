@@ -1,5 +1,19 @@
 # Episode 59 — Creating Elements in JavaScript (`document.createElement`)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #59  
+> **Video ID:** `wl68fLJy_DU`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=wl68fLJy_DU)  
+> **Duration:** 01:01:33  
+> **Transcript:** `.transcripts/59_wl68fLJy_DU.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - How to create brand-new HTML elements out of thin air using `document.createElement()`.
 - The 3-phase lifecycle of a dynamic element: **Create $\to$ Configure $\to$ Attach**.

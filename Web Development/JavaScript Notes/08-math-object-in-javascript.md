@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #08  
+> **Video ID:** `H3-1EQW2evA`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=H3-1EQW2evA)  
+> **Duration:** 49:59  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How JavaScript performs arithmetic: `+`, `-`, `*`, `/`, `%` (Remainder), and `**` (Exponentiation).

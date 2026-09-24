@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #24  
+> **Video ID:** `AnVdRB2n7kg`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=AnVdRB2n7kg)  
+> **Duration:** 27:29  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How **Compound Assignment Operators** (`+=`, `-=`, `*=`, `/=`, `%=`, `**=`) simplify arithmetic in-place.

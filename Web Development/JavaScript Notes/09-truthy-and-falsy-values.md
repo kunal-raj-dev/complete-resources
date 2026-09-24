@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #09  
+> **Video ID:** `UPARgGhfb5E`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=UPARgGhfb5E)  
+> **Duration:** 07:15  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What **Truthy** and **Falsy** actually mean in JavaScript runtime evaluation.

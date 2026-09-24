@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #13  
+> **Video ID:** `7lld3Xk5usQ`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=7lld3Xk5usQ)  
+> **Duration:** 48:06  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How `else if` and `else` convert disjointed conditional checks into an **optimized, mutually exclusive decision chain**.

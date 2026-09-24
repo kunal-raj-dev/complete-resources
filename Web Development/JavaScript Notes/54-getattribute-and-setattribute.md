@@ -1,5 +1,19 @@
 # Episode 54 — `getAttribute` and `setAttribute` in JavaScript (Attributes vs. Properties)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #54  
+> **Video ID:** `38mNZls3lUU`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=38mNZls3lUU)  
+> **Duration:** 27:29  
+> **Transcript:** `.transcripts/54_38mNZls3lUU.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The critical difference between an **HTML Attribute** and a **JavaScript DOM Property**.
 - How to read, write, check, and delete attributes using `getAttribute`, `setAttribute`, `hasAttribute`, and `removeAttribute`.

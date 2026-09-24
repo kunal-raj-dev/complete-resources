@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #07  
+> **Video ID:** `Z4x2EgRkJ1g`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=Z4x2EgRkJ1g)  
+> **Duration:** 01:19:46  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How JavaScript stores strings as zero-indexed sequences of UTF-16 code units.

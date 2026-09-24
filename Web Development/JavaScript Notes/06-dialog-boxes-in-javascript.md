@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #06  
+> **Video ID:** `aHayyIbxIAo`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=aHayyIbxIAo)  
+> **Duration:** 15:03  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The syntax, purpose, and behavior of the 3 native browser dialog methods: `alert()`, `confirm()`, and `prompt()`.

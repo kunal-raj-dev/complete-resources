@@ -1,5 +1,19 @@
 # Episode 52 — Selecting Elements in JavaScript (DOM Selectors Deep-Dive)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #52  
+> **Video ID:** `fOKfCNk7TMA`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=fOKfCNk7TMA)  
+> **Duration:** 59:15  
+> **Transcript:** `.transcripts/52_fOKfCNk7TMA.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - How to find any element on a webpage without fragile manual tree navigation.
 - The difference between traditional selectors (`getElementById`) and modern CSS selectors (`querySelector`).

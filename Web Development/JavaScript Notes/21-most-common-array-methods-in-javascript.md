@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #21  
+> **Video ID:** `RTfNjbqQokI`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=RTfNjbqQokI)  
+> **Duration:** 39:06  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The crucial distinction between **Mutating (In-Place)** methods and **Non-Mutating (Pure/Immutable)** methods.

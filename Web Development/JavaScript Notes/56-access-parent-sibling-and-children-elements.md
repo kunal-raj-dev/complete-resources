@@ -1,5 +1,19 @@
 # Episode 56 — Accessing Parent, Sibling, and Children Elements (DOM Tree Traversal)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #56  
+> **Video ID:** `QK_-jfUIFZE`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=QK_-jfUIFZE)  
+> **Duration:** 19:51  
+> **Transcript:** `.transcripts/56_QK_-jfUIFZE.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - How to navigate the DOM tree in all directions: UP (parents), DOWN (children), and SIDEWAYS (siblings).
 - The difference between the **Element Track** (ignores whitespace) and the **Node Track** (includes whitespace `#text` nodes).

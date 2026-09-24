@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #14  
+> **Video ID:** `Hc0O0u9C_u4`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=Hc0O0u9C_u4)  
+> **Duration:** 17:39  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How and why to nest conditional blocks within other conditional blocks.

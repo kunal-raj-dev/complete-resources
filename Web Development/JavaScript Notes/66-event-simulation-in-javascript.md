@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #66  
+> **Video ID:** `uKupoqAtJBk`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=uKupoqAtJBk)  
+> **Duration:** 20:04  
+> **Transcript:** `.transcripts/66_uKupoqAtJBk.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How to programmatically trigger native DOM actions using `click()`, `focus()`, and `blur()`.

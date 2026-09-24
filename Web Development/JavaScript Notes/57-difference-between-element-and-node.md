@@ -1,5 +1,19 @@
 # Episode 57 — Difference Between Element and Node in JavaScript DOM
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #57  
+> **Video ID:** `zx4AIcl77M0`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=zx4AIcl77M0)  
+> **Duration:** 24:27  
+> **Transcript:** `.transcripts/57_zx4AIcl77M0.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - The foundational law: Why every **Element** is a **Node**, but not every **Node** is an **Element**.
 - What a **Text Node** and a **Comment Node** are, and why they exist in memory.

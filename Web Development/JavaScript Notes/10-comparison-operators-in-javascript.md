@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #10  
+> **Video ID:** `HVhD13U5Bh0`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=HVhD13U5Bh0)  
+> **Duration:** 23:42  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - The 8 comparison operators in JavaScript: `==`, `===`, `!=`, `!==`, `>`, `<`, `>=`, `<=`.

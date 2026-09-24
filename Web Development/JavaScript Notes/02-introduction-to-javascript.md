@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #02  
+> **Video ID:** `-lBfLogYtZk`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=-lBfLogYtZk)  
+> **Duration:** 37:25  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - What a programming language actually does and why JavaScript is a full general-purpose programming language.

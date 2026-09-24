@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #65  
+> **Video ID:** `lfRgu5dLh8E`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=lfRgu5dLh8E)  
+> **Duration:** 23:47  
+> **Transcript:** `.transcripts/65_lfRgu5dLh8E.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How the browser executes the 3-phase DOM event lifecycle: Capturing, Target, and Bubbling.

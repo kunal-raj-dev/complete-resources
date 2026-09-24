@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #68  
+> **Video ID:** `1ofttBIG5R8`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=1ofttBIG5R8)  
+> **Duration:** 51:57  
+> **Transcript:** `.transcripts/68_1ofttBIG5R8.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How `localStorage` enables persistent client-side data storage across page reloads and browser sessions.

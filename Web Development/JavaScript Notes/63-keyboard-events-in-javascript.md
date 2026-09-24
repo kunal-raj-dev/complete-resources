@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #63  
+> **Video ID:** `crRttpPp_4o`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=crRttpPp_4o)  
+> **Duration:** 22:56  
+> **Transcript:** `.transcripts/63_crRttpPp_4o.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How `keydown` and `keyup` capture user keyboard interactions across the DOM.

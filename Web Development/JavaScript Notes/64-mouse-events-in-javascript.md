@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #64  
+> **Video ID:** `izxOuK_mhqw`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=izxOuK_mhqw)  
+> **Duration:** 35:35  
+> **Transcript:** `.transcripts/64_izxOuK_mhqw.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How `mousedown`, `mouseup`, and `click` form a strict multi-stage user interaction cycle.

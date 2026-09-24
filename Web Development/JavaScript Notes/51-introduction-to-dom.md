@@ -1,5 +1,19 @@
 # Episode 51 — Introduction to the Document Object Model (DOM)
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #51  
+> **Video ID:** `m2TpNXtT4Cs`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=m2TpNXtT4Cs)  
+> **Duration:** 54:27  
+> **Transcript:** `.transcripts/51_m2TpNXtT4Cs.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - What the DOM actually is in plain, intuitive language.
 - The boundary between the JavaScript language (ECMAScript) and the Web Platform (DOM).

@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #20  
+> **Video ID:** `xerUjcKdA0o`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=xerUjcKdA0o)  
+> **Duration:** 43:33  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How JavaScript defines and structures **Arrays** as ordered, zero-indexed collections.

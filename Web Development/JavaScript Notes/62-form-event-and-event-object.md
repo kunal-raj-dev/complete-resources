@@ -1,5 +1,19 @@
 # Episode 62 — Form Events and the Event Object in JavaScript
 
+---
+
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #62  
+> **Video ID:** `J5-yOKK--78`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=J5-yOKK--78)  
+> **Duration:** 50:18  
+> **Transcript:** `.transcripts/62_J5-yOKK--78.txt`  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 - What the **Event Object (`e`)** is and how it delivers critical telemetry to your functions.
 - The difference between `e.target` (what triggered the event) and `e.currentTarget` (what caught the event).

@@ -4,6 +4,17 @@
 
 ---
 
+## 📌 Source Metadata
+> **Source:** YouTube Playlist (Complete JavaScript Course | ProCodrr)  
+> **Instructor:** Anurag Singh  
+> **Episode:** #18  
+> **Video ID:** `1Rhdtq5pYoY`  
+> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=1Rhdtq5pYoY)  
+> **Duration:** 01:03:39  
+> **Status:** AUDITED  
+
+---
+
 ## 🎯 What You Will Learn
 
 - How to create objects using **Object Literal syntax (`{}`)**.
