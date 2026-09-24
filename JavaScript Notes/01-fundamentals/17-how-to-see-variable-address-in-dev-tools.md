@@ -23,7 +23,7 @@ Instead, it buys a house in a giant neighborhood called the **Heap**, gets an ad
 In this episode, we open Chrome DevTools, take an X-ray picture of the computer's memory, and look directly at those exact house addresses.
 
 ### Technical Explanation
-The V8 JavaScript engine utilizes two primary memory regions: the **Stack** and the **Heap**. Fixed-size primitive values and execution context frames reside on the stack. Dynamic, arbitrarily sized structures (Objects, Arrays, Functions, Closures) are allocated on the Heap. The variable identifier on the stack holds a **HeapObject pointer** (a 32-bit or 64-bit reference address) that references the allocated heap block. The DevTools Memory profiler exposes these pointers as unique hexadecimal/decimal object IDs prefixed by `@`.
+The V8 JavaScript engine organizes runtime memory into regions including the **Stack** and the **Heap**. Execution context frames and fixed primitive values reside in stack/register memory. Dynamic, arbitrarily sized structures (Objects, Arrays, Functions) are allocated in the Heap. A variable binding referencing an object holds an internal object reference. The DevTools Memory profiler visualizes these references as unique decimal object identifiers prefixed with `@` (e.g., `@143285`). **Note:** The `@id` is a DevTools profiler tracking ID assigned during snapshotting to differentiate distinct object instances in memory; it is not a physical hardware RAM address accessible by JavaScript code.
 
 ### Before vs After Motivation
 - **Before:** Developers debate theoretically whether objects are passed by reference or value, guessing blindly why modifying one variable accidentally mutates another.
@@ -37,12 +37,12 @@ The V8 JavaScript engine utilizes two primary memory regions: the **Stack** and 
 CALL STACK (Quick-Access Lockers):       MEMORY HEAP (Giant Warehouse):
 ┌──────────────────────────────┐        ┌──────────────────────────────────┐
 │ Identifier: "user1"          │        │ Address: @248103                 │
-│ Pointer:    @248103 ─────────┼───────>│ ├── firstName: "Akash"           │
+│ Reference:  @248103 ─────────┼───────>│ ├── firstName: "Akash"           │
 └──────────────────────────────┘        │ └── age: 15                      │
                                         └──────────────────────────────────┘
 ┌──────────────────────────────┐                         ▲
 │ Identifier: "user2"          │                         │
-│ Pointer:    @248103 ─────────┼─────────────────────────┘
+│ Reference:  @248103 ─────────┼─────────────────────────┘
 └──────────────────────────────┘
 (Both keys open the exact same warehouse unit! If user2 changes age, user1 sees it!)
 ```
@@ -149,7 +149,7 @@ In the DevTools Memory table, you will see two size columns:
 
 | Feature | Call Stack | Memory Heap |
 | :--- | :--- | :--- |
-| **Data Stored** | Execution Contexts, Primitives, Object Pointers | Objects, Arrays, Functions, Closures |
+| **Data Stored** | Execution Contexts, Primitives, Object References | Objects, Arrays, Functions, Closures |
 | **Size** | Fixed, small, contiguous | Dynamic, large, expandable |
 | **Allocation** | Managed automatically by function push/pop | Managed by V8 Garbage Collector (Orinoco) |
 | **Speed** | Extremely fast (CPU stack pointer offset) | Fast, but requires pointer dereferencing |
@@ -257,13 +257,25 @@ V8's Heap is split into two generations:
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Objects live in the Heap; variables store memory addresses (`@id`); `===` compares memory addresses, not property values.
-- **Most Common Confusion:** Assuming `{ a: 1 } === { a: 1 }` is true; each object literal allocates a distinct address in memory.
-- **One Code Pattern:** Debug memory in DevTools: Memory Tab $\to$ Heap snapshot $\to$ filter by constructor.
-- **One Interview Question:** *"What is the difference between Shallow Size and Retained Size in DevTools?"*  
-  $\to$ Shallow size is the memory of the object itself; retained size is the total memory freed if that object and its exclusive descendants are garbage collected.
+1. **Stack vs Heap:** Execution contexts and primitive values are tracked on the stack; dynamically allocated objects, arrays, and functions live in the heap.
+2. **Object Reference Model:** Variables referencing objects store an internal reference, not the actual serialized contents of the object.
+3. **DevTools `@id` Meaning:** The `@id` shown in Chrome DevTools Heap Snapshots is a profiler tracking number identifying unique heap allocations; it is not a physical hardware address accessible from JS.
+4. **Reference Assignment:** `const b = a;` copies the reference pointing to the existing object; it does not clone or duplicate the object in memory.
+5. **Object Equality:** `objA === objB` evaluates to `true` only if both operands point to the exact same object reference (`@id`).
+6. **Shallow vs Retained Size:** Shallow size is the direct byte size of the object itself; retained size is the total memory freed if that object and all objects exclusively reachable through it are collected.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Objects and arrays live in the Heap; variables hold internal references to them.
+- In DevTools Heap Snapshots, the `@id` label distinguishes separate object allocations.
+- `@id` is a DevTools debugging construct, not a memory address accessible in JavaScript code.
+- Assigning an object to another variable (`b = a`) copies the reference, sharing mutations between both.
+- `===` on objects tests reference identity, which is why `{}` never equals `{}`.
+- Shallow size is the object's own footprint; Retained size includes all memory freed upon its garbage collection.
 
 ---
 

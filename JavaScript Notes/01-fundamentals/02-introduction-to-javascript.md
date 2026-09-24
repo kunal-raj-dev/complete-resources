@@ -26,7 +26,7 @@ Think of building a website like building a house:
 Without JavaScript, a webpage can only sit there looking pretty. With JavaScript, the webpage can listen to clicks, calculate shopping cart totals, validate passwords, and talk to servers in the background.
 
 ### Technical Explanation
-JavaScript is a high-level, single-threaded, dynamically typed, garbage-collected, interpreted-or-JIT-compiled programming language. When loaded into a browser host environment, the HTML parser processes markup sequentially from top to bottom. Upon encountering an external `<script src="...">` tag without attributes, the parser halts DOM construction, fetches the script across the network, and executes it immediately on the main thread before resuming HTML parsing. The modern standard introduces the `defer` attribute, instructing the browser to download the script in parallel in the background and execute it only after the DOM tree is fully constructed.
+JavaScript is a high-level, dynamically typed, garbage-collected programming language. In a standard browser environment, script execution runs on the browser's main JavaScript thread, while the browser itself uses multiple background threads for network fetching, parsing, and rendering. When the HTML parser processes markup sequentially from top to bottom, encountering an external `<script src="...">` tag without attributes causes the parser to halt DOM construction, fetch the script across the network, and execute it on the main thread before resuming HTML parsing. The modern standard provides the `defer` attribute, instructing the browser to download the script in parallel in the background and execute it only after the DOM tree is fully constructed.
 
 ### Before vs After Motivation
 - **Before:** Webpages could only submit forms synchronously, causing jarring white-screen flashes and full-page reloads. Calculations and UI state updates were impossible on the client.
@@ -302,14 +302,26 @@ Modern browser engines (WebKit, Blink) utilize a background secondary thread cal
 > ⚙️ **Implementation Detail — Chromium Example**
 > In Blink, every HTML `<script>` element is represented internally by a C++ `ScriptElement` object. When parsed, Blink checks `has_async_attribute()` and `has_defer_attribute()`. If `defer` is present, the script request is added to the document's `ScriptRunner` queue as a `DeferredScript`. Blink continues parsing the DOM tree on the main thread, while the Chrome Resource Fetcher downloads the file on a background worker thread. When the `HTMLDocumentParser` finishes, `ScriptRunner::ExecuteDeferredScripts` executes the queued scripts in order within the V8 `v8::Context`.
 
+## 🧠 What You Actually Need to Remember
+
+1. **Role of JavaScript:** HTML creates page structure, CSS styles visuals, JavaScript provides interactivity, dynamic behavior, and network communication.
+2. **Parser Blocking:** Standard `<script src="...">` halts HTML parsing while the file downloads and executes, causing delays if placed in `<head>`.
+3. **`<script defer>`:** Downloads the script in the background while HTML continues parsing, then executes in document order right after the DOM is ready (before `DOMContentLoaded`). Best practice for application scripts.
+4. **`<script async>`:** Downloads in parallel and executes the instant download finishes, pausing HTML parsing during execution. Execution order is unpredictable. Best for standalone analytics/tracking scripts.
+5. **Console & REPL:** DevTools Console is a Read-Eval-Print Loop allowing immediate line-by-line experimentation and evaluation.
+6. **Arithmetic Operators:** Standard math rules apply: parentheses `()`, exponentiation `**`, multiplication/division/remainder `* / %`, and addition/subtraction `+ -`.
+
 ---
 
-## 13. ⚡ 30-Second Revision
+## ⚡ 30-Second Revision
 
-- **Must Remember:** Standard scripts block HTML parsing; always prefer `<script src="..." defer>` in `<head>` for application code.
-- **Most Common Confusion:** `async` executes scripts out-of-order whenever they finish downloading; `defer` executes in strict document order after DOM parsing completes.
-- **One Code Pattern:** `<script src="app.js" defer></script>` in `<head>` guarantees non-blocking downloads and DOM readiness.
-- **One Interview Question:** What is the REPL? Read-Eval-Print Loop: the interactive environment in the browser console that parses, evaluates, prints, and waits for code input.
+- **HTML/CSS/JS Trinity:** Structure (HTML) + Appearance (CSS) + Behavior (JS).
+- **Default Script:** Blocks HTML parsing completely during network fetch and execution.
+- **`defer` Key Rules:** Non-blocking download, executes after DOM is parsed, strictly preserves source order.
+- **`async` Key Rules:** Non-blocking download, executes immediately upon arrival, does NOT preserve order.
+- **REPL Meaning:** Read-Eval-Print Loop inside browser DevTools.
+- **Operator Precedence:** Parentheses override all; `**` is right-associative; `*`, `/`, `%` precede `+`, `-`.
+- **Division by Zero:** Evaluates to `Infinity` or `-Infinity`, never throws an exception.
 
 ---
 

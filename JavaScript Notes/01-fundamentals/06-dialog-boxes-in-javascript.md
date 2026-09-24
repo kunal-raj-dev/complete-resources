@@ -263,13 +263,24 @@ The modern HTML standard provides native, non-blocking, fully accessible modals 
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `alert()` returns `undefined`, `confirm()` returns `boolean`, `prompt()` returns `string | null`.
-- **Most Common Confusion:** Forgetting that clicking "Cancel" gives `null`, while clicking "OK" with no text gives `""`.
-- **One Code Pattern:** `const val = prompt("..."); const num = val !== null ? Number(val) : defaultVal;`
-- **One Interview Question:** *"What happens to JavaScript timers (`setTimeout`) when a native dialog is visible?"*  
-  $\to$ They pause because native dialogs freeze the browser main thread and event loop.
+1. **Exact Return Types:** `alert()` returns `undefined`; `confirm()` returns `boolean` (`true`/`false`); `prompt()` returns a `string` (if confirmed) or `null` (if cancelled or dismissed).
+2. **Synchronous UI Blocking:** Native dialogs synchronously pause the JavaScript execution thread in the browser tab, halting animations, event handlers, and timer callbacks until dismissed.
+3. **Empty Input vs Cancellation:** When using `prompt()`, pressing OK without typing returns `""` (empty string), whereas pressing Cancel or hitting Esc returns `null`.
+4. **Strings by Default:** Data returned from `prompt()` is always a string primitive; arithmetic operations require explicit conversion (e.g., `Number(val)`).
+5. **Modern Replacement:** Native dialogs cannot be styled, disrupt accessibility, and freeze execution; production web applications use custom UI modals or the HTML5 `<dialog>` element (`dialog.showModal()`).
+
+---
+
+## ⚡ 30-Second Revision
+
+- `alert()` broadcasts messages and returns `undefined`.
+- `confirm()` asks for user confirmation and returns `true` or `false`.
+- `prompt()` collects textual input, returning `string` on OK and `null` on Cancel/Escape.
+- Native dialogs synchronously freeze main-thread execution, animations, and timers.
+- Always check `input === null` first before validating `input.trim() === ""`.
+- Production applications favor HTML `<dialog>` (`showModal()`) or accessible UI component modals.
 
 ---
 

@@ -286,13 +286,25 @@ If `user` is `null` or `undefined`, execution stops immediately and assigns that
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `&&` stops at first falsy; `||` stops at first truthy; they return the operand itself.
-- **Most Common Confusion:** Assuming `||` returns boolean. `"a" || "b"` returns `"a"`.
-- **One Code Pattern:** Default values without zero bugs: `const port = process.env.PORT ?? 3000;`.
-- **One Interview Question:** *"Why does `{items.length && <List />}` render a '0' in React when items is empty?"*  
-  $\to$ Because `0 && ...` evaluates to the falsy number `0`, which React renders into the DOM as text.
+1. **Operands, Not Booleans:** In JavaScript, `&&` and `||` return the value of the actual operand that determined the result, not automatically a boolean.
+2. **Short-Circuiting Rules:** `&&` stops at the first falsy operand and returns it; `||` stops at the first truthy operand and returns it.
+3. **Skipping Side Effects:** If the left operand short-circuits, subsequent operands are never evaluated, preventing errors or function calls on the right.
+4. **Precedence Hierarchy:** `!` (NOT) binds tightest, followed by `&&` (AND), and lastly `||` (OR). Use explicit parentheses to ensure readability.
+5. **`||` vs Nullish Coalescing (`??`):** `||` falls back on all 8 falsy values (including `0` and `""`); `??` only falls back on `null` and `undefined`.
+6. **React Pitfall:** Writing `{count && <Component />}` displays `0` when `count === 0` because `0 && <Component />` evaluates to `0`. Write `{count > 0 && <Component />}` or `{Boolean(count) && <Component />}`.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `&&` evaluates left-to-right and returns the first falsy value (or the last value if all are truthy).
+- `||` evaluates left-to-right and returns the first truthy value (or the last value if all are falsy).
+- Neither operator guarantees a boolean return value; they return the settling operand.
+- Operator precedence: `!` > `&&` > `||`. Group complex logical conditions with parentheses.
+- Use nullish coalescing (`??`) when `0`, `false`, or `""` are legitimate values that should not trigger defaults.
+- Guarding properties with `&&` avoids TypeError crashes when parent objects are absent.
 
 ---
 

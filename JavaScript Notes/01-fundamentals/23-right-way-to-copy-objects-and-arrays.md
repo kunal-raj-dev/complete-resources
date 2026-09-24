@@ -25,9 +25,9 @@ To make an independent duplicate, you must choose between:
 
 ### Technical Explanation
 Under ECMAScript and HTML specifications:
-- **Reference Assignment (`=`)** copies the HeapObject reference pointer directly.
-- **Shallow Copy** copies own enumerable properties. For primitives, values are copied; for objects, reference pointers are copied into the new container.
-- **Deep Copy via `structuredClone()`** invokes the HTML Structured Clone Algorithm. It creates new memory allocations for all composite structures, correctly handles circular references, preserves typed arrays, Dates, RegExps, Maps, and Sets, but rejects functions and DOM nodes.
+- **Reference Assignment (`=`)** copies the object reference directly.
+- **Shallow Copy** copies own enumerable properties. For primitives, values are copied; for object properties, the object reference is copied into the new container.
+- **Deep Copy via `structuredClone()`** invokes the HTML Structured Clone Algorithm. It creates recursive copies for composite structures, handles circular references, preserves typed arrays, Dates, RegExps, Maps, and Sets, but throws a `DataCloneError` on functions and DOM nodes.
 
 ### Before vs After Motivation
 - **Before:** Developers use `{ ...state }` in Redux or React and are shocked when mutating `state.user.preferences` causes bizarre, unpredictable bugs due to shared references.
@@ -102,8 +102,8 @@ Trace of Shallow vs Deep Copy:
 [1] `shallowUser = { ...user1 }`:
     • Allocates new object in Heap for `shallowUser`.
     • Copies primitive `"Anurag"` to `shallowUser.name`.
-    • Copies reference pointer `@address_pata` to `shallowUser.address`!
-    • Both `user1.address` and `shallowUser.address` hold the SAME POINTER.
+    • Copies the object reference to `shallowUser.address`!
+    • Both `user1.address` and `shallowUser.address` reference the exact same object.
          │
          ▼
 [2] `deepUser = structuredClone(user1)`:
@@ -271,13 +271,25 @@ In modern JavaScript (2022+), you can replace `cloneDeep` with native `structure
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `=` copies pointers; `{ ... }` and `[ ... ]` make shallow copies; `structuredClone()` makes true deep copies.
-- **Most Common Confusion:** Thinking Spread `{ ...obj }` deep-clones nested structures; it only copies the top level.
-- **One Code Pattern:** Native deep copy: `const copy = structuredClone(original);`.
-- **One Interview Question:** *"What are the limitations of `JSON.parse(JSON.stringify(obj))` for deep copying?"*  
-  $\to$ It drops functions, `undefined`, and Symbols; converts Dates to strings; and crashes on circular references.
+1. **Three Levels of Copying:** Reference assignment (`b = a`) copies only the object reference; shallow copying (`{ ...a }`) copies top-level properties but shares nested references; deep copying (`structuredClone(a)`) duplicates nested objects recursively.
+2. **Shallow Copy Limitations:** Spread operators and `Object.assign()` only clone the outermost layer; modifying nested objects or arrays mutates the original data.
+3. **The `structuredClone()` Standard:** The native web/Node API for deep cloning serializable structures; safely handles circular references, Dates, Sets, Maps, and TypedArrays.
+4. **`structuredClone()` Non-Cloneables:** Throws `DataCloneError` when encountering functions, class methods, or DOM nodes.
+5. **Flaws of JSON Serialization:** `JSON.parse(JSON.stringify(x))` silently strips `undefined`, functions, and Symbols, converts `Date` to a string, coerces `NaN` to `null`, and throws on circular structures.
+6. **Framework Immutability:** State management frameworks (React, Redux) rely on shallow copying each updated branch to maintain referential equality checks.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `=` duplicates the object reference without copying any data.
+- `{ ...obj }` and `Object.assign({}, obj)` create shallow copies; nested objects remain linked.
+- Native `structuredClone(obj)` produces deep clones of nested objects and arrays.
+- `structuredClone()` cannot clone functions or DOM nodes (`DataCloneError`).
+- Avoid `JSON.parse(JSON.stringify())` due to loss of Dates, undefined, Symbols, and crash on circular references.
+- Use shallow copying at the modified level for state updates in React to preserve unchanged references.
 
 ---
 

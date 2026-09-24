@@ -174,7 +174,7 @@ switch (day) {
 | **Comparison Type** | Strict equality (`===`) | Any arbitrary boolean expression | Hash property lookup (`Map` / `{}`) |
 | **Range Checks (`<`, `>`)**| Only with `switch(true)` hack | Native & natural | Requires custom functions |
 | **Fall-through** | Supported via `break` omission | ❌ Impossible | ❌ Impossible |
-| **Performance** | Can optimize via jump table | Evaluates sequentially ($O(N)$) | Direct property lookup |
+| **Performance** | Can optimize via jump table in some engines | Evaluates conditions sequentially | Hash / dictionary lookup |
 
 ---
 
@@ -328,17 +328,27 @@ Gamma
 ## 12. 🔬 Optional Deep Dive
 
 ### ⚫ IMPLEMENTATION DETAIL — V8 Jump Tables
-When a `switch` statement has many contiguous integer cases (e.g. `0`, `1`, `2`, `3`, `4`, `5`), V8's optimizing compiler (TurboFan) compiles the switch statement into a direct **Jump Table** (an indexed array of machine code pointers in memory). Instead of checking cases sequentially ($O(N)$), the engine computes `jumpTable[index]` to jump to the target instruction in near-constant time.
+When a `switch` statement has many contiguous integer cases (e.g. `0`, `1`, `2`, `3`, `4`, `5`), V8's optimizing compiler (TurboFan) can compile the switch statement into a direct **Jump Table** (an indexed table of code addresses). Instead of checking cases sequentially, the engine can compute `jumpTable[index]` to branch directly to the target instruction.
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `switch` uses strict equality (`===`); always write `break;` unless you want intentional fall-through; wrap cases in `{}` if declaring `let`/`const`.
-- **Most Common Confusion:** Missing `break` causes execution to leak into all subsequent cases until a `break` or end of block is found.
-- **One Code Pattern:** Grouping cases: `case 'a': case 'e': case 'i': return 'vowel';`.
-- **One Interview Question:** *"Why does `switch ('1')` fail to match `case 1:`?"*  
-  $\to$ Because `switch` evaluates using strict equality (`'1' === 1` is `false`).
+1. **Strict Equality Matching:** `switch (value)` compares `value === caseExpression` strictly, with no implicit type coercion (`"1"` does not match `1`).
+2. **Break Keyword:** Forgetting `break;` causes execution to fall through sequentially into the next case, running unintended code blocks.
+3. **Intentional Fall-Through:** Group multiple cases together (`case 'a': case 'e':`) without a `break` to execute shared logic for multiple matching values.
+4. **Lexical Scope in Switch:** The entire `switch` body forms a single lexical scope; declare block-scoped variables (`let`, `const`) inside explicit curly braces `{}` within a `case`.
+5. **The `default` Clause:** Acts as the fallback branch if no cases match; it can be placed anywhere, but placing it last is the standard convention.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `switch` evaluates using strict equality (`===`) against each `case`.
+- Always conclude each case block with `break;` or `return` to prevent accidental fall-through.
+- Stack cases back-to-back (`case 1: case 2:`) for intentional fall-through with shared execution.
+- Wrap case contents in curly braces `{}` if defining `let` or `const` variables.
+- The `default:` case handles unmatched inputs, functioning like the trailing `else` of an if-ladder.
 
 ---
 

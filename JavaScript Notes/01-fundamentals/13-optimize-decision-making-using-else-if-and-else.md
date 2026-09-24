@@ -229,7 +229,7 @@ if (age < 18) {
 ## 11. 🔥 Interview Deep Dive
 
 ### Conceptual Reasoning: Refactoring Long Ladders into Lookup Tables
-When an `else if` ladder only checks equality against static values, senior developers replace it with an **Object Lookup Table** or `Map` for $O(1)$ readability:
+When an `else if` ladder only checks equality against static values, developers often replace it with an **Object Lookup Table** or `Map` for cleaner, declarative structure:
 
 ```javascript
 // ❌ Clunky Else-If Ladder
@@ -285,13 +285,23 @@ In modern CPU architectures (x86, ARM) and JIT engines (V8), an `if...else if` c
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `else if` chains stop checking as soon as the first condition evaluates to true; always order conditions from most specific to least specific.
-- **Most Common Confusion:** Putting lower threshold conditions first (e.g. `score >= 50` before `score >= 90`), accidentally shadowing the higher grades.
-- **One Code Pattern:** Fallback catch-all: `else { /* Handle unexpected data or errors */ }`.
-- **One Interview Question:** *"Why is an `else if` chain faster than five consecutive `if` statements?"*  
-  $\to$ Because once any condition is met, an `else if` chain jumps directly to the end, skipping all remaining condition evaluations.
+1. **Short-Circuiting the Chain:** In an `if...else if...else` chain, once any condition evaluates to truthy, its block executes and all subsequent conditions are completely skipped.
+2. **Order Matters Critically:** Always evaluate more specific or higher-threshold conditions before general ones to avoid shadowing narrower cases.
+3. **The Fallback `else` Block:** The trailing `else` acts as an exhaustive catch-all for boundary anomalies, unrecognized values, and `NaN`.
+4. **Efficiency Advantage:** An `else if` ladder performs fewer total condition evaluations compared to consecutive independent `if` statements.
+5. **Alternative Patterns:** For large sets of discrete value checks, consider a `switch` statement or an object/`Map` lookup table for improved maintainability.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `else if` structures allow mutually exclusive multi-branch decision making.
+- The runtime stops evaluating conditions as soon as the first truthy condition is encountered.
+- Place more restrictive or higher-value ranges first to prevent unintended shadowing.
+- The final `else` block catches all cases where no preceding condition was satisfied (including `NaN`).
+- Replace repetitive equality ladders with object lookup dictionaries or `switch` statements where appropriate.
 
 ---
 

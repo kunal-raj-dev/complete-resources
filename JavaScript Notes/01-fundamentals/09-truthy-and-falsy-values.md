@@ -282,13 +282,25 @@ console.log("5:", Boolean(new Boolean(false)));
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Memorize the 8 Falsy values: `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`. Everything else is truthy.
-- **Most Common Confusion:** Thinking `[]` and `{}` are falsy because they contain no elements. They are objects, so they are truthy!
-- **One Code Pattern:** Force clean boolean conversion using double bang: `const hasAccess = !!token;`.
-- **One Interview Question:** *"Why does `Boolean(new Boolean(false))` return `true`?"*  
-  $\to$ Because `new Boolean()` creates an Object, and according to the ECMAScript spec, all objects evaluate to `true` under `ToBoolean`.
+1. **The 8 Falsy Values:** Exactly 8 values evaluate to falsy: `false`, `0`, `-0`, `0n`, `""` (empty string), `null`, `undefined`, and `NaN` (plus legacy host `document.all`).
+2. **Everything Else is Truthy:** Any value not on the 8 falsy values list is truthy, including `"0"`, `"false"`, `[]`, and `{}`.
+3. **Empty Arrays and Objects:** `[]` and `{}` are objects; all objects are unconditionally truthy in ECMAScript `ToBoolean`.
+4. **Boolean Conversion Forms:** `Boolean(value)` and `!!value` perform identical `ToBoolean` conversions to primitive booleans.
+5. **Falsy vs Strict Equality:** Do not check `if (!count)` when `0` is a valid valid numeric value; check `if (count === 0)` or use nullish coalescing (`??`).
+6. **Object Wrapper Trap:** `new Boolean(false)` creates an object wrapper, and all objects evaluate to `true` when tested for truthiness.
+
+---
+
+## ⚡ 30-Second Revision
+
+- The 8 falsy values: `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`.
+- All other values are truthy—including `"0"`, `" "`, `[]`, and `{}`.
+- All object types (arrays, plain objects, functions) evaluate to `true` under `ToBoolean`.
+- Use `Boolean(x)` or `!!x` to explicitly coerce any value to a primitive boolean.
+- Distinguish between falsy checks and strict value checks: `0` is falsy, but often a legitimate number.
+- `Boolean(new Boolean(false))` evaluates to `true` because the wrapper is an object.
 
 ---
 

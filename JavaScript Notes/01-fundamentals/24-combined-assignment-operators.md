@@ -263,13 +263,25 @@ In V8's Ignition interpreter:
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `+=` updates in-place; postfix `x++` evaluates old value first; prefix `++x` increments before evaluating.
-- **Most Common Confusion:** Writing `x = x++` resets `x` to its previous value.
-- **One Code Pattern:** Fallback config: `options.timeout ??= 5000;`.
-- **One Interview Question:** *"What is the difference between `let b = a++` and `let b = ++a`?"*  
-  $\to$ With `a++`, `b` gets the original value of `a`; with `++a`, `b` gets the incremented value.
+1. **Compound Assignment Semantics:** Operators like `+=`, `-=`, `*=`, `/=` compute the result between the current value and the right operand, updating the left-hand variable binding.
+2. **Postfix (`x++`) vs Prefix (`++x`):** Postfix returns the original value before incrementing; prefix increments first and returns the updated value.
+3. **Evaluation Order in Expressions:** In multi-term expressions, terms are strictly evaluated left to right; `x++ + ++x` with `x = 3` evaluates as `3 + 5 = 8`.
+4. **Binding Mutability Required:** Update operators reassign the binding and therefore require `let` or `var`; calling them on a `const` throws `TypeError: Assignment to constant variable`.
+5. **String Concatenation Overload:** `+=` concatenates if either operand is a string, but performs numeric addition if both operands are numbers.
+6. **Logical Assignment Operators:** Modern operators `&&=`, `||=`, and `??=` short-circuit and assign only when the target meets the corresponding boolean condition.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `+=`, `-=`, `*=`, `/=` update variables in place without repeating the variable name.
+- Postfix `x++` yields the current value before incrementing `x`.
+- Prefix `++x` increments `x` first and yields the new value.
+- Reassignment operators require mutable `let` bindings (`const` throws `TypeError`).
+- `x += "text"` converts `x` to a string and concatenates.
+- Logical assignment operators (`??=`, `||=`) only execute the assignment if the logical condition passes.
 
 ---
 

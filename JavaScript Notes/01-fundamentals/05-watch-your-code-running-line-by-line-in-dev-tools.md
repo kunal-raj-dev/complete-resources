@@ -24,7 +24,7 @@ In reality, the robot takes **two passes**:
 2. **Pass 2 (Action):** It goes back to line 1 and runs the code line-by-line, filling in values and performing calculations.
 
 ### Technical Explanation
-Before V8 executes any JavaScript code, it parses the source text into an Abstract Syntax Tree (AST) and generates bytecode via its interpreter (Ignition). During this compilation and environment setup step—often called the **Memory Creation Phase**—the engine creates the **Global Execution Context** (`GEC`). It instantiates the **VariableEnvironment** (for `var`) and the **LexicalEnvironment** (for `let`, `const`, and `class`). 
+Before a JavaScript engine (such as V8) executes any code, it parses the source text into an Abstract Syntax Tree (AST) and generates bytecode via an interpreter (like Ignition). During this compilation and environment setup step—widely known pedagogically as the **Memory Creation Phase**—the engine creates the **Global Execution Context** (`GEC`). In formal ECMAScript specification terms, this process instantiates the environment records: the **VariableEnvironment** (for `var` declarations) and the **LexicalEnvironment** (for top-level `let`, `const`, and `class` declarations).
 
 ### Before vs After Motivation
 - **Before:** Developers rely blindly on `console.log()` everywhere, guessing why a variable is `undefined` or throwing `ReferenceError`.
@@ -275,13 +275,27 @@ Under the hood, V8's Ignition interpreter generates bytecode registers (`r0`, `r
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** JavaScript executes in 2 passes: Phase 1 (Memory Creation) and Phase 2 (Code Execution).
-- **Most Common Confusion:** Hoisting does not rearrange source code lines; it allocates memory slots ahead of execution.
-- **One Code Pattern:** Use conditional breakpoints in DevTools instead of cluttering code with `console.log()` statements.
-- **One Interview Question:** *"Why does accessing a `let` variable before declaration throw a ReferenceError instead of returning `undefined`?"*  
-  $\to$ Because `let` variables reside in the **Temporal Dead Zone (TDZ)** where reading is forbidden until the declaration statement initializes the binding.
+1. **Two-Pass Execution Model:** JavaScript parses and allocates memory/declarations before executing code line by line.
+2. **Pedagogical vs Spec Terms:** "Memory Creation Phase" is the standard pedagogical mental model; the ECMAScript spec defines this as environment record instantiation during context creation.
+3. **`var` vs `let`/`const` Hoisting:** `var` is hoisted and immediately initialized to `undefined`. `let` and `const` are hoisted into uninitialized bindings (the Temporal Dead Zone).
+4. **DevTools Scope Pane:** Top-level `var` variables attach to the `Global` object (`window`), while top-level `let` and `const` live in the declarative `Script` scope.
+5. **The `debugger` Statement:** Acts as a programmatically placed breakpoint; triggers the DevTools debugger if DevTools is open.
+6. **Essential Step Shortcuts:** `F8` resumes execution, `F10` steps over function calls, `F11` steps into function bodies, and `Shift + F11` steps out of the current function.
+7. **TDZ Runtime Trap:** Accessing a `let` or `const` identifier before its initialization line throws a `ReferenceError`, including when used with `typeof`.
+
+---
+
+## ⚡ 30-Second Revision
+
+- JavaScript runs in two phases: environment setup (memory allocation) and synchronous line-by-line execution.
+- Hoisting does not physically move code lines; it registers bindings in memory prior to line execution.
+- `var` bindings initialize to `undefined`; `let` and `const` bindings remain uninitialized in the TDZ.
+- DevTools shows `var` in `Global` scope and top-level `let`/`const` in `Script` scope.
+- Use `debugger;` or DevTools line gutter breakpoints to pause execution and inspect scopes.
+- Shortcuts: `F8` (Resume), `F10` (Step Over), `F11` (Step Into), `Shift + F11` (Step Out).
+- Conditional breakpoints pause execution only when an expression evaluates to truthy, preventing tedious manual stepping.
 
 ---
 

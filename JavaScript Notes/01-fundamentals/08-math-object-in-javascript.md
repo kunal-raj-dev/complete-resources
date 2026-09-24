@@ -294,13 +294,25 @@ console.log(formatted); // "₹12,50,000.75"
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `Math` is static (no `new Math()`); `Math.random()` generates $[0, 1)$; exponentiation operator is `**`.
-- **Most Common Confusion:** Confusing `Math.floor(-x)` with `Math.trunc(-x)`; `floor` goes towards $-\infty$, `trunc` goes towards $0$.
-- **One Code Pattern:** Inclusive random integer: `Math.floor(Math.random() * (max - min + 1)) + min`.
-- **One Interview Question:** *"Why should you never use `Math.random()` to generate authentication tokens?"*  
-  $\to$ Because `Math.random()` uses PRNG (`xorshift128+`) which is deterministic and mathematically predictable; use `crypto.getRandomValues()` instead.
+1. **Static Namespace Object:** `Math` is not a constructor (`new Math()` throws `TypeError`); all its properties and methods are static.
+2. **Rounding Differences on Negatives:** `Math.floor(-2.8)` yields `-3` (rounds down toward $-\infty$), while `Math.trunc(-2.8)` yields `-2` (discards fractional part toward zero).
+3. **Random Range Formula:** `Math.random()` produces a float in $[0, 1)$. To get an inclusive integer in $[min, max]$, use `Math.floor(Math.random() * (max - min + 1)) + min`.
+4. **Non-Cryptographic PRNG:** `Math.random()` is not cryptographically secure; use `crypto.getRandomValues()` for tokens, keys, and security IDs.
+5. **Right-Associative Exponentiation:** `2 ** 3 ** 2` evaluates as `2 ** (3 ** 2) = 512`, not `(2 ** 3) ** 2 = 64`.
+6. **Floating-Point Precision:** JavaScript uses IEEE 754 64-bit binary floats; `0.1 + 0.2 === 0.30000000000000004`. Handle money as integer minor units or via `Intl.NumberFormat`.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `Math` is a static namespace object, not a constructor (`new Math()` is invalid).
+- `Math.floor()` rounds towards $-\infty$; `Math.ceil()` rounds towards $+\infty$.
+- `Math.trunc()` chops decimals towards $0$; `Math.round()` rounds to the nearest integer.
+- Exponentiation operator `**` evaluates right-to-left (`2 ** 3 ** 2 = 512`).
+- Standard random integer formula: `Math.floor(Math.random() * (max - min + 1)) + min`.
+- `Math.random()` is a pseudo-random generator; use `crypto.getRandomValues()` for cryptography or authentication.
 
 ---
 

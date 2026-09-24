@@ -257,13 +257,25 @@ Modern JavaScript introduced immutable counterparts to all mutating methods:
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `slice` does not mutate; `splice` mutates in-place; `push`/`unshift` return new length; `pop`/`shift` return removed item.
-- **Most Common Confusion:** Calling `sort()` on numbers without `(a, b) => a - b`.
-- **One Code Pattern:** Remove item by index safely: `arr.splice(index, 1);`.
-- **One Interview Question:** *"What are the arguments of `splice()` and what does it return?"*  
-  $\to$ Arguments: `(start, deleteCount, ...itemsToAdd)`. Returns an array containing the removed items.
+1. **Mutating vs Pure Methods:** Mutating methods (`splice`, `push`, `pop`, `shift`, `unshift`, `sort`, `reverse`) alter the original array instance in place; non-mutating methods (`slice`, `concat`, `includes`, `join`) return new arrays or values.
+2. **`slice()` vs `splice()`:** `slice(start, end)` non-destructively copies a sub-range; `splice(start, deleteCount, ...items)` directly removes and/or inserts elements in place and returns the deleted elements.
+3. **Queue / Shift Cost:** `shift()` and `unshift()` re-index elements, whereas `push()` and `pop()` operate at the end of the array.
+4. **Default Sorting Trap:** `arr.sort()` coerces all elements to strings and compares them lexicographically by default (`[10, 5, 25]` becomes `[10, 25, 5]`); numeric sorting always requires a comparator: `(a, b) => a - b`.
+5. **Modern Immutable Methods (ES2023):** `toSorted()`, `toReversed()`, and `toSpliced()` provide pure, non-mutating counterparts to the legacy in-place methods.
+6. **NaN Search Support:** `includes(NaN)` successfully finds `NaN` in an array, whereas `indexOf(NaN)` returns `-1` because `NaN === NaN` is false.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `push()` and `pop()` add and remove items at the end of the array; `unshift()` and `shift()` work at the start.
+- `push()`/`unshift()` return the new array length; `pop()`/`shift()` return the removed element.
+- `slice(start, end)` returns a shallow copy of a portion of an array without mutating it.
+- `splice(start, count, ...items)` modifies the original array and returns the removed items as an array.
+- Always provide a compare callback `(a, b) => a - b` when sorting numbers with `sort()`.
+- Use ES2023 `toSorted()`, `toReversed()`, and `toSpliced()` when building pure/immutable state logic.
 
 ---
 

@@ -38,7 +38,7 @@ The ECMAScript specification categorizes values into **Primitive values** and **
 - **Primitives are Granite Blocks:** 
   If you carve the number `5` or the text `"apple"` into a block of solid granite, you cannot open it up and change a piece inside. If you want the number `6` or `"apples"`, you do not mutate the stone; you throw away the stone and carve an entirely new granite block.
 - **Objects are Shipping Containers:** 
-  A container has a tracking number (memory address). Inside the container, you can add boxes, remove boxes, or repaint the interior without changing the container's tracking number.
+  A container has an identifying reference. Inside the container, you can add properties, remove properties, or change values without changing the container's identity.
 
 ```
 PRIMITIVE (Granite Block - Immutable):
@@ -48,7 +48,7 @@ PRIMITIVE (Granite Block - Immutable):
 
 NON-PRIMITIVE (Shipping Container - Mutable):
    ┌───────────────────────────┐
-   │ Address: #0x9F            │
+   │ Object Reference          │
    │ ├── name: "Mittens"       │ ─── Can change properties inside!
    │ └── age: 3                │
    └───────────────────────────┘
@@ -285,14 +285,27 @@ console.log(id1 === id2); // false! Every Symbol is unique.
 > ⚙️ **Implementation Detail — Chromium Example**
 > In the V8 engine, 64-bit floating-point numbers require heap allocation (HeapNumber objects), which incurs garbage collection overhead. To optimize performance, V8 uses a pointer tagging trick called **Smi (Small Integer)**: 31-bit signed integers (on 32-bit systems) or 32-bit signed integers (on 64-bit systems) are stored directly inside the pointer itself with the lowest bit set to `0`, avoiding memory allocation entirely!
 
+## 🧠 What You Actually Need to Remember
+
+1. **Two Categories:** Primitives (standalone, immutable values) vs Non-Primitives (Objects/Arrays, mutable composite reference collections).
+2. **7 Primitive Types:** `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol`.
+3. **Immutability of Primitives:** A primitive value cannot be modified in-place; any operation produces a brand-new primitive value.
+4. **`undefined` vs `null`:** `undefined` is the engine default for uninitialized variables; `null` is the developer's intentional assignment representing absence of an object.
+5. **The `typeof null` Bug:** Evaluates to `"object"` due to a 1995 legacy type tag representation; permanently standardized to avoid breaking the web.
+6. **`NaN` Invariant:** `NaN` stands for "Not-a-Number", is of type `"number"`, and never equals anything—including itself (`NaN === NaN` is `false`). Use `Number.isNaN(val)`.
+7. **Explicit Conversion:** Use `Number(val)` or unary `+val` for strict parsing; `parseInt(val, 10)` parses leading digits until non-digit characters.
+
 ---
 
-## 13. ⚡ 30-Second Revision
+## ⚡ 30-Second Revision
 
-- **Must Remember:** There are 7 primitive types: `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol`. All primitives are immutable.
-- **Most Common Confusion:** `null` is an intentional absence of value; `undefined` is an uninitialized default state. `typeof null === 'object'` is a legacy bug.
-- **One Code Pattern:** Use unary plus (`+str`) or `Number(str)` for strict number conversion; use `parseInt(str, 10)` when parsing trailing unit strings like `"24px"`.
-- **One Interview Question:** Why does `NaN === NaN` return `false`? Because IEEE 754 defines `NaN` as not equal to any value, including itself; use `Number.isNaN()` instead.
+- **The 7 Primitives:** `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol`.
+- **Core Distinction:** Primitives are immutable values; objects are mutable reference types.
+- **`null` Check:** Always use `val === null` because `typeof null` misleadingly returns `"object"`.
+- **`NaN` Identity:** `NaN !== NaN`; always verify with `Number.isNaN()`.
+- **String Parsing:** `Number("10px")` $\to$ `NaN`; `parseInt("10px", 10)` $\to$ `10`.
+- **Numeric BigInt:** Cannot mix `bigint` directly with `number` in arithmetic expressions (`10n + 5` throws TypeError).
+- **Symbol Role:** Guaranteed unique identifier primitive (`Symbol("x") !== Symbol("x")`).
 
 ---
 

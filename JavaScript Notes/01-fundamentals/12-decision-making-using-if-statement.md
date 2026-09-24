@@ -314,13 +314,25 @@ Under the hood in V8's Ignition interpreter, an `if` statement is compiled into 
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `if (condition)` executes its block if `ToBoolean(condition)` is `true`. Always wrap blocks in `{}`.
-- **Most Common Confusion:** Accidental assignment `if (x = 5)` sets `x` to `5` and evaluates to truthy! Use `===`.
-- **One Code Pattern:** Guard clause: `if (!isValid) return;`.
-- **One Interview Question:** *"What happens if you place a semicolon directly after the `if (...)` parentheses?"*  
-  $\to$ It terminates the `if` statement with an empty statement, causing the subsequent block `{}` to execute unconditionally.
+1. **Conditional Branching:** The `if` statement executes its code block only if its condition evaluates to a truthy value via `ToBoolean`.
+2. **Curly Braces Mandatory:** Always use curly braces `{}`; omitting braces binds only the single next statement, creating severe maintenance bugs.
+3. **The Semicolon Trap:** Never place a semicolon directly after the condition `if (condition);` — it terminates the branch as an empty statement, running the subsequent block unconditionally.
+4. **Independent `if` Evaluation:** Multiple unchained `if` statements evaluate every single condition independently, even if an earlier condition was already matched.
+5. **Assignment vs Equality:** `if (x = 5)` assigns `5` to `x` and evaluates as truthy; always use strict comparison `if (x === 5)`.
+6. **Guard Clauses:** In functions, invert conditions to return early (`if (!isValid) return;`), eliminating nested indentation pyramids.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `if` statements branch execution based on whether the condition evaluates to a truthy value.
+- Expressions inside `if (...)` undergo implicit `ToBoolean` coercion.
+- Always use curly braces `{}` to avoid accidental single-statement binding bugs.
+- A trailing semicolon (`if (cond); { ... }`) makes the subsequent block execute unconditionally.
+- Be vigilant against assignment in conditions (`if (x = 10)` vs `if (x === 10)`).
+- Use early return guard clauses to keep code readable and avoid deeply nested conditionals.
 
 ---
 

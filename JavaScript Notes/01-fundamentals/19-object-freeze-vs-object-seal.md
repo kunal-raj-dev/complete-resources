@@ -44,7 +44,7 @@ Under the ECMAScript specification:
 const user = {...}          Object.seal(user)           Object.freeze(user)
   [The Sticky Note]          [The Glued Envelope]         [The Block of Ice]
 ────────────────────        ────────────────────        ────────────────────
-• Reassign pointer: ❌      • Reassign pointer: ❌      • Reassign pointer: ❌
+• Reassign binding: ❌      • Reassign binding: ❌      • Reassign binding: ❌
 • Add new keys:     ✅      • Add new keys:     ❌      • Add new keys:     ❌
 • Delete keys:      ✅      • Delete keys:      ❌      • Delete keys:      ❌
 • Edit values:      ✅      • Edit values:      ✅      • Edit values:      ❌
@@ -180,7 +180,7 @@ console.log(obj.a); // Still 1
 ## 9. 🧠 Brain Triggers & Confusion Checks
 
 > **Click Moment:** `Object.freeze()` is strictly **shallow**!
-> When you freeze an object, the engine freezes the memory block at `@address1`. The property `address` simply holds a pointer `@address2`. That pointer cannot be reassigned to point elsewhere, but the house at `@address2` was never frozen!
+> When you freeze an object, the engine freezes the immediate properties of that object. If a property references another nested object, the reference itself cannot be reassigned on the parent, but the referenced child object remains completely unfrozen!
 
 - **Q: Does `Object.freeze()` work on Arrays?**
   - *Click Answer:* **Yes!** Because Arrays are objects in JavaScript. Freezing an array prevents `push()`, `pop()`, `shift()`, and modifying indices (`arr[0] = 99` throws TypeError in strict mode).
@@ -274,13 +274,25 @@ There is a three-tiered ladder of immutability in JavaScript:
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** `const` locks the variable pointer; `seal()` prevents adding/deleting; `freeze()` prevents adding, deleting, and editing.
-- **Most Common Confusion:** Assuming `freeze()` is deep; nested child objects remain mutable unless recursively frozen.
-- **One Code Pattern:** True immutability requires a recursive `deepFreeze(obj)` helper.
-- **One Interview Question:** *"What is the exact technical difference between `Object.seal()` and `Object.freeze()`?"*  
-  $\to$ Both set `configurable: false` and prevent extensions, but `freeze()` additionally sets `writable: false` on all properties.
+1. **`const` vs Immutability:** `const` only prevents reassigning the variable identifier binding; it does not protect the object's internal properties from mutation.
+2. **`Object.seal()` Effects:** Prevents adding new properties and deleting existing properties, but allows modifying existing writable property values.
+3. **`Object.freeze()` Effects:** Prevents adding, deleting, or reassigning existing properties; marks all existing own data properties as `writable: false` and `configurable: false`.
+4. **Shallow Scope Limitation:** Both `Object.seal()` and `Object.freeze()` are strictly shallow; nested child objects and array elements remain mutable unless recursively frozen.
+5. **Strict Mode Errors:** In strict mode (`"use strict"`), attempting to mutate a frozen or sealed object throws a `TypeError`; in non-strict mode, it fails silently.
+6. **No Unfreezing:** There is no `Object.unfreeze()`; immutability cannot be undone on an existing object instance.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `const` secures the variable binding; `Object.freeze()` secures the object properties.
+- `Object.seal()` blocks addition and deletion of keys, while still allowing modifications to existing values.
+- `Object.freeze()` blocks adding, deleting, and modifying properties completely.
+- Freezing is strictly shallow; nested object references remain fully mutable without a recursive `deepFreeze`.
+- `Object.isFrozen(obj)` and `Object.isSealed(obj)` check protection status.
+- Once frozen, an object cannot be unfrozen; create a copy to make changes.
 
 ---
 

@@ -27,7 +27,7 @@ In JavaScript, text is stored as a **String**. To work with text—such as conve
 Because strings cannot be changed once created (immutability), every method produces a **fresh new string**.
 
 ### Technical Explanation
-A JavaScript primitive string is an indexed sequence of 16-bit unsigned integer values (UTF-16 code units). When you access a property or method on a primitive string (e.g. `message.toUpperCase()`), JavaScript performs **Autoboxing**: it temporarily creates a transient `new String(message)` wrapper object behind the scenes, executes the method from `String.prototype`, returns the resulting primitive, and discards the wrapper object for garbage collection.
+A JavaScript primitive string is an indexed sequence of 16-bit unsigned integer values (UTF-16 code units). In language specification semantics, accessing a property or method on a primitive string (e.g. `message.toUpperCase()`) performs **Autoboxing**: conceptually wrapping the primitive in an ephemeral `Object(message)` (`String.prototype`) instance, invoking the method, and discarding the wrapper. In practice, modern JavaScript engines (such as V8) optimize property lookups and method dispatches directly, avoiding physical heap allocation for most primitive method invocations.
 
 ### Before vs After Motivation
 - **Before:** Building dynamic strings with `+` concatenation (`"Hello " + firstName + " " + lastName + ", you have " + items.length + " items."`) leads to syntax errors, missing spaces, and unreadable spaghetti code.
@@ -300,13 +300,26 @@ console.log(result);
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Strings are immutable; all string methods return new strings; use template literals `` `...${}...` `` for clean interpolation.
-- **Most Common Confusion:** Writing `str.length()` (it is a property without parentheses) or using `str[0] = 'X'` (strings cannot be mutated in place).
-- **One Code Pattern:** Mask sensitive strings: `secret.slice(-4).padStart(secret.length, "*")`.
-- **One Interview Question:** *"What is Autoboxing in JavaScript strings?"*  
-  $\to$ The transient wrapping of a primitive string in a `String` object so prototype methods can be invoked.
+1. **Strict Immutability:** Strings are primitive values and cannot be modified in place; all string methods return new strings.
+2. **`.length` is a Property:** Access length via `str.length`, never invoke it as a function (`str.length()`).
+3. **Zero-Based Indexing:** Characters are indexed `0` to `str.length - 1`; `str.at(-1)` provides clean negative indexing for the last character.
+4. **Template Literals:** Use backticks (`` `Hello ${name}` ``) for multiline strings and clean variable/expression interpolation.
+5. **Searching Methods:** `str.includes()` returns a boolean; `str.indexOf()` returns the starting index or `-1` if not found.
+6. **Autoboxing Concept:** Accessing methods on a primitive string evaluates according to `String.prototype` methods via ephemeral object wrapping semantics, heavily optimized by modern engines.
+7. **`slice()` vs `substring()`:** Prefer `slice(start, end)` because it consistently supports negative offsets counting from the end of the string.
+
+---
+
+## ⚡ 30-Second Revision
+
+- String primitives are immutable; methods always return a new string, never modifying the original.
+- `.length` is an instance property, not a method (`str.length`, not `str.length()`).
+- Bracket access (`str[0] = "X"`) fails silently in non-strict mode and throws in strict mode without mutating the string.
+- Template literals (backticks) permit multi-line strings and inline expression interpolation (`${expr}`).
+- `slice(start, end)` handles positive and negative indices; `substring()` treats negative numbers as `0`.
+- Autoboxing is the language specification mechanism that exposes object wrapper methods on primitive types.
 
 ---
 

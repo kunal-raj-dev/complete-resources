@@ -300,13 +300,25 @@ console.log(Object.hasOwn(user, "toString")); // false
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Objects store key-value pairs; dot notation is for static keys, bracket notation is for variables/special keys.
-- **Most Common Confusion:** Writing `user.varName` instead of `user[varName]`.
-- **One Code Pattern:** Optional chaining for deep access: `user?.address?.city`.
-- **One Interview Question:** *"What happens when you pass an object as a property key in `{}`?"*  
-  $\to$ It is coerced to the string `"[object Object]"`, overwriting any previous object key.
+1. **Key-Value Collections:** Objects are dynamic reference types mapping String or Symbol keys to arbitrary values.
+2. **Dot vs Bracket Access:** Dot notation (`obj.key`) requires an exact identifier name; bracket notation (`obj[key]`) evaluates dynamic expressions, variables, spaces, and numbers.
+3. **Reference Semantics:** Object variables hold references to heap-allocated objects; assigning `b = a` copies the reference, so mutations through `b` affect `a`.
+4. **Key Coercion:** Object literal keys are coerced to strings (or Symbols). An object used as a key evaluates to `"[object Object]"`.
+5. **Existence Checks:** Prefer `Object.hasOwn(obj, key)` over `in` to verify own properties without walking the prototype chain.
+6. **Deletion:** The `delete obj.key` operator removes a property from the object itself and returns a boolean.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Objects group related properties and methods into key-value collections.
+- Dot notation is used for valid literal identifiers; bracket notation is mandatory for dynamic keys and non-identifier names.
+- Object keys are automatically converted to strings (or Symbols).
+- Objects are copied by reference, not by value; assigning one object variable to another shares mutations.
+- Check property existence using `Object.hasOwn(obj, "prop")` to avoid prototype pollution checks.
+- Optional chaining (`?.`) allows safe navigation across deeply nested, potentially absent object properties.
 
 ---
 

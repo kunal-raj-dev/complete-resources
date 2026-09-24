@@ -153,19 +153,18 @@ while (i < 5) {
 ```
 WHY THE BROWSER FREEZES:
 
-JavaScript is SINGLE-THREADED.
-The while loop monopolizes 100% of the CPU main thread:
+JavaScript execution on the main thread is synchronous and single-threaded.
+A tight infinite synchronous loop monopolizes the execution thread and starves the event loop:
    Iteration 1: i=0 -> console.log(0)
    Iteration 2: i=0 -> console.log(0)
    Iteration 3: i=0 -> console.log(0)
-   ... (Trillions of times per second)
+   ... (repeats indefinitely)
 
 Effects:
-• Browser tab freezes completely (Unresponsive UI).
-• DOM cannot re-render.
-• User clicks and keypresses are ignored.
-• Fans spin up as CPU core hits 100%.
-• Browser eventually displays: "Page Unresponsive - [Wait] [Kill Page]".
+• Browser tab becomes unresponsive.
+• DOM rendering updates and CSS animations are blocked.
+• User interactions (clicks, keyboard input) cannot be processed by event listeners.
+• Browser task manager flags the tab, eventually prompting: "Page Unresponsive - [Wait] [Exit page]".
 ```
 
 ---
@@ -339,13 +338,25 @@ Instead, V8's background compiler compiles optimized machine code for the loop b
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** A `while` loop tests its condition *before* each pass; always advance the counter/stepper to avoid infinite loops.
-- **Most Common Confusion:** Forgetting that `i <= arr.length` accesses an undefined index out-of-bounds; always use `i < arr.length`.
-- **One Code Pattern:** Two-pointer scan: `while (left < right) { ... left++; right--; }`.
-- **One Interview Question:** *"What happens to the browser when an infinite while loop runs in JavaScript?"*  
-  $\to$ It completely blocks the single execution thread, freezing the event loop, DOM rendering, and user input until the browser tab crashes.
+1. **Pre-Condition Test:** A `while (condition)` loop tests its condition before executing any statements in its block; if the condition starts falsy, the loop executes zero times.
+2. **Four Loop Components:** Every dependable loop requires: (1) Initialization of state, (2) Exit condition check, (3) Body statements, (4) State update / step expression.
+3. **Infinite Loop Danger:** Forgetting to update loop variables creates an infinite loop that blocks the JavaScript execution thread, starving the browser event loop and rendering.
+4. **`break` vs `continue`:** `break` exits the loop immediately; `continue` skips the remainder of the current iteration and jumps directly to the condition test.
+5. **Array Boundary Condition:** When traversing arrays, use `i < arr.length` (or `i <= arr.length - 1`); writing `i <= arr.length` attempts an out-of-bounds read yielding `undefined`.
+6. **Two-Pointer Pattern:** The `while (start < end)` pattern is fundamental for in-place array manipulation, reversals, palindromes, and binary search.
+
+---
+
+## ⚡ 30-Second Revision
+
+- `while` checks its condition at the beginning of each iteration; if falsy initially, it never runs.
+- Always include an updater (e.g. `i++`) inside the loop body to avoid infinite loop freezes.
+- Synchronous infinite loops block the main execution thread, preventing UI rendering and input handling.
+- `break` exits the loop entirely; `continue` jumps directly to the next condition check.
+- When iterating an array of length $N$, valid indices run $0$ to $N-1$; guard with `i < arr.length`.
+- Two-pointer scans (`while (left < right)`) provide efficient $O(1)$-space solutions for in-place array tasks.
 
 ---
 

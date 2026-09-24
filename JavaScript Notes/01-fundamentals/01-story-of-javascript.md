@@ -304,18 +304,30 @@ In 2009, Ryan Dahl extracted Google's open-source V8 engine from the browser, co
 > 1. **Ignition (Interpreter):** Parses JavaScript into an AST and compiles it to compact bytecode. Ignition executes bytecode immediately with low startup latency, collecting runtime profiling feedback (type feedback vectors).
 > 2. **TurboFan (Optimizing Compiler):** If a function becomes "hot" (called frequently), TurboFan compiles the bytecode into highly optimized native machine instructions assuming the observed types remain stable. If type assumptions are violated (deoptimization), TurboFan bails back to Ignition bytecode execution.
 
+## 🧠 What You Actually Need to Remember
+
+1. **Origins:** Created in May 1995 by Brendan Eich at Netscape in 10 days under the name Mocha, briefly renamed LiveScript, then marketed as JavaScript.
+2. **Java vs JavaScript:** Completely different languages; the name was a 1995 marketing partnership with Sun Microsystems ("Java is to JavaScript as Car is to Carpet").
+3. **ECMAScript (ECMA-262):** The standardized language specification governed by TC39; JavaScript is a concrete implementation of that standard.
+4. **Execution Model:** JavaScript is not purely interpreted in modern runtimes; engines use JIT (Just-In-Time) compilation combining fast interpretation with machine-code compilation.
+5. **V8 & Node.js:** Google V8 (2008) brought high-speed JIT execution; Ryan Dahl created Node.js (2009) by taking V8 outside the browser with an event loop (`libuv`).
+6. **Backward Compatibility:** "Don't break the web" is the prime directive; features are almost never removed, which is why historical artifacts like `typeof null === 'object'` remain permanently.
+
 ---
 
-## 13. ⚡ 30-Second Revision
+## ⚡ 30-Second Revision
 
-- **Must Remember:** JavaScript was created in 1995 by Brendan Eich in 10 days; Java and JavaScript are completely distinct languages.
-- **Most Common Confusion:** JavaScript is not purely interpreted; modern engines use hybrid JIT (Just-In-Time) compilation.
-- **One Code Pattern:** Beware of ASI (Automatic Semicolon Insertion) when placing return values on new lines.
-- **One Interview Question:** What is the difference between ECMAScript and JavaScript? ECMAScript is the standard specification; JavaScript is the concrete language and runtime environment implementing that specification.
+- **The Creator:** Brendan Eich created JavaScript at Netscape in 10 days in May 1995.
+- **Spec vs Language:** ECMAScript is the standard specification; JavaScript, SpiderMonkey, and V8 are implementations.
+- **Committee:** TC39 (Technical Committee 39) evolves ECMAScript through a 5-stage proposal pipeline (Stages 0–4).
+- **Execution Reality:** Modern engines are hybrid JIT systems (bytecode interpretation + speculative optimizing compilation), not pure line-by-line interpreters.
+- **Runtimes:** JavaScript runs both in browsers (via Web APIs + DOM) and standalone on servers/desktops (via Node.js, Deno, Bun).
+- **Golden Rule:** Absolute backward compatibility ensures 1996 code still executes in 2026+ browsers.
+- **Interview Reflex:** When asked about Java vs JS: cite James Gosling (Java, static OOP, JVM) vs Brendan Eich (JS, dynamic multi-paradigm, browser/JIT engine).
 
 ---
 
-## 14. 🛠️ Tiny Practice Task & Interview Readiness Checklist
+## 🛠️ Tiny Practice Task & Interview Readiness Checklist
 
 ### Practice Task
 Open your browser DevTools Console (`F12`), paste the following code, and observe historical quirks and language reflection:

@@ -10,7 +10,7 @@
 - How 2D arrays represent grids, matrices, chess boards, and coordinate systems.
 - The dual bracket access syntax: **`matrix[rowIndex][columnIndex]`**.
 - How to read, update, and iterate over multidimensional grids.
-- Why JavaScript does NOT have true contiguous 2D matrices, but rather **Jagged Arrays** (arrays of reference pointers).
+- Why JavaScript does NOT have true contiguous 2D matrices, but rather **Jagged Arrays** (arrays of object references).
 - The catastrophic **`.fill([])` reference duplication bug** and how to avoid it.
 - How to flatten multidimensional arrays using **`.flat()`**.
 
@@ -24,7 +24,7 @@ What if you need a grid with **rows and columns**, like a Tic-Tac-Toe board, a c
 In JavaScript, you build a grid by creating an outer array whose elements are themselves arrays!
 
 ### Technical Explanation
-JavaScript does not possess native multidimensional array types (unlike languages like C or Fortran that allocate contiguous $M \times N$ memory buffers). Instead, JavaScript implements multidimensional arrays as **Arrays of Arrays**. The outer array holds heap object pointers to distinct inner array instances. Because each inner array is an independent object, rows can technically vary in length (forming "ragged" or "jagged" arrays).
+JavaScript does not possess native multidimensional array types (unlike languages like C or Fortran that allocate contiguous $M \times N$ memory buffers). Instead, JavaScript implements multidimensional arrays as **Arrays of Arrays**. The outer array holds references to distinct inner array instances. Because each inner array is an independent object, rows can technically vary in length (forming "ragged" or "jagged" arrays).
 
 ### Before vs After Motivation
 - **Before:** Flattening 2D spatial data into a single 1D array requires manual mathematical index mapping formulas: `index = row * width + col`.
@@ -106,7 +106,7 @@ Trace of `ticTacToe[1][2]`:
          ▼
 [1] First evaluation: `ticTacToe[1]`.
     • Engine looks up index 1 in outer array.
-    • Retrieves the reference pointer to the Row 1 inner array: `[null, null, 'O']`.
+    • Retrieves the object reference to the Row 1 inner array: `[null, null, 'O']`.
          │
          ▼
 [2] Second evaluation: `[null, null, 'O'][2]`.
@@ -122,9 +122,9 @@ In JavaScript, each row is a separate object on the Heap:
 
 ```
 OUTER ARRAY (@100)
-├── [0] ─── Pointer ───> INNER ARRAY (@201): ['A', 'B'] (Length 2)
-├── [1] ─── Pointer ───> INNER ARRAY (@202): ['C', 'D', 'E', 'F'] (Length 4)
-└── [2] ─── Pointer ───> INNER ARRAY (@203): ['G'] (Length 1)
+├── [0] ─── Reference ───> INNER ARRAY (@201): ['A', 'B'] (Length 2)
+├── [1] ─── Reference ───> INNER ARRAY (@202): ['C', 'D', 'E', 'F'] (Length 4)
+└── [2] ─── Reference ───> INNER ARRAY (@203): ['G'] (Length 1)
 ```
 
 Because inner arrays are independent, rows do not have to be equal in length. This is why JavaScript 2D arrays are called **Jagged Arrays**.
@@ -138,7 +138,7 @@ Because inner arrays are independent, rows do not have to be equal in length. Th
 | **Indexing** | `arr[i]` | `arr[row][col]` |
 | **Outer `.length`** | Total number of elements | Total number of **rows** |
 | **Row `.length`** | N/A | Number of columns in that row: `arr[row].length` |
-| **Looping** | Single loop ($O(N)$) | Nested loop ($O(R \times C)$) |
+| **Looping** | Single loop over elements | Nested loop over rows and columns |
 
 ---
 
@@ -238,7 +238,7 @@ console.log("grid[1][0]:", grid[1][0]);
 <summary>▶ Click to reveal Predict First Output</summary>
 
 **Output:** `grid[1][0]: 99`  
-**Explanation:** `row = grid[1]` copies the **reference pointer** to the second row array. Mutating `row[0]` modifies the exact array inside `grid`.
+**Explanation:** `row = grid[1]` copies the **object reference** to the second row array. Mutating `row[0]` modifies the exact array inside `grid`.
 </details>
 
 ---
@@ -259,13 +259,25 @@ function setPixel(x, y, val) {
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** 2D arrays are arrays of arrays; access via `grid[row][col]`; never initialize with `.fill([])`.
-- **Most Common Confusion:** Reversing rows and columns (`[col][row]`).
-- **One Code Pattern:** Safe access: `const cell = grid[r]?.[c] ?? defaultValue;`.
-- **One Interview Question:** *"Why does `new Array(3).fill([])` cause bugs when modifying one cell?"*  
-  $\to$ Because `.fill()` assigns the exact same array reference pointer to every row; mutating one row mutates all rows.
+1. **Arrays of Arrays:** JavaScript lacks native contiguous 2D arrays; multidimensional grids are jagged arrays of independent inner array objects.
+2. **Access Syntax:** Navigate cells using dual brackets: `grid[rowIndex][columnIndex]`.
+3. **The `.fill([])` Bug:** `new Array(3).fill([])` fills every row with a reference to the exact same array instance; mutating one row mutates every row.
+4. **Safe Grid Creation:** Always initialize matrices with unique instances: `Array.from({ length: rows }, () => new Array(cols).fill(0))`.
+5. **Jagged Rows:** Since each row is an independent array, rows can have unequal lengths (`grid[0].length !== grid[1].length`).
+6. **Flattening Grids:** Use `grid.flat(depth)` to reduce multidimensional nesting into a single flat array.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Multidimensional arrays in JS are arrays containing references to other arrays.
+- Access coordinate values using `matrix[row][col]`.
+- Never initialize a 2D array with `.fill([])`; it duplicates the same array object reference across all rows.
+- Correct initialization: `Array.from({ length: R }, () => Array(C).fill(0))`.
+- JavaScript arrays are jagged, meaning rows can have varying numbers of columns.
+- Use `matrix.flat()` to flatten nested array levels into a 1D array.
 
 ---
 

@@ -40,20 +40,20 @@ Imagine a warehouse filled with storage shelves (RAM):
 - With `const`, the box is padlocked shut upon creation: once you drop an initial item inside, you can never swap it for a different item.
 
 ```
-MEMORY ALLOCATION (Mental Model):
+VARIABLE BINDING (Mental Model):
 
    let age = 15;
    ┌────────────────────────────────┐
    │ Identifier: "age"              │
-   │ Memory Address: 0x004A2        │
-   │ Stored Value:   15 (number)    │
+   │ Binding:    Reassignable       │
+   │ Value:      15 (number)        │
    └────────────────────────────────┘
 
    const hoursInDay = 24;
    ┌────────────────────────────────┐
    │ Identifier: "hoursInDay"       │
-   │ Memory Address: 0x004A8        │
-   │ Stored Value:   24 (IMMUTABLE) │ ─── Cannot reassign!
+   │ Binding:    Immutable Binding  │ ─── Cannot reassign!
+   │ Value:      24 (number)        │
    └────────────────────────────────┘
 ```
 
@@ -216,8 +216,8 @@ user = { name: "Adarsh" }; // TypeError: Assignment to constant variable.
 
 ## 9. 🧠 Brain Triggers & Confusion Checks
 
-> **Click Moment:** `const` locks the **assignment arrow**, NOT the object itself!
-> If the arrow points to address `#101`, `const` prevents you from pointing the arrow to `#102`. But you can still change whatever is inside the house at `#101`!
+> **Click Moment:** `const` prevents reassignment of the variable **binding**; it does NOT make an object value immutable!
+> When a variable holds an object, the binding points to that object reference. You cannot reassign the identifier to point to a different value, but the properties within the object can be freely modified. To make the object itself immutable, use `Object.freeze()`.
 
 - **Q: Why does `console.log(a)` print `undefined` before `var a = 10;`, but crashes for `let a = 10;`?**
   - *Click Answer:* Both are hoisted during memory creation. However, `var` is initialized with `undefined` immediately, while `let` remains completely uninitialized in the **Temporal Dead Zone** until execution physically reaches that line.
@@ -307,15 +307,25 @@ Under the ECMAScript specification:
 In Google's V8 engine:
 Variables holding small integers are stored inline as **SmI** (Small Integers, unboxed 31-bit values on 32-bit platforms or 32-bit on 64-bit platforms). When you reassign a variable from an integer to a floating-point number or an object, V8 transitions the variable's storage representation from a direct SmI into a HeapObject pointer.
 
+## 🧠 What You Actually Need to Remember
+
+1. **Variables are Untyped Bindings:** The variable identifier is an untyped binding; data types belong to the values, not the variable itself.
+2. **`var` vs `let` vs `const`:** `var` is function/globally scoped and re-declarable (legacy); `let` is block-scoped and reassignable; `const` is block-scoped and creates an un-reassignable binding.
+3. **Immutable Binding $\neq$ Immutable Object:** `const` prohibits reassigning the identifier binding. Properties inside an object declared with `const` can be added, updated, and deleted freely.
+4. **`undefined` vs `not defined`:** `undefined` is a valid primitive value representing an allocated variable holding no value; `not defined` is a fatal `ReferenceError` indicating the identifier was never declared in the scope chain.
+5. **Temporal Dead Zone (TDZ):** `let` and `const` variables are hoisted but remain uninitialized from the start of the block until the declaration line executes; accessing them before initialization throws a `ReferenceError`.
+6. **Naming Rules:** Identifiers may contain letters, digits, `$`, and `_`, but cannot start with a digit and cannot be reserved keywords. Case-sensitive.
+
 ---
 
-## 13. ⚡ 30-Second Revision
+## ⚡ 30-Second Revision
 
-- **Must Remember:** `const` = locked binding, cannot reassign; `let` = block-scoped, reassignable; `var` = function-scoped, avoid in modern code.
-- **Most Common Confusion:** `undefined` is an assigned value representing an empty slot; `not defined` is a fatal engine error because no declaration exists.
-- **One Code Pattern:** Default to `const user = { id: 1 };`, switch to `let count = 0;` only when reassignment is mandatory.
-- **One Interview Question:** *"What happens if you reference a `let` variable before its declaration line?"*  
-  $\to$ It throws a `ReferenceError` because it is in the **Temporal Dead Zone (TDZ)**.
+- **The Golden Hierarchy:** Use `const` by default; use `let` only when reassignment is required; never use `var`.
+- **Scope Rule:** `let` and `const` respect `{ ... }` blocks; `var` ignores blocks and leaks to the enclosing function or global scope.
+- **Re-declaration:** `var` permits accidental duplicate declarations; `let` and `const` immediately throw a `SyntaxError`.
+- **Initialization Rule:** `const` must be initialized on the line of declaration (`const x = 1;`); `let` can be declared without initialization (`let x;` starts as `undefined`).
+- **Object Mutability:** `const obj = { a: 1 }` allows `obj.a = 2`. To prevent mutation, wrap with `Object.freeze()`.
+- **TDZ Safety:** `let` and `const` cannot be read or written before declaration, preventing silent bug propagation.
 
 ---
 

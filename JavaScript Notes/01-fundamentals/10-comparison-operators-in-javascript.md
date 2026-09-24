@@ -281,13 +281,25 @@ In enterprise codebases and tech giants (Google, Meta, Amazon), the ESLint rule 
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Always use `===` and `!==`; never use `==` or `!=`.
-- **Most Common Confusion:** String comparison is alphabetical: `"100" < "20"` is `true`. Always wrap in `Number()` before comparing numbers stored in strings.
-- **One Code Pattern:** Safe null/undefined check: `if (value == null) { /* catches null AND undefined */ }`.
-- **One Interview Question:** *"Why is `null >= 0` true while `null > 0` is false?"*  
-  $\to$ Relational operators convert `null` to `0`, and `>=` is evaluated as `!(null < 0)`, which is `!(0 < 0) === true`.
+1. **Strict Equality (`===`) vs Loose (`==`):** `===` checks both type and value without coercion; `==` coerces operands using the complex Abstract Equality Comparison Algorithm.
+2. **Standard Rule:** Default to `===` and `!==` everywhere to eliminate unexpected type coercion bugs.
+3. **Lexicographical String Ordering:** Comparing strings (`"10" < "9"`) compares Unicode code points character-by-character; convert strings to numbers before relational numeric comparisons.
+4. **The `null` Comparison Paradox:** `null == 0` is `false` (null only loosely equals undefined), `null > 0` is `false` (`0 > 0`), but `null >= 0` is `true` (`!(null < 0) => !(0 < 0)`).
+5. **`NaN` Identity:** `NaN === NaN` is `false` by IEEE 754 spec. Check with `Number.isNaN()` or `Object.is(NaN, NaN)`.
+6. **Object Reference Equality:** `===` on objects/arrays checks reference identity (memory reference), not internal property contents.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Strict equality (`===`) requires matching types and values; loose equality (`==`) forces coercion.
+- Default to `===` in modern JavaScript to eliminate coercion anomalies.
+- `null == undefined` is `true`, but neither loosely equals any other value.
+- Strings compare lexicographically (`"10" < "9"` is `true`). Always coerce to numbers when comparing numeric strings.
+- `NaN` is not equal to itself (`NaN === NaN` is `false`); use `Number.isNaN()`.
+- Equality between objects tests whether both variables refer to the exact same object reference in memory.
 
 ---
 

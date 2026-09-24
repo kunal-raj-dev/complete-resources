@@ -202,7 +202,7 @@ console.log(arr); // ["A", "B"] (C and D are permanently deleted!)
 In Google's V8 engine, arrays are not simple C-style pointer arrays. V8 classifies arrays into internal **Elements Kinds**:
 1. `PACKED_SMI_ELEMENTS`: Array containing only small integers (Contiguous C++ integer array in RAM - maximum speed).
 2. `PACKED_DOUBLE_ELEMENTS`: You inserted a floating point number (`1.5`). V8 transitions the entire array representation.
-3. `PACKED_ELEMENTS`: You inserted a string or object. V8 transitions to boxed pointers.
+3. `PACKED_ELEMENTS`: You inserted a string or object. V8 transitions to tagged object references.
 4. `HOLEY_*`: You created an empty hole via `arr[100] = 5` or `delete`.
 
 > **Critical Rule:** Transitions are **one-way only**. Once an array becomes HOLEY or generic, it can NEVER transition back to PACKED_SMI, causing permanent de-optimization for loops.
@@ -257,13 +257,25 @@ const clean = [5];
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** Arrays are 0-indexed exotic objects; always use `Array.isArray()`; never use `delete` on array elements.
-- **Most Common Confusion:** Thinking `typeof []` is `"array"`; it is `"object"`.
-- **One Code Pattern:** Empty an array in-place: `arr.length = 0;`.
-- **One Interview Question:** *"What happens when you use the `delete` operator on an array index?"*  
-  $\to$ It removes the value and leaves an empty slot (a hole), but does NOT shift elements or decrement the array's `.length`.
+1. **Exotic Object with Synchronized Length:** Arrays are exotic objects inheriting from `Array.prototype` whose special `[[DefineOwnProperty]]` method keeps the `.length` property synchronized with numerical indices.
+2. **Identification Rule:** `typeof []` evaluates to `"object"`; use `Array.isArray(val)` to reliably verify whether an entity is an array.
+3. **Modifying `.length` Directly:** Manually setting `arr.length = 0` clears the array in-place; reducing `.length` truncates elements beyond the new length.
+4. **Never Use `delete` on Elements:** `delete arr[i]` deletes the value but retains the index, creating a sparse array hole without decrementing `.length`.
+5. **Negative Indexing:** Standard bracket access `arr[-1]` looks up property `"-1"`; use `arr.at(-1)` to safely read elements from the end.
+6. **Engine Optimization:** Engines like V8 optimize contiguous, homogeneous arrays (like packed integers); creating holes or mixing types degrades array representations.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Arrays are 0-indexed exotic objects whose `.length` tracks the highest index plus one.
+- `typeof [] === 'object'`; always use `Array.isArray(arr)` to test for array instances.
+- Setting `arr.length = 0` instantly empties the array and reclaims allocated elements.
+- The `delete` operator leaves empty holes (`<empty item>`) in arrays; use `splice()` to remove items.
+- Modern `arr.at(-1)` provides convenient negative indexing for the last element.
+- Avoid creating sparse arrays, as engines optimize packed, dense arrays much more effectively.
 
 ---
 

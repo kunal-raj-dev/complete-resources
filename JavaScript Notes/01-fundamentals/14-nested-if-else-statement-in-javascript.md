@@ -290,13 +290,24 @@ Refactoring to guard clauses or lookup objects keeps cognitive complexity near 1
 
 ---
 
-## 13. ⚡ 30-Second Revision
+## 🧠 What You Actually Need to Remember
 
-- **Must Remember:** An inner condition executes only if its enclosing outer block evaluated to truthy; always use braces `{}` to avoid dangling else bugs.
-- **Most Common Confusion:** Forgetting that an `else` binds to the closest preceding `if`, not the top `if`.
-- **One Code Pattern:** Invert and return early: `if (!hasAccess) return false;`.
-- **One Interview Question:** *"How do you eliminate the 'Pyramid of Doom' in deeply nested conditional code?"*  
-  $\to$ By applying Guard Clauses (early returns), combining conditions with logical operators, or using lookup tables.
+1. **Hierarchical Preconditions:** Nested `if` blocks only evaluate when their parent condition has evaluated to truthy.
+2. **Block Scope Isolation:** Variables declared with `let` or `const` inside an inner block are not accessible in outer scopes.
+3. **The Dangling Else Rule:** In JavaScript, an `else` clause binds to the nearest preceding unmatched `if` statement; use explicit curly braces `{}` to avoid ambiguous logic.
+4. **Pyramid of Doom:** Deeply nested conditionals make code difficult to read, test, and maintain.
+5. **Guard Clause Refactoring:** Invert negative conditions and return early to flatten deeply nested logic into linear, root-level code.
+6. **Logical Operator Simplification:** When an inner check doesn't require separate handling, collapse nested blocks using `&&`.
+
+---
+
+## ⚡ 30-Second Revision
+
+- Inner `if` blocks execute only after all outer parent conditions evaluate to truthy.
+- Lexical scoping keeps `let` and `const` variables contained within their declared inner block.
+- Without braces, an `else` attaches to the immediately preceding `if` (the dangling else trap).
+- Deep nesting increases cognitive complexity; flatten code using early returns (guard clauses).
+- Combine straightforward interdependent conditions using logical `&&` to avoid excessive indentation.
 
 ---
 
