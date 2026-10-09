@@ -1,232 +1,125 @@
-# Lecture 69: Valid Parentheses (LeetCode 20)
+# Lecture 67 — Valid Parentheses
 
-> **One-Line Purpose:** Determine if bracket strings are properly nested and balanced by pairing closing brackets against expected top-of-stack opening brackets in $O(N)$ time and space.
+[Topic Index](./00_master_index.md) · [Previous: Stacks](./01_introduction_to_stacks.md) · [Next: Stock Span](./03_stock_span_problem.md)
 
----
+**Source:** [Lecture 67](https://www.youtube.com/watch?v=NlHupEeDXzY). **Verification:** full auto-caption sequence reviewed; code frame checked. [Coverage record](../stacks_dsa_notes/SOURCE_COVERAGE.md#lecture-67).
 
-## 📌 Source Metadata
-> **Source:** YouTube Playlist (Complete C++ DSA Course | Apna College)  
-> **Instructor:** Shradha Khapra  
-> **Lecture:** #69  
-> **Video ID:** `NlHupEeDXzY`  
-> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=NlHupEeDXzY)  
-> **Duration:** 16:25  
-> **Status:** AUDITED  
+**Prerequisites:** LIFO, `std::stack<char>`, strings, and Boolean conditions.
 
----
+## Contents
 
-## 💻 Complete C++ Implementation
+- [1. What makes brackets valid?](#1-what-makes-brackets-valid)
+- [2. Why a stack is the right tool](#2-why-a-stack-is-the-right-tool)
+- [3. Algorithm and dry run](#3-algorithm-and-dry-run)
+- [4. C++17 implementation](#4-c17-implementation)
+- [5. Correctness and complexity](#5-correctness-and-complexity)
+- [6. Additional explanation and revision](#6-additional-explanation-and-revision)
+
+## 1. What makes brackets valid?
+
+**Lecture flow: approximately 00:34–03:23.** Input contains the six characters `()[]{}`. The goal is to check matching types, nesting order, and whether every opening and closing bracket has a partner. The [official LeetCode 20 statement](https://leetcode.com/problems/valid-parentheses/) limits the input to brackets and a length of 1–10,000.
+
+The phrase **correct order** means the most recently opened **unclosed** bracket must close first. It does not mean opening order and closing order are identical.
+
+| Input | Valid? | Reason |
+|---|---|---|
+| `({[]})` | Yes | Each inner pair finishes before the outer pair |
+| `[](){}` | Yes | Separate valid groups can be adjacent |
+| `([)]` | No | `)` tries to close `(` while `[` is still open |
+| `(]` | No | Types differ |
+| `())` | No | The final closer has no opener |
+| `(()` | No | One opener remains unfinished |
+
+Equal counts of opening and closing brackets are **necessary, not sufficient**. `([)]` has matching counts but crossed nesting. A single counter works for a **single bracket type** if prefixes never go negative and the final count is zero; it loses the type/order information needed for three types.
+
+## 2. Why a stack is the right tool
+
+**Lecture flow: approximately 03:23–05:55.** A closing bracket needs the latest unmatched opening bracket. That is exactly the stack's top. The stack stores **unmatched openings**, not every character and not completed pairs.
+
+For `([{}])`, after reading `([{`, the stack is `['(', '[', '{']` bottom → top. The next `}` must match `{`. After that pair is removed, `]` must match `[`, and finally `)` must match `(`.
+
+This is a general interview pattern: use a stack when the current item resolves the **most recent unresolved dependency**. Examples later include expression evaluation and nested scopes.
+
+## 3. Algorithm and dry run
+
+**Lecture flow: approximately 05:55–12:42.** Scan left to right:
+
+1. If the character is an opener, push it.
+2. Otherwise, if the stack is empty, reject before accessing its top.
+3. Compare the closer with the opening on the top. Reject a type mismatch.
+4. If they match, pop the opener.
+5. After the scan, accept only if the stack is empty.
+
+**Original dry run:** `([]){}`. Stack notation is bottom → top.
+
+| Position | Character | Stack before | Action | Stack after |
+|---|---|---|---|---|
+| 0 | `(` | `[]` | Push opener | `['(']` |
+| 1 | `[` | `['(']` | Push opener | `['(', '[']` |
+| 2 | `]` | `['(', '[']` | Match `[`; pop | `['(']` |
+| 3 | `)` | `['(']` | Match `(`; pop | `[]` |
+| 4 | `{` | `[]` | Push opener | `['{']` |
+| 5 | `}` | `['{']` | Match `{`; pop | `[]` |
+
+Result: `true`. Completed groups leave no residue, so the second group can begin independently.
+
+The lecture explicitly handles three failure modes. A **mismatch** is detected during comparison; **too many closers** produce an empty stack before a match; **too many openers** leave a nonempty stack after the loop. Omitting any one of these checks admits invalid strings or causes an invalid top access.
+
+## 4. C++17 implementation
+
+**Lecture flow: approximately 12:42–15:25.** The implementation below follows the same algorithm, with a range loop and an explicit rejection of non-bracket characters as added defensive behavior.
 
 ```cpp
-#include <string>
 #include <stack>
-#include <iostream>
+#include <string>
 
-using namespace std;
-
-class SolutionValidParentheses {
-public:
-    bool isValid(string s) {
-        stack<char> st;
-
-        for (char ch : s) {
-            if (ch == '(' || ch == '{' || ch == '[') {
-                st.push(ch);
-            } else {
-                if (st.empty()) return false; // Closing bracket with no matching opening bracket
-                char top = st.top();
-                if ((ch == ')' && top == '(') ||
-                    (ch == '}' && top == '{') ||
-                    (ch == ']' && top == '[')) {
-                    st.pop();
-                } else {
-                    return false; // Mismatched bracket types
-                }
-            }
+bool isValid(const std::string& text) {
+    std::stack<char> pending;
+    for (char c : text) {
+        if (c == '(' || c == '[' || c == '{') {
+            pending.push(c);
+            continue;
         }
-
-        return st.empty(); // Must have resolved all opening brackets
+        if (c != ')' && c != ']' && c != '}') return false;
+        if (pending.empty()) return false;
+        const char opening = pending.top();
+        const bool matches =
+            (opening == '(' && c == ')') ||
+            (opening == '[' && c == ']') ||
+            (opening == '{' && c == '}');
+        if (!matches) return false;
+        pending.pop();
     }
-};
-
-int main() {
-    SolutionValidParentheses solver;
-    cout << "()[]{}: " << (solver.isValid("()[]{}") ? "VALID" : "INVALID") << endl; // VALID
-    cout << "(]:     " << (solver.isValid("(]") ? "VALID" : "INVALID") << endl;     // INVALID
-    return 0;
+    return pending.empty();
 }
 ```
 
----
+Signature: a string is passed by const reference to avoid a copy; the result is a Boolean. On LeetCode, place this function as a public method of the expected `Solution` class and match the judge's method signature.
 
-## ⏱️ Complexity Analysis
-- **Time Complexity:** $O(N)$
-- **Space Complexity:** $O(N)$ worst-case stack depth.
+Usage: `isValid("([]){}")` is true; `isValid("([)]")` is false; `isValid(")")` is false. The empty string returns true as a deliberate mathematical extension, even though the official input is nonempty.
 
----
+## 5. Correctness and complexity
 
-## 🧠 Core Intuition — Why This Works
+**Invariant:** after each accepted prefix, the stack contains exactly its unmatched opening brackets, in encounter order.
 
-**The Bracket Pairing Insight:** Every closing bracket must match the **most recently seen** unmatched opening bracket. This is LIFO — the last opened bracket is the first one that must be closed. A stack naturally models this.
+An opener adds one unfinished bracket, so push preserves the invariant. A closer can only finish the most recent unfinished opener: if none exists, it is unmatched; if the top type differs, proper nesting is impossible. A matching pop removes exactly the newly completed dependency. At the end, an empty stack means every opener has been matched and every closer was validated. A nonempty stack means some opener is unfinished.
 
-**Real-World Analogy:** Think of Russian nesting dolls (Matryoshka). You must open and close them in strictly reverse order. If you open a large doll, then a medium one inside, you must close the medium before the large.
+**Lecture analysis: approximately 15:25–16:05.** Every character is examined once: worst-case O(n) time. The maximum number of unmatched openings determines stack space, which is O(n) in the worst case. If the maximum nesting depth is d, actual stack usage is O(d). There is no output array: result space is O(1).
 
-```
-"( [ { } ] )"  →  VALID
-   ↑ opens: stack = [(, []
-         ↑ opens: stack = [(, [, {]
-           ↑ closes {: matches top {, pop → stack = [(, []
-             ↑ closes ]: matches top [, pop → stack = [()]
-               ↑ closes ): matches top (, pop → stack = []
-               Stack empty → VALID ✓
+## 6. Additional explanation and revision
 
-"( ]"  →  INVALID
-   ↑ opens: stack = [(]
-     ↑ closes ]: top is (, mismatch → return false ✗
-```
+### Common wrong solutions
 
----
+- **Only count brackets:** accepts `([)]` unless order is tracked.
+- **Check the stack's top before checking emptiness:** fails on `]` and risks undefined behavior.
+- **Always return true after the loop:** accepts `(((`.
+- **Forget to pop after a match:** leaves completed openings in the stack.
+- **Require one outer pair around the entire string:** wrongly rejects `()[]`.
 
-## 🎯 Pattern Recognition — When to Use Stack for Brackets
+An odd-length bracket-only string cannot be valid, because brackets are consumed in pairs. An early odd-length check is optional; the algorithm already rejects it correctly.
 
-- Any problem with **nested structure** that must be closed in the reverse order it was opened.
-- Keywords: "balanced", "valid", "matching brackets", "well-formed", "properly nested".
-- **Simpler version (1 bracket type):** Use a counter — increment on `(`, decrement on `)`. Return `counter == 0` and counter never goes negative. No stack needed!
+**Interview/CP extension:** for parsing source code, brackets inside string literals and comments must be ignored according to the language grammar. The six-character problem does not require that lexer. If a task includes wildcards such as `*`, this exact algorithm is insufficient because an ambiguous character can have multiple roles.
 
----
+**Interview questions:** What precisely does your stack represent? Why do we reject a mismatch immediately? Can you reduce space to O(1) without changing the three-bracket problem's assumptions? Explain why counting alone fails.
 
-## 🔍 Dry Run Trace
-
-Input: `"({[]})"`
-
-```
-i=0  ch='('  Opening → push '('    Stack: ['(']
-i=1  ch='{'  Opening → push '{'    Stack: ['(', '{']
-i=2  ch='['  Opening → push '['    Stack: ['(', '{', '[']
-i=3  ch=']'  Closing, top='[' ✓   Stack: ['(', '{']       pop
-i=4  ch='}'  Closing, top='{' ✓   Stack: ['(']            pop
-i=5  ch=')'  Closing, top='(' ✓   Stack: []               pop
-Loop ends. Stack empty → return TRUE
-```
-
-Input: `"([)]"`
-
-```
-i=0  ch='('  push         Stack: ['(']
-i=1  ch='['  push         Stack: ['(', '[']
-i=2  ch=')'  top='[' ≠ '(' → MISMATCH → return FALSE
-```
-
----
-
-## ⚠️ Common Interview Mistakes
-
-1. **Not checking stack empty before accessing top:** `st.top()` on empty stack = UB. Always do `if (st.empty()) return false;` when you encounter a closing bracket.
-
-2. **Forgetting to check stack is empty at the end:** Input `"((("` would pass the loop without error but the stack wouldn't be empty. Must `return st.empty()` not `return true`.
-
-3. **Wrong bracket match mapping:** A very common typo — mapping `')'` to `')'` instead of `'('`. Use a map or triple-condition if-else.
-
-4. **Treating all characters as brackets:** In extended versions, if the string contains non-bracket characters, only push/check actual brackets.
-
----
-
-## 🔥 Interview Q&A — Google / Amazon / Meta Level
-
-### Q1: [Conceptual] Why is a stack the right data structure here instead of a simple counter?
-**Answer:** A simple counter works only when there is **one type of bracket** — increment on open, decrement on close, check counter == 0 at end and never negative. With **multiple bracket types**, the order of closure matters. `"([)]"` has equal opens and closes, so a counter says valid, but a stack correctly identifies it as invalid because `]` doesn't match `(`.
-
-### Q2: [Extension] How do you find the **minimum number of bracket insertions** to make a string valid?
-**Answer:** Use two counters: `open` (unmatched opens needing a close) and `close` (unmatched closes needing an open).
-```cpp
-int minInsertions(string s) {
-    int open = 0, close = 0;
-    for (char ch : s) {
-        if (ch == '(') open++;
-        else { // ch == ')'
-            if (open > 0) open--; // Match with existing open
-            else close++;         // Need to insert an open
-        }
-    }
-    return open + close; // open unmatched opens + close unmatched closes
-}
-```
-
-### Q3: [Extension] Longest Valid Parentheses (LeetCode 32): How do you find the length of the longest valid substring?
-**Answer:** Push **indices** instead of characters. Start with `-1` as a base index on the stack.
-```cpp
-int longestValidParentheses(string s) {
-    stack<int> st;
-    st.push(-1); // Base index
-    int maxLen = 0;
-    for (int i = 0; i < s.size(); i++) {
-        if (s[i] == '(') {
-            st.push(i);
-        } else {
-            st.pop();
-            if (st.empty()) st.push(i); // New base
-            else maxLen = max(maxLen, i - st.top());
-        }
-    }
-    return maxLen;
-}
-```
-Time: $O(N)$, Space: $O(N)$.
-
-### Q4: [Output Prediction] What does the following code print for input `"[]{}("`?
-```cpp
-bool isValid(string s) {
-    stack<char> st;
-    for (char ch : s) {
-        if (ch == '(' || ch == '{' || ch == '[') st.push(ch);
-        else {
-            if (st.empty()) return false;
-            char top = st.top();
-            if ((ch==')' && top=='(') || (ch=='}' && top=='{') || (ch==']' && top=='['))
-                st.pop();
-            else return false;
-        }
-    }
-    return st.empty();
-}
-```
-**Answer:** The loop processes `[`, `]` (match, pop), `{`, `}` (match, pop), `(` (push). At end, stack = `['(']`, which is NOT empty → returns **`false`**. The string is invalid because `(` is never closed.
-
-### Q5: [Complexity] Can you solve Valid Parentheses in O(1) space?
-**Answer:** Only for **single bracket types**. Use a counter: increment on `(`, decrement on `)`, return false if counter < 0 at any point, and true if counter == 0 at the end. For **multiple bracket types**, $O(N)$ space is provably necessary because we need to remember the order of all unmatched openers.
-
-### Q6: [Extension] How would you check valid XML/HTML tags using a stack?
-**Answer:** Same principle — when you encounter an opening tag `<tag>`, push `tag`. When you encounter a closing tag `</tag>`, check if it matches `st.top()`. If not, invalid. If yes, pop. At the end, the stack should be empty. The only difference from bracket matching is extracting the tag name string from the angle-bracket syntax.
-
-### Q7: [Extension] How does the compiler use this concept to validate code?
-**Answer:** Parsers in compilers perform bracket matching as part of **syntax analysis (parsing)**. They build an Abstract Syntax Tree (AST) where every `{` opens a scope block and `}` closes it. The parser uses an explicit stack to track open scopes. Mismatched braces in C++ give compile-time errors — that's the compiler's bracket-matching algorithm at work.
-
----
-
-## 🏆 Related LeetCode Problems
-
-| # | Problem | Key Hint |
-|---|---------|----------|
-| 20 | Valid Parentheses | Classic stack matching |
-| 32 | Longest Valid Parentheses | Push indices, track base |
-| 678 | Valid Parenthesis String (`*`) | Stack + greedy range |
-| 921 | Minimum Add to Make Parentheses Valid | Count unmatched opens/closes |
-| 1249 | Minimum Remove to Make Valid | Push indices to remove |
-
----
-
-## 🔗 Cross-Topic Connections
-
-- **Recursion:** Recursive grammars (like arithmetic expressions) use implicit stacks — same principle.
-- **Compiler Design:** Syntax parsing uses this exact pattern for scope validation.
-- **String Manipulation:** Many "nested structure" string problems reduce to bracket matching.
-
----
-
-## ⚡ 2-Minute Revision Flash Card
-
-- **Key insight:** Most-recently-opened bracket must be closed first → LIFO → Stack.
-- **Algorithm:** Push opens, match closes against stack top, return `st.empty()`.
-- **Critical empty check:** `if (st.empty()) return false` when you see a closing bracket.
-- **Single bracket type:** No stack needed, just use a counter.
-- **Pitfall:** Don't forget `return st.empty()` at the end — not `return true`.
+**Revision:** push openings; close only the top; reject empty/mismatched tops; require an empty stack at the end.
