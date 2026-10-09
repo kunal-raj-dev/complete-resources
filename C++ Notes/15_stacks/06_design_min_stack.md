@@ -1,273 +1,214 @@
-# Lecture 73: Design Min Stack (LeetCode 155)
+# Lecture 71 — Design a Min Stack
 
-> **One-Line Purpose:** Design a stack supporting `push`, `pop`, `top`, and retrieving the minimum element `getMin` in strict $O(1)$ time and $O(1)$ auxiliary space via mathematical value encoding ($2x - \text{minVal}$).
+[Topic Index](./00_master_index.md) · [Previous: Previous Smaller](./05_previous_smaller_element.md) · [Next: Histogram](./07_largest_rectangle_in_histogram.md)
 
----
+**Source:** [Min Stack lecture](https://www.youtube.com/watch?v=wHDm-N2m2XY). **Verification:** full auto-caption sequence reviewed; encoded implementation frame checked. [Coverage record](../stacks_dsa_notes/SOURCE_COVERAGE.md#lecture-71).
 
-## 📌 Source Metadata
-> **Source:** YouTube Playlist (Complete C++ DSA Course | Apna College)  
-> **Instructor:** Shradha Khapra  
-> **Lecture:** #73  
-> **Video ID:** `wHDm-N2m2XY`  
-> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=wHDm-N2m2XY)  
-> **Duration:** 24:34  
-> **Status:** AUDITED  
+**Prerequisites:** stack operations, pairs, minimum calculations, and basic algebra.
 
----
+## Contents
 
-## 🔵 Value Encoding Invariant
-If a newly pushed element $x < \text{minVal}$, push modified encoded value:
-$$\text{encoded} = 2x - \text{minVal}$$
-Because $x < \text{minVal}$, the encoded value is strictly less than $x$, acting as a flag.
-When popping, if $\text{top} < \text{minVal}$, recover previous minimum:
-$$\text{prevMin} = 2 \times \text{minVal} - \text{top}$$
+- [1. Requirements and the restoration problem](#1-requirements-and-the-restoration-problem)
+- [2. Approach one — store a prefix minimum](#2-approach-one--store-a-prefix-minimum)
+- [3. Approach two — encode minimum changes](#3-approach-two--encode-minimum-changes)
+- [4. Encoded C++17 implementation](#4-encoded-c17-implementation)
+- [5. Additional explanation — duplicate minima and numeric limits](#5-additional-explanation--duplicate-minima-and-numeric-limits)
+- [6. Complexity, pitfalls, and revision](#6-complexity-pitfalls-and-revision)
 
----
+## 1. Requirements and the restoration problem
 
-## 💻 Complete C++ Implementation
+**Lecture flow: approximately 00:40–02:38.** Support `push`, `pop`, `top`, and **`getMin`** in O(1) per operation. The [LeetCode 155 statement](https://leetcode.com/problems/min-stack/) guarantees nonempty calls to `pop`, `top`, and `getMin`; values may span the entire signed 32-bit range.
+
+The lecture uses pushes `-2,0,-3`: minimum is -3; popping -3 restores minimum -2 while top becomes 0. The important challenge is **restoring an old minimum**, not merely finding a new smaller value during push.
+
+**Additional baseline:** scanning the whole stack for every minimum costs O(n). Keeping only `minSoFar` works for push-only data, but loses history when a minimum is popped. Sorting destroys LIFO order. We need enough history to undo changes.
+
+## 2. Approach one — store a prefix minimum
+
+**Lecture flow: approximately 02:38–07:32.** Store a pair for every entry: `(actual value, minimum of all values up to this entry)`. A new entry's minimum is the smaller of the new value and the previous top's saved minimum.
+
+**Invariant:** every pair contains the minimum of the logical stack prefix ending at that pair. Therefore the top pair's saved minimum is the current stack minimum. Pop removes the entire pair and automatically reveals the previous prefix's minimum.
+
+```cpp
+#include <algorithm>
+#include <stack>
+#include <stdexcept>
+#include <utility>
+
+class PairMinStack {
+    std::stack<std::pair<int, int>> data;
+    void requireValue() const {
+        if (data.empty()) throw std::underflow_error("empty min stack");
+    }
+public:
+    bool empty() const { return data.empty(); }
+    void push(int value) {
+        const int minimum = data.empty() ? value
+            : std::min(value, data.top().second);
+        data.push({value, minimum});
+    }
+    void pop() { requireValue(); data.pop(); }
+    int top() const { requireValue(); return data.top().first; }
+    int getMin() const { requireValue(); return data.top().second; }
+};
+```
+
+**Original dry run:** pushes `7,4,4,9`. Pairs are shown bottom → top.
+
+| Operation | Pairs after operation | Top | Minimum |
+|---|---|---|---|
+| Push 7 | `[(7,7)]` | 7 | 7 |
+| Push 4 | `[(7,7),(4,4)]` | 4 | 4 |
+| Push 4 | `[(7,7),(4,4),(4,4)]` | 4 | 4 |
+| Push 9 | `[(7,7),(4,4),(4,4),(9,4)]` | 9 | 4 |
+| Pop | `[(7,7),(4,4),(4,4)]` | 4 | 4 |
+| Pop | `[(7,7),(4,4)]` | 4 | 4 |
+| Pop | `[(7,7)]` | 7 | 7 |
+
+Repeated minima need no special case: each prefix stores its own correct minimum. This is usually the easiest implementation to explain and maintain.
+
+## 3. Approach two — encode minimum changes
+
+**Lecture flow: approximately 07:32–20:41.** Keep one stack of numbers and one current minimum m. Ordinary values `x >= m` are pushed unchanged. A new smaller value must also retain the old minimum, so encode it.
+
+Let old minimum be `old`, new value be x, with `x < old`. Store:
+
+```text
+encoded = 2*x - old
+new minimum = x
+```
+
+The encoded value stores the relationship between the new and previous minima. On popping that entry, invert the equation:
+
+```text
+old = 2*new minimum - encoded
+```
+
+### How do we recognize an encoded entry?
+
+Because `x < old`, the difference `x-old` is negative. Thus:
+
+```text
+encoded = x + (x-old) < x = new minimum
+```
+
+A number **smaller than the current minimum** cannot be a normal logical entry. It is a marker for a minimum transition. For a marker at the top, `top()` returns the current minimum, not the stored marker. `pop()` restores the old minimum before removing the marker.
+
+### Original encoded dry run
+
+Push `7,4,4,9`, then pop three times. Stored entries run bottom → top.
+
+| Operation | Stored stack | Logical stack | m | Reason |
+|---|---|---|---|---|
+| Push 7 | `[7]` | `[7]` | 7 | First value initializes m |
+| Push 4 | `[7,1]` | `[7,4]` | 4 | Store `2*4-7=1` |
+| Push 4 | `[7,1,4]` | `[7,4,4]` | 4 | Equality is stored normally |
+| Push 9 | `[7,1,4,9]` | `[7,4,4,9]` | 4 | Larger value is normal |
+| Pop 9 | `[7,1,4]` | `[7,4,4]` | 4 | 9 is not a marker |
+| Pop 4 | `[7,1]` | `[7,4]` | 4 | Equal minimum does not restore history |
+| Pop logical 4 | `[7]` | `[7]` | 7 | Marker 1 restores `2*4-1=7` |
+
+This explains the **strict `<` tests used in this implementation** for marker creation and recognition. Equal minima remain ordinary entries because they do not change minimum history. Encoding an equal value would produce that same value, so it would not be a distinguishable marker or a useful state transition.
+
+## 4. Encoded C++17 implementation
+
+**Lecture flow: approximately 20:41–23:51.** The lecture explicitly upgrades internal arithmetic to `long long`. The code below uses a 64-bit temporary before multiplication, retains the logical `int` interface, and adds empty-stack guards.
 
 ```cpp
 #include <stack>
-#include <climits>
-#include <iostream>
+#include <stdexcept>
 
-using namespace std;
-
-class MinStack {
-private:
-    stack<long long> st;
-    long long minVal;
-
+class EncodedMinStack {
+    std::stack<long long> data;
+    long long minimum = 0; // Meaningful only when data is nonempty.
+    void requireValue() const {
+        if (data.empty()) throw std::underflow_error("empty min stack");
+    }
 public:
-    MinStack() : minVal(LLONG_MAX) {}
-
-    void push(int val) {
-        long long x = val;
-        if (st.empty()) {
-            st.push(x);
-            minVal = x;
-        } else if (x < minVal) {
-            st.push(2 * x - minVal); // Encoded flag value
-            minVal = x;
+    bool empty() const { return data.empty(); }
+    void push(int value) {
+        const long long x = value; // Widen BEFORE doing arithmetic.
+        if (data.empty()) {
+            data.push(x);
+            minimum = x;
+        } else if (x < minimum) {
+            data.push(2LL * x - minimum);
+            minimum = x;
         } else {
-            st.push(x);
+            data.push(x);
         }
     }
-
     void pop() {
-        if (st.empty()) return;
-        long long topVal = st.top();
-        st.pop();
-
-        if (topVal < minVal) {
-            // Restore previous minVal
-            minVal = 2 * minVal - topVal;
-        }
+        requireValue();
+        const long long stored = data.top();
+        if (stored < minimum) minimum = 2LL * minimum - stored;
+        data.pop();
+        if (data.empty()) minimum = 0;
     }
-
-    int top() {
-        long long topVal = st.top();
-        if (topVal < minVal) {
-            return (int)minVal;
-        }
-        return (int)topVal;
+    int top() const {
+        requireValue();
+        return static_cast<int>(data.top() < minimum ? minimum : data.top());
     }
-
-    int getMin() {
-        return (int)minVal;
+    int getMin() const {
+        requireValue();
+        return static_cast<int>(minimum);
     }
 };
-
-int main() {
-    MinStack ms;
-    ms.push(-2);
-    ms.push(0);
-    ms.push(-3);
-    cout << "getMin: " << ms.getMin() << endl; // -3
-    ms.pop();
-    cout << "top:    " << ms.top()    << endl; // 0
-    cout << "getMin: " << ms.getMin() << endl; // -2
-    return 0;
-}
 ```
 
----
+Usage: construct either stack, push `7,4,4,9`; `getMin()` returns 4. After three pops, `top()` and `getMin()` both return 7. Pushing after fully emptying the stack reinitializes the minimum correctly.
 
-## ⏱️ Complexity Analysis
-- **Time Complexity:** Strict $O(1)$ for all operations.
-- **Space Complexity:** $O(1)$ auxiliary memory (single stack with no auxiliary min stack).
+**Correctness:** normal pushes do not change the minimum; encoded pushes record an invertible minimum transition. Entries above a marker are popped first because of LIFO, so by the time the marker reaches the top its corresponding new minimum has been restored. The marker test and inverse formula therefore operate with the correct minimum. No scan is needed.
 
----
+## 5. Additional explanation — duplicate minima and numeric limits
 
-## 🧠 Core Intuition — Why This Works
+### A two-stack alternative
 
-**The Challenge:** A regular stack gives O(1) for push/pop/top, but `getMin()` would require scanning all elements = O(N). How do we get O(1) for ALL operations?
+Use a normal value stack and a second stack of historical minima. Push to the minima stack whenever `x <= current minimum`, including equality. Pop from the minima stack whenever the removed value equals its top. The duplicate rule matters: pushes `5,3,3`, followed by one pop, must still have minimum 3.
 
-**Two Approaches:**
-
-**Approach 1 — Auxiliary Min Stack (O(N) space, easier to understand):**
-Maintain a parallel `minStack` that always has the current minimum at its top. On every push, also push `min(val, minStack.top())`. On every pop, pop from both. `getMin()` = `minStack.top()`.
-
-```
-Push(-2): main=[-2],    minStack=[-2]
-Push(0):  main=[-2,0],  minStack=[-2,-2]  ← min is still -2
-Push(-3): main=[-2,0,-3], minStack=[-2,-2,-3]  ← new min
-getMin() → minStack.top() = -3
-Pop():    main=[-2,0],  minStack=[-2,-2]  ← automatically restores min to -2!
-getMin() → -2 ✓
-```
-
-**Approach 2 — Encoding Trick (O(1) auxiliary space, the clever one):**
-When pushing a new minimum `x`, store `2x - minVal` (an encoded "flag" value). Since `x < minVal`, the encoded value `< x`. Detection: whenever `top < minVal`, the actual top is `minVal` (the current min) and we must recover the previous min via `prevMin = 2*minVal - encoded`.
-
-```
-Why 2x - minVal is always < minVal:
-  x < minVal  ⟹  x - minVal < 0  ⟹  x + (x - minVal) < x < minVal
-  So encoded = 2x - minVal < x < minVal  → flag detected by top < minVal
-```
-
----
-
-## 🎯 Pattern Recognition — When to Use This
-
-- "Stack with O(1) min/max" → Auxiliary stack (easy) or encoding trick (space-optimal).
-- "getMin after each pop" → Both approaches handle this naturally.
-- If values are `long long` or very large: watch for overflow in the encoding trick.
-
----
-
-## 💻 Approach 1: Auxiliary Stack Implementation
+This variation is not the lecture's second approach; the lecture's second approach is arithmetic encoding. The pair approach stores a minimum for **every prefix**, while the two-stack version can store only minima occurrences.
 
 ```cpp
-class MinStackAux {
-    stack<int> mainStack;
-    stack<int> minStack;
+#include <stack>
+#include <stdexcept>
+
+class TwoMinStack {
+    std::stack<int> values, minima;
+    void requireValue() const {
+        if (values.empty()) throw std::underflow_error("empty min stack");
+    }
 public:
-    void push(int val) {
-        mainStack.push(val);
-        if (minStack.empty() || val <= minStack.top())
-            minStack.push(val);
-        else
-            minStack.push(minStack.top()); // Push current min again
+    bool empty() const { return values.empty(); }
+    void push(int value) {
+        values.push(value);
+        if (minima.empty() || value <= minima.top()) minima.push(value);
     }
     void pop() {
-        mainStack.pop();
-        minStack.pop();
+        requireValue();
+        if (values.top() == minima.top()) minima.pop();
+        values.pop();
     }
-    int top() { return mainStack.top(); }
-    int getMin() { return minStack.top(); }
+    int top() const { requireValue(); return values.top(); }
+    int getMin() const { requireValue(); return minima.top(); }
 };
 ```
 
-**Trade-off:** This uses $O(N)$ extra space for the min stack. The encoding trick uses $O(1)$ extra space but requires `long long` and is harder to understand.
+Usage: push `5,3,3`; the minima stack is `[5,3,3]` bottom → top. One pop leaves `[5,3]`, so the minimum stays 3; another leaves `[5]`, restoring 5. Each saved occurrence belongs to a live entry that was a minimum when pushed. LIFO pops reveal those saved minima in reverse order. Operations require O(1) underlying stack work; worst-case live storage O(n), with two stacks retaining all entries when values decrease or stay equal.
 
----
+### Arithmetic safety
 
-## 🔍 Dry Run Trace (Encoding Trick)
+`long long encoded = 2 * value - minimum` is unsafe if `2*value` happens first in `int`. Use `2LL*value` or widen value first. For 32-bit inputs, the encoded expression fits in signed 64-bit storage, including pushes of `INT_MAX` followed by `INT_MIN`.
 
-```
-push(-2): stack empty → push(-2) directly, minVal=-2. Stack:[-2]
-push(0):  0 >= minVal(-2), push 0 normally.      Stack:[-2, 0]
-push(-3): -3 < minVal(-2), encode = 2(-3)-(-2) = -4 (flag!), minVal=-3. Stack:[-2,0,-4]
-getMin(): return minVal = -3 ✓
-top():    top=-4 < minVal(-3) → actual top is minVal = -3 ✓
-pop():    top=-4 < minVal(-3), recover prevMin = 2(-3)-(-4) = -2. minVal=-2. Stack:[-2,0]
-top():    top=0 >= minVal(-2), return 0 ✓
-getMin(): return minVal = -2 ✓
-```
+This does **not** prove safety for arbitrary 64-bit inputs. Doubling an arbitrary `long long` can overflow. Prefer the pair approach when the numeric domain is too wide or unspecified.
 
----
+## 6. Complexity, pitfalls, and revision
 
-## ⚠️ Common Interview Mistakes
+**Lecture analysis: approximately 23:51–24:29.** Both approaches have O(1) push/pop/top/getMin data-structure work and O(n) total storage for n live entries. Pair storage uses two logical values per entry; encoding uses one stored numeric entry plus a global minimum.
 
-1. **Integer overflow in encoding trick:** `2x - minVal` can overflow `int`. ALWAYS use `long long` for the stack and `minVal` when using this approach.
+**Clarification:** encoding adds only O(1) bookkeeping outside its stack, but its **total storage remains O(n)**. Also, a pair of two 32-bit integers and a single 64-bit integer can have the same payload size. Encoding does not automatically halve actual bytes. The benefit is the technique for reversible state changes, not a guaranteed physical-memory saving.
 
-2. **Forgetting to pop from BOTH stacks in auxiliary approach:** If you pop only from mainStack and forget minStack, getMin() is wrong for all future operations.
+Common mistakes: returning a marker as the logical top; updating minimum before using its old value to encode; restoring with the wrong sign; losing equal minima in a two-stack variant; forgetting first-push initialization; and advertising O(1) total storage.
 
-3. **Incorrect top() in encoding trick:** When `topVal < minVal`, the actual `top()` is `minVal` (not `topVal`). Beginners return `topVal` directly — wrong!
+**Interview check:** derive the inverse equation, prove the marker inequality, walk through repeated minima, and explain why the pair approach is often preferable in production code.
 
-4. **Off-by-one in auxiliary push:** When pushing to minStack in auxiliary approach, you must always push (even if val > min) so both stacks stay synchronized in size. Some implementations only push to minStack when val ≤ current min, then pop only when top matches min — this is an alternative correct approach but the stack sizes diverge.
-
----
-
-## 🔥 Interview Q&A — Google / Amazon / Meta Level
-
-### Q1: [Conceptual] Explain WHY the encoding `2x - minVal` works as a recovery mechanism.
-**Answer:** When we detect that `top < minVal` (the flag), it means the encoded value = `2 * newMin - oldMin`. We currently have `minVal = newMin`. To recover `oldMin`:
-$$\text{encoded} = 2 \cdot \text{newMin} - \text{oldMin}$$
-$$\Rightarrow \text{oldMin} = 2 \cdot \text{newMin} - \text{encoded} = 2 \cdot \text{minVal} - \text{top}$$
-This is a lossless encoding: the encoded value uniquely encodes both `newMin` and `oldMin` given that we know `newMin` (stored in `minVal`).
-
-### Q2: [Design] How would you implement a Max Stack similarly?
-**Answer:** Identical structure — replace `minVal` with `maxVal` and flip the comparison:
-```cpp
-void push(int val) {
-    if (val > maxVal) {
-        st.push(2LL * val - maxVal); // Encode new max
-        maxVal = val;
-    } else st.push(val);
-}
-int getMax() { return maxVal; }
-// In pop(): if top > maxVal, prevMax = 2*maxVal - top; maxVal = prevMax;
-```
-
-### Q3: [Extension] What if you need getMin() AND getMax() both in O(1)?
-**Answer:** Use two auxiliary stacks in parallel (not the encoding trick, which handles only one). `minStack` and `maxStack` both track their respective extremes. On push, push `min(val, minStack.top())` to minStack and `max(val, maxStack.top())` to maxStack. On pop, pop from all three. Space: $O(N)$ total (three synchronized stacks).
-
-### Q4: [Debugging] What is wrong with this auxiliary min stack implementation?
-```cpp
-void push(int val) {
-    mainStack.push(val);
-    if (minStack.empty() || val < minStack.top())  // Note: < not <=
-        minStack.push(val);
-}
-void pop() {
-    if (mainStack.top() == minStack.top()) minStack.pop(); // Only pop if it's the min
-    mainStack.pop();
-}
-```
-**Answer:** This is actually a **valid alternative approach** — only push to minStack when val is a new minimum (using `<`), and only pop from minStack when we're popping the actual minimum value. The sizes diverge but that's OK. The subtle bug risk: if there are **duplicate minimums** like `push(3), push(1), push(1)` — using `<` (strict) means the second `1` is NOT pushed to minStack, so after one `pop()`, minStack incorrectly says there's no `1` anymore. Fix: use `<=` in the push condition.
-
-### Q5: [Output Prediction] What does the encoding trick produce for `push(INT_MIN)`?
-**Answer:** When pushing `INT_MIN`:
-- `x = INT_MIN`, and if stack is empty, `minVal = INT_MIN`.
-- First push: go directly to main push since stack empty.
-- Second push of `INT_MIN`: `x < minVal`? `INT_MIN < INT_MIN` is false, so pushed normally.
-- But `2*INT_MIN - minVal` = `2*INT_MIN - INT_MIN` = `INT_MIN` (overflows in 32-bit int!).
-This is the overflow hazard. Solution: use `long long` throughout.
-
-### Q6: [Proof] Prove that getMin() always returns the correct minimum after any sequence of push/pop operations.
-**Answer:** **Induction on number of operations:**
-- Base: After push(x) on empty stack, `minVal = x = min{x}`. Correct.
-- Inductive step (push): If `x < minVal`, we encode and set `minVal = x`. Now min is `x`. If `x >= minVal`, we push `x` normally; `minVal` unchanged. Either way, `minVal = min of all elements`.
-- Inductive step (pop): If `top < minVal` (encoded value), we recover `prevMin = 2*minVal - top` and set `minVal = prevMin`. This undoes the last minVal update, restoring the previous minimum. If `top >= minVal`, no minVal change needed. By induction, `minVal` always equals the current stack minimum. ∎
-
----
-
-## 🏆 Related LeetCode Problems
-
-| # | Problem | Key Hint |
-|---|---------|----------|
-| 155 | Min Stack | This exact problem |
-| 716 | Max Stack | Symmetric, also needs O(1) max + popMax |
-| 232 | Implement Queue using Stacks | Two-stack model |
-| 895 | Maximum Frequency Stack | Freq-based push priority |
-| 1381 | Design a Stack With Increment Operation | Lazy propagation on stack |
-
----
-
-## 🔗 Cross-Topic Connections
-
-- **Design Problems:** Min Stack is the prototypical "design a data structure with extra O(1) operation" problem.
-- **Encoding Tricks:** The `2x - minVal` encoding is similar to XOR tricks used in linked-list reversal with O(1) space.
-- **Amortized Analysis:** While individual operations are O(1), the overall space analysis is amortized.
-
----
-
-## ⚡ 2-Minute Revision Flash Card
-
-- **Two approaches:** Auxiliary min-stack (O(N) space, easy) or encoding trick `2x - minVal` (O(1) extra space, clever).
-- **Encoding:** push `2x - minVal` when new min; flag = `top < minVal` → actual top is `minVal`.
-- **Recovery:** `prevMin = 2 * minVal - encodedTop` when popping an encoded value.
-- **MUST use `long long`** with encoding trick to prevent integer overflow.
-- **Auxiliary approach bug:** use `<=` not `<` when pushing to minStack — handles duplicate minimums.
+**Revision:** save prefix minima for simplicity. For encoding, new smaller x stores `2*x-old`; marker pop restores `2*current-stored`; marker top is the current minimum.
