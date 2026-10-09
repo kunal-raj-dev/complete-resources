@@ -33,6 +33,7 @@ dist/
 *.py
 *.txt
 *.json
+*.ps1
 __pycache__/
 .transcripts/
 C++ DSA - Interview Notes/
