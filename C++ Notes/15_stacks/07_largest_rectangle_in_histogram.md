@@ -1,194 +1,213 @@
-# Lecture 74: Largest Rectangle in Histogram (LeetCode 84)
+# Lecture 72 — Largest Rectangle in a Histogram
 
-> **One-Line Purpose:** Find the maximum rectangular area in a histogram in $O(N)$ single-pass time using a Monotonic Increasing Stack to calculate boundary extensions.
+[Topic Index](./00_master_index.md) · [Previous: Min Stack](./06_design_min_stack.md) · [Next: Circular Next Greater](./08_next_greater_element_ii.md)
 
----
+**Source:** [Histogram lecture](https://www.youtube.com/watch?v=ysy1o-QEj3k). **Verification:** full auto-caption sequence reviewed; right-boundary correction and final code visually checked. [Coverage record](../stacks_dsa_notes/SOURCE_COVERAGE.md#lecture-72).
 
-## 📌 Source Metadata
-> **Source:** YouTube Playlist (Complete C++ DSA Course | Apna College)  
-> **Instructor:** Shradha Khapra  
-> **Lecture:** #74  
-> **Video ID:** `ysy1o-QEj3k`  
-> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=ysy1o-QEj3k)  
-> **Duration:** 32:56  
-> **Status:** AUDITED  
+**Prerequisites:** previous/next smaller elements, index stacks, contiguous ranges, and area = height × width.
 
----
+## Contents
 
-## 🎯 Learning Objectives
-- Master the "Next Smaller Element" (NSE) and "Previous Smaller Element" (PSE) concepts simultaneously.
-- Formulate the width of a rectangle expanding from a central bar: `Width = NSE - PSE - 1`.
-- Optimize a 3-pass algorithm ($O(N)$ with 3 arrays) down to a beautiful, single-pass $O(N)$ monotonic stack trick.
+- [1. The rectangle problem](#1-the-rectangle-problem)
+- [2. Brute force — enumerate intervals](#2-brute-force--enumerate-intervals)
+- [3. Fix the limiting height and find its boundaries](#3-fix-the-limiting-height-and-find-its-boundaries)
+- [4. Compute right smaller, then left smaller](#4-compute-right-smaller-then-left-smaller)
+- [5. Correct the missing-right-boundary sentinel](#5-correct-the-missing-right-boundary-sentinel)
+- [6. C++17 implementation](#6-c17-implementation)
+- [7. Correctness, complexity, and lecture homework](#7-correctness-complexity-and-lecture-homework)
+- [8. Interview/CP extension — one-pass stack](#8-interviewcp-extension--one-pass-stack)
+- [9. Pitfalls and revision](#9-pitfalls-and-revision)
 
----
+## 1. The rectangle problem
 
-## 🧠 Core Intuition — Why This Works
+**Lecture flow: approximately 00:33–01:48.** Given nonnegative bar heights, each with width 1, find the largest rectangular area lying inside the histogram. A rectangle can cover adjacent bars but cannot rise above the shortest included bar. The [official LeetCode 84 statement](https://leetcode.com/problems/largest-rectangle-in-histogram/) allows up to 100,000 bars, each at most 10,000 high.
 
-Imagine picking ANY single bar in the histogram. If you try to form the largest rectangle possible using *that specific bar* as the full height, how wide can the rectangle be?
-It can expand left until it hits a bar that is *shorter* than it (Previous Smaller Element, PSE). 
-It can expand right until it hits a bar that is *shorter* than it (Next Smaller Element, NSE).
+For an interval `[l,r]`, the tallest permitted rectangle has height `min(heights[l..r])` and width `r-l+1`. Bars need not all have the same height: taller bars can contribute their lower portions to a shorter rectangle.
 
-The area for that specific bar is: `height[i] * (NSE_index - PSE_index - 1)`.
+The lecture's `[2,1,5,6,2,3]` checkpoint has answer 10: take the adjacent heights 5 and 6 at limiting height 5 and width 2.
 
-**The Monotonic Stack Magic:**
-We keep a stack of indices that represents a strictly *increasing* slope of heights. 
-Why? Because as long as the heights keep going up, we don't know their Right Boundary (NSE) yet. 
-The moment we encounter a bar `height[i]` that is *shorter* than the bar at the top of our stack, we have found the top bar's NSE! 
-And what is the top bar's PSE? It is simply the bar right below it in the stack (because the stack is strictly increasing!).
-Thus, every time we pop a bar, we instantly know both its boundaries and can calculate its maximum area on the fly.
+## 2. Brute force — enumerate intervals
 
----
+**Lecture flow: approximately 01:48–03:26.** Choose each start l and extend the endpoint r. Maintain the minimum height seen as the interval grows, and compare every interval area with the best so far.
 
-## 🎯 Pattern Recognition — When to Use This
-Trigger cues: "if you see X in a problem, think Y"
-- **"Largest Rectangle / Area" in a 1D or 2D grid**: Classic histogram setup.
-- **"Maximum Subarray Minimum"**: Problems that require maximizing `min(subarray) * length(subarray)`.
-- **"Water trapping" variants**: Although trapping water uses NSE/NGE for boundaries, area maximization relies heavily on NSE/PSE logic.
-
----
-
-## 📐 Algorithm Walk-Through (Single-Pass Optimal)
-
-1. Initialize a `stack<int> st` to store indices, and `maxArea = 0`.
-2. Loop `i` from $0$ to $N$ (inclusive).
-   - If `i == N`, pretend we encountered a bar of height $0$. This forces the stack to completely empty out at the end, calculating areas for all remaining bars.
-3. **While loop:** If `stack` is not empty AND `currentHeight < height[st.top()]`:
-   - We found the Right Boundary (NSE) for the bar at `st.top()`.
-   - `h = height[st.top()]`, then `st.pop()`.
-   - The Left Boundary (PSE) is now the *new* `st.top()`.
-   - `width = st.empty() ? i : (i - st.top() - 1)`.
-     *(If stack is empty, it means this bar was the smallest seen so far, so its left boundary extends all the way to index 0. Hence width is `i`).*
-   - `maxArea = max(maxArea, h * width)`.
-4. **Push:** `st.push(i)`.
-5. Return `maxArea`.
-
----
-
-## 💻 Complete C++ Implementation: Optimal Single-Pass
+There are `n(n+1)/2` nonempty intervals, so this implementation costs O(n²), not O(n³). Recomputing the interval minimum from scratch would introduce a third factor. The lecture discusses this baseline briefly and concentrates on the optimal approach.
 
 ```cpp
-#include <vector>
-#include <stack>
 #include <algorithm>
-#include <iostream>
+#include <vector>
 
-using namespace std;
-
-class SolutionHistogram {
-public:
-    int largestRectangleArea(vector<int>& heights) {
-        int n = heights.size();
-        stack<int> st; // Stores indices of monotonic increasing heights
-        int maxArea = 0;
-
-        // Loop runs up to 'n' (inclusive) to flush the stack at the end
-        for (int i = 0; i <= n; ++i) {
-            // Treat the boundary after the last bar as height 0
-            int currentHeight = (i == n) ? 0 : heights[i];
-
-            // If we find a shorter bar, it's the right boundary for the stack's top
-            while (!st.empty() && currentHeight < heights[st.top()]) {
-                int h = heights[st.top()];
-                st.pop();
-                
-                // If stack is empty, it means the popped bar has no left boundary 
-                // that is strictly smaller, so it spans all the way to index 0.
-                int width = st.empty() ? i : (i - st.top() - 1);
-                
-                maxArea = max(maxArea, h * width);
-            }
-
-            st.push(i);
+long long largestRectangleBrute(const std::vector<int>& heights) {
+    const int n = static_cast<int>(heights.size());
+    long long best = 0;
+    for (int left = 0; left < n; ++left) {
+        int minimum = heights[left];
+        for (int right = left; right < n; ++right) {
+            minimum = std::min(minimum, heights[right]);
+            best = std::max(best, 1LL * minimum * (right - left + 1));
         }
-
-        return maxArea;
     }
-};
-
-int main() {
-    SolutionHistogram solver;
-    // Classic LeetCode example
-    vector<int> h = {2, 1, 5, 6, 2, 3};
-    cout << "Max Histogram Area: " << solver.largestRectangleArea(h) << endl; 
-    // Output: 10 (Height 5 & 6 form a 2x5 rectangle)
-    return 0;
+    return best;
 }
 ```
 
----
+For `[3,1,3,3]`, intervals starting at index 0 have areas 3, 2, 3, 4. The interval `[2,3]` has height 3 and width 2, producing the best area **6**.
 
-## 🔍 Dry Run Trace
+## 3. Fix the limiting height and find its boundaries
 
-**Input:** `[2, 1, 5, 6, 2, 3]`. `N = 6`.
+**Lecture flow: approximately 03:26–11:49.** Instead of enumerating every interval, let each bar i define a candidate rectangle whose height is **fixed to `heights[i]`**. Extend left and right while bars are at least that high. Stop at the nearest **strictly smaller** bar on each side.
 
-- `i=0, h=2`: Stack `[0]`.
-- `i=1, h=1`: 1 < height[0](2). 
-  - Pop `0` (h=2). Stack empty $\to$ width = `1`. Area = $2 \times 1 = 2$. `maxArea = 2`.
-  - Push `1`. Stack `[1]`.
-- `i=2, h=5`: 5 > 1. Push `2`. Stack `[1, 2]`.
-- `i=3, h=6`: 6 > 5. Push `3`. Stack `[1, 2, 3]`.
-- `i=4, h=2`: 2 < height[3](6).
-  - Pop `3` (h=6). New top `2`. Width = $4 - 2 - 1 = 1$. Area = $6 \times 1 = 6$. `maxArea = 6`.
-  - 2 < height[2](5).
-  - Pop `2` (h=5). New top `1`. Width = $4 - 1 - 1 = 2$. Area = $5 \times 2 = 10$. `maxArea = 10`.
-  - Push `4`. Stack `[1, 4]`.
-- `i=5, h=3`: 3 > 2. Push `5`. Stack `[1, 4, 5]`.
-- `i=6, h=0` (End of array flush):
-  - Pop `5` (h=3). Top `4`. Width = $6 - 4 - 1 = 1$. Area = 3. 
-  - Pop `4` (h=2). Top `1`. Width = $6 - 1 - 1 = 4$. Area = 8.
-  - Pop `1` (h=1). Stack empty. Width = 6. Area = 6.
-- `maxArea = 10`.
+Let L[i] and R[i] be the positions of those blocking bars. They are **excluded** from the rectangle. The included range is `[L[i]+1, R[i]-1]`, so:
 
----
+```text
+width[i] = R[i] - L[i] - 1
+area[i]  = heights[i] * width[i]
+answer   = max over all area[i]
+```
 
-## ⚠️ Common Interview Mistakes
+**Additional precision:** “largest rectangle for a bar” here means the largest rectangle **at that bar's height**. The best rectangle containing a tall bar may actually have a lower height. The algorithm remains complete because every optimal rectangle has at least one shortest bar that supplies its limiting height.
 
-1. **Forgetting to Flush the Stack**: If you only iterate from `0` to `n-1`, any strictly increasing sequence (e.g., `[1, 2, 3, 4]`) will leave all indices in the stack and `maxArea` will be 0! You MUST process a dummy `0` height at index `n` to force all pops.
-2. **Width Formula Error**: `width = i - st.top() - 1`. Students often write `i - st.top()` or `i - popped_index`. The left boundary is `st.top()` AFTER the pop.
-3. **Empty Stack Panic**: When `st.pop()` leaves the stack empty, calling `st.top()` for the width will SegFault. You must check `st.empty()`. If it is empty, the width is simply `i` (the distance from index 0).
+Equal heights do not block extension. In `[3,3]`, the full width is 2 and area is 6. Boundaries must therefore be strictly smaller; pop candidates on `>=` in each independent boundary scan.
 
----
+## 4. Compute right smaller, then left smaller
 
-## ⏱️ Complexity Analysis
-- **Time Complexity:** $O(N)$. Even though there is a `while` loop inside the `for` loop, every index is pushed to the stack exactly once and popped exactly once. The amortized cost per element is $O(1)$, leading to $O(N)$ total time.
-- **Space Complexity:** $O(N)$ for the stack in the worst-case (a strictly increasing histogram).
+**Lecture flow: approximately 11:49–26:48.** The explanation first calculates the **right nearest smaller index** by scanning right to left, then calculates the **left nearest smaller index** by scanning left to right. Both reuse the candidate-stack ideas from Lectures 69 and 70.
 
----
+Store **indices**, because width depends on positions. Compare heights through those indices. After finishing the right scan, clear the stack before the left scan: the leftover suffix candidates are not valid previous candidates.
 
-## 🔥 Interview Q&A — Google / Amazon Level
+**Original boundary dry run:** `[3,1,3,3]`. Entries are `index:height`, bottom → top.
 
-### Q1: Is the 3-pass algorithm (pre-computing Left-Smaller and Right-Smaller arrays) acceptable in an interview?
-**Answer:** Yes, it is heavily recommended to explain the 3-pass $O(N)$ space / $O(N)$ time solution first! It proves you understand the PSE/NSE concept. Once you code or explain it, the interviewer will ask "Can we do it in one pass with less overhead?" That's your cue to introduce the single-pass stack method.
+| Right scan i | Before | Popped | R[i] | After push |
+|---|---|---|---|---|
+| 3 | `[]` | None | 4 | `[3:3]` |
+| 2 | `[3:3]` | 3 | 4 | `[2:3]` |
+| 1 | `[2:3]` | 2 | 4 | `[1:1]` |
+| 0 | `[1:1]` | None | 1 | `[1:1,0:3]` |
 
-### Q2: How is this problem related to "Maximal Rectangle in a 2D Binary Matrix"?
-**Answer:** LeetCode 85 (Maximal Rectangle) literally uses this problem as a subroutine. You treat each row of the 2D matrix as the base of a histogram, accumulating heights of '1's upwards. You then run *this exact algorithm* on every row. A $N \times M$ matrix takes $O(N \times M)$ time.
+Clear the stack.
 
-### Q3: What if multiple bars have the exact same height?
-**Answer:** The algorithm still works perfectly. The first duplicate will pop the earlier duplicate (depending on strict `<` or `<=`), but ultimately the final width calculated when they hit a truly smaller bar will encompass all the duplicates correctly.
+| Left scan i | Before | Popped | L[i] | After push |
+|---|---|---|---|---|
+| 0 | `[]` | None | -1 | `[0:3]` |
+| 1 | `[0:3]` | 0 | -1 | `[1:1]` |
+| 2 | `[1:1]` | None | 1 | `[1:1,2:3]` |
+| 3 | `[1:1,2:3]` | 2 | 1 | `[1:1,3:3]` |
 
-### Q4: Can this be solved with Divide and Conquer?
-**Answer:** Yes. The max area is either: completely to the left of the minimum bar, completely to the right, or crossing the minimum bar (which is `min_height * total_width`). You can find the minimum using a Segment Tree in $O(\log N)$ and recurse. Total time $O(N \log N)$. However, the Stack approach $O(N)$ is strictly superior.
+The final boundaries are L=`[-1,-1,1,1]`, R=`[1,4,4,4]`.
 
----
+## 5. Correct the missing-right-boundary sentinel
 
-## 🏆 Related Problems (Leetcode)
-1. **[Leetcode 85: Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/)** — The 2D matrix version that calls this algorithm on every row.
-2. **[Leetcode 42: Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)** — Sister problem. Uses a monotonically decreasing stack instead to bound water.
-3. **[Leetcode 907: Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/)** — Uses the exact same NSE/PSE logic to find how many subarrays a specific element is the minimum for.
+**Lecture flow: approximately 27:30–30:00.** During the initial derivation, the lecture temporarily represents absent right neighbors by `-1`, then explicitly changes this for width calculations. The final right sentinel must be **n**, while the left sentinel stays **-1**.
 
----
+These are imaginary blocking positions just outside the array. When neither blocker exists, width is `n-(-1)-1 = n`. Using `-1` on both sides makes width negative and breaks the geometry.
 
-## 🔗 Cross-Topic Connections
-- **Monotonic Stacks:** This is the absolute pinnacle of monotonic stack problems. If you master this, Next Greater/Smaller Element is trivial.
-- **Segment Trees:** Mentioned above as an alternative Divide & Conquer approach.
+This is a **correction made inside the lecture**, not an unresolved error in the final solution. The final implementation below uses the corrected sentinel from the beginning. A spoken/caption slip near 29:23 still mentions `-1`; the final code's empty-right case uses n.
 
----
+## 6. C++17 implementation
 
-## ⚡ 2-Minute Revision Flash Card
-- **Goal:** Maximize `height[i] * width` for a histogram.
-- **Core Insight:** `Width = NSE_index - PSE_index - 1`.
-- **Optimal Strategy:** Increasing Monotonic Stack.
-- **Trigger Condition:** `height[i] < height[stack.top()]`. This means `i` is the NSE!
-- **Left Boundary (PSE):** The new `stack.top()` immediately after popping the current top.
-- **Flush Trick:** Run loop to $N$, forcing a height of $0$ to pop everything at the end.
-- **Time/Space:** $O(N)$ Time | $O(N)$ Space.
+The helper returns `(left indices, right indices)` using the corrected sentinels. `largestRectangle` evaluates the candidate at each bar. Empty input returns 0 as an extension; the official problem is nonempty.
+
+```cpp
+#include <algorithm>
+#include <stack>
+#include <utility>
+#include <vector>
+
+std::pair<std::vector<int>, std::vector<int>>
+histogramBounds(const std::vector<int>& heights) {
+    const int n = static_cast<int>(heights.size());
+    std::vector<int> left(n, -1), right(n, n);
+    std::stack<int> candidates;
+    for (int i = n - 1; i >= 0; --i) {
+        while (!candidates.empty() && heights[candidates.top()] >= heights[i])
+            candidates.pop();
+        if (!candidates.empty()) right[i] = candidates.top();
+        candidates.push(i);
+    }
+    while (!candidates.empty()) candidates.pop();
+    for (int i = 0; i < n; ++i) {
+        while (!candidates.empty() && heights[candidates.top()] >= heights[i])
+            candidates.pop();
+        if (!candidates.empty()) left[i] = candidates.top();
+        candidates.push(i);
+    }
+    return {left, right};
+}
+
+long long largestRectangle(const std::vector<int>& heights) {
+    const auto [left, right] = histogramBounds(heights);
+    long long best = 0;
+    for (int i = 0; i < static_cast<int>(heights.size()); ++i) {
+        const long long width = right[i] - left[i] - 1LL;
+        best = std::max(best, 1LL * heights[i] * width);
+    }
+    return best;
+}
+```
+
+Usage: `largestRectangle({3,1,3,3})` returns 6. The return type is deliberately `long long` for broader CP inputs. Under LeetCode's checked limits, the maximum possible area is at most 10⁹, so converting the result to the judge's `int` return type is safe there.
+
+## 7. Correctness, complexity, and lecture homework
+
+Take any optimal rectangle. Its limiting height equals a shortest bar in its covered interval. The nearest strictly smaller boundaries around that bar cannot lie inside the interval, so the maximal interval computed for the bar contains the optimal interval. Extending to those boundaries cannot reduce area at the fixed nonnegative height. Our candidate is therefore at least as good. Every candidate is itself a valid rectangle, so the maximum candidate area equals the optimum.
+
+Each boundary pass pushes each index once and pops it at most once. Clearing the stack is also O(n); the final area pass is O(n). Total time is **O(n)**, auxiliary space **O(n)**, and returned result space **O(1)**. The helper returns O(n) boundary arrays internally; the scalar solver retains them as working storage.
+
+**Lecture homework: approximately 31:18–32:37.** Calculate every bar's area from the left/right index arrays. The lecture checkpoint is:
+
+| i | Height | L | R after correction | Width | Area |
+|---|---|---|---|---|---|
+| 0 | 2 | -1 | 1 | 1 | 2 |
+| 1 | 1 | -1 | 6 | 6 | 6 |
+| 2 | 5 | 1 | 4 | 2 | 10 |
+| 3 | 6 | 2 | 4 | 1 | 6 |
+| 4 | 2 | 1 | 6 | 4 | 8 |
+| 5 | 3 | 4 | 6 | 1 | 3 |
+
+Verify the table yourself before using it as a solution check. For the original dry run, candidate areas are `[3,4,6,6]`, giving 6.
+
+## 8. Interview/CP extension — one-pass stack
+
+The lecture teaches the two-boundary-array approach. A further implementation computes areas when a bar is popped, avoiding the two arrays while still using O(n) stack space.
+
+Maintain strictly increasing heights by index. A smaller or equal incoming height closes a stored bar's current interval. After removing that bar, the remaining top supplies its left blocker; the current index supplies the right endpoint. A final virtual iteration at i=n flushes everything.
+
+```cpp
+#include <algorithm>
+#include <stack>
+#include <vector>
+
+long long largestRectangleOnePass(const std::vector<int>& heights) {
+    const int n = static_cast<int>(heights.size());
+    std::stack<int> pending;
+    long long best = 0;
+    for (int i = 0; i <= n; ++i) {
+        while (!pending.empty() &&
+               (i == n || heights[pending.top()] >= heights[i])) {
+            const int bar = pending.top();
+            pending.pop();
+            const int left = pending.empty() ? -1 : pending.top();
+            const long long width = i - left - 1LL;
+            best = std::max(best, 1LL * heights[bar] * width);
+        }
+        if (i < n) pending.push(i);
+    }
+    return best;
+}
+```
+
+The `i == n` check must come before `heights[i]` so short-circuiting prevents reading past the input. Do not push n as an actual bar.
+
+**Equality nuance:** this one-pass variant may close an older equal-height bar before its full plateau width is seen. Its newer equal replacement inherits the left reach and eventually accounts for the full plateau. It finds the same maximum, but its per-pop widths are not necessarily the same as the two-sided strictly smaller boundary table.
+
+## 9. Pitfalls and revision
+
+- Width is `R-L-1`, because blockers are outside the rectangle.
+- Equal bars must permit a rectangle to extend across them.
+- Reset candidate state between independent passes.
+- Widen multiplication before multiplying, not after an overflowed `int` result.
+- The largest height alone is insufficient; width can compensate for a shorter height.
+- In one pass, failure to flush misses rectangles ending at the final bar: `[2,3,4]` is a useful test.
+
+**Interview check:** derive width from excluded boundaries; prove considering limiting bars is sufficient; explain why equal bars are handled differently in some one-pass implementations.
+
+**Revision:** fix height at each bar, extend to strictly smaller blockers, use sentinels `-1,n`, maximize `height*(R-L-1)`.
