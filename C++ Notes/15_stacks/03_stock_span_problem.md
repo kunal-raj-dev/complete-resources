@@ -1,188 +1,160 @@
-# Lecture 70: Stock Span Problem: Monotonic Decreasing Stack
+# Lecture 68 — Stock Span
 
-> **One-Line Purpose:** Calculate consecutive days prior to today where stock price was less than or equal to today's price using a Monotonic Decreasing Stack of indices in amortized $O(1)$ per query.
+[Topic Index](./00_master_index.md) · [Previous: Valid Parentheses](./02_valid_parentheses.md) · [Next: Next Greater Element](./04_next_greater_element.md)
 
----
+**Source:** [Stock Span lecture](https://www.youtube.com/watch?v=01vBuZyMfqk). **Verification:** full auto-caption sequence reviewed; implementation frame checked. [Coverage record](../stacks_dsa_notes/SOURCE_COVERAGE.md#lecture-68).
 
-## 📌 Source Metadata
-> **Source:** YouTube Playlist (Complete C++ DSA Course | Apna College)  
-> **Instructor:** Shradha Khapra  
-> **Lecture:** #70  
-> **Video ID:** `01vBuZyMfqk`  
-> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=01vBuZyMfqk)  
-> **Duration:** 26:29  
-> **Status:** AUDITED  
+**Prerequisites:** stack operations, array indices, and the meaning of consecutive days.
 
----
+## Contents
 
-## 🔵 Monotonic Decreasing Stack Principle
-Stack stores indices of strictly greater elements to the left.
-$$\text{span}[i] = i - \text{indexOfPreviousGreaterElement}$$
-If no greater element exists, $\text{span}[i] = i + 1$.
+- [1. Definition and consecutive-day examples](#1-definition-and-consecutive-day-examples)
+- [2. Reframe the problem as previous greater](#2-reframe-the-problem-as-previous-greater)
+- [3. Stack algorithm and dry run](#3-stack-algorithm-and-dry-run)
+- [4. C++17 implementation](#4-c17-implementation)
+- [5. Why popping is safe and why time is linear](#5-why-popping-is-safe-and-why-time-is-linear)
+- [6. Interview/CP extension — online stock span](#6-interviewcp-extension--online-stock-span)
+- [7. Pitfalls and revision](#7-pitfalls-and-revision)
 
----
+## 1. Definition and consecutive-day examples
 
-## 💻 Complete C++ Implementation
+**Lecture flow: approximately 00:33–05:35.** For day i, its span counts the longest consecutive suffix ending at i whose prices are all **less than or equal to today's price**. Today's day is included, so a valid day's span is at least one.
+
+The lecture illustrates the definition with `[100,80,60,70,60,75,85]`, producing `[1,1,1,2,1,4,6]`. Use this as a lecture checkpoint, then study the original example below.
+
+For `[40,30,35,35,20,45]`, day 3 has price 35. Moving backward, include today's 35, the previous 35, and 30. Stop at 40. Span is **3**. Day 4's price 20 cannot reach the earlier 30 because the immediately preceding 35 blocks the consecutive run.
+
+This is a counting problem over a **contiguous run**, not a count of every cheaper historical day. A price farther back can be small but irrelevant after a blocking higher day.
+
+## 2. Reframe the problem as previous greater
+
+**Lecture flow: approximately 05:35–10:52.** Instead of counting eligible days repeatedly, find the **nearest earlier strictly greater price**. The lecture calls this the *previous high*. This is not the maximum historical price; it is the nearest blocking position.
+
+Let p be its index. Days `p+1` through i are all eligible, so:
+
+```text
+span[i] = i - p
+if no earlier greater price exists: p = -1, so span[i] = i + 1
+```
+
+Store **indices**, because the answer needs a distance between days. Price values alone cannot tell you that distance. Once an index is known, its price is still available as `prices[index]`.
+
+**Additional clarification:** no previous greater price means all earlier prices are at most today's price. It does **not** require the entire history to be increasing. In `[7,3,6,8]`, the final span is four although the history has dips.
+
+## 3. Stack algorithm and dry run
+
+**Lecture flow: approximately 10:52–22:42.** Maintain candidate indices with **strictly decreasing prices from bottom to top**. Traverse left to right.
+
+1. Pop indices whose price is `<= prices[i]`: they do not block today's span.
+2. The remaining top is the nearest previous strictly greater position, if one exists.
+3. Calculate `i - top`, or `i+1` if the stack is empty.
+4. Push i for future days.
+
+**Original dry run:** prices `[40,30,35,35,20,45]`. Entries are `index:price`, bottom → top.
+
+| i | Price | Stack before | Popped indices | Previous greater p | Span | Stack after push |
+|---|---|---|---|---|---|---|
+| 0 | 40 | `[]` | None | -1 | 1 | `[0:40]` |
+| 1 | 30 | `[0:40]` | None | 0 | 1 | `[0:40,1:30]` |
+| 2 | 35 | `[0:40,1:30]` | 1 | 0 | 2 | `[0:40,2:35]` |
+| 3 | 35 | `[0:40,2:35]` | 2 | 0 | 3 | `[0:40,3:35]` |
+| 4 | 20 | `[0:40,3:35]` | None | 3 | 1 | `[0:40,3:35,4:20]` |
+| 5 | 45 | `[0:40,3:35,4:20]` | 4,3,0 | -1 | 6 | `[5:45]` |
+
+Output is `[1,1,2,3,1,6]`. The equal price at day 3 must pop day 2; equality is part of the span, not a stopping condition.
+
+## 4. C++17 implementation
+
+**Lecture flow: approximately 22:42–24:57.** `stockSpan` returns one span per input day; the input is preserved. The baseline below is **additional explanation** for validating the optimized method, rather than a separate coded approach taught in this lecture.
 
 ```cpp
-#include <vector>
 #include <stack>
-#include <iostream>
+#include <vector>
 
-using namespace std;
-
-class StockSpanner {
-private:
-    stack<pair<int, int>> st; // <price, span>
-
-public:
-    StockSpanner() {}
-
-    int next(int price) {
-        int span = 1;
-        while (!st.empty() && st.top().first <= price) {
-            span += st.top().second;
-            st.pop();
+std::vector<int> stockSpanBrute(const std::vector<int>& prices) {
+    const int n = static_cast<int>(prices.size());
+    std::vector<int> answer(n, 1);
+    for (int i = 0; i < n; ++i) {
+        int j = i - 1;
+        while (j >= 0 && prices[j] <= prices[i]) {
+            ++answer[i];
+            --j;
         }
-        st.push({price, span});
-        return span;
     }
-};
+    return answer;
+}
 
-int main() {
-    StockSpanner spanner;
-    vector<int> prices = {100, 80, 60, 70, 60, 75, 85};
-    cout << "Spans: ";
-    for (int p : prices) cout << spanner.next(p) << " "; // 1 1 1 2 1 4 6
-    cout << endl;
-    return 0;
+std::vector<int> stockSpan(const std::vector<int>& prices) {
+    const int n = static_cast<int>(prices.size());
+    std::vector<int> answer(n);
+    std::stack<int> candidates;
+    for (int i = 0; i < n; ++i) {
+        while (!candidates.empty() && prices[candidates.top()] <= prices[i])
+            candidates.pop();
+        answer[i] = candidates.empty() ? i + 1 : i - candidates.top();
+        candidates.push(i);
+    }
+    return answer;
 }
 ```
 
----
+Usage: `stockSpan({40,30,35,35,20,45})` returns `{1,1,2,3,1,6}`; an empty vector returns an empty result. Indices and spans are `int`; this pack assumes input lengths fit in `int`, as the referenced judge constraints do.
 
-## ⏱️ Complexity Analysis
-- **Time Complexity:** Amortized $O(1)$ per `next()` call ($O(N)$ total for $N$ queries).
-- **Space Complexity:** $O(N)$ stack memory.
+## 5. Why popping is safe and why time is linear
 
----
+Suppose an older day j is popped by today's day i because `prices[j] <= prices[i]`. For any future price x:
 
-## 🧠 Core Intuition — Why This Works
+- If x is at least today's price, neither j nor i is a greater-price blocker. A later intervening day may stop the span sooner, but j still cannot be its blocker.
+- If x is below today's price, day i is a closer blocking day than j, so j cannot be the nearest blocker.
 
-**The Stock Span Problem is Next Greater Element on the LEFT in disguise.**
+Thus j can never again be the nearest previous greater candidate. The stack retains only the useful frontier of history.
 
-The span of day $i$ is the count of consecutive days (including day $i$) where price was ≤ today's price. To compute this, we need the index of the **most recent day where price was strictly GREATER than today**. The span = distance from that day to today.
+**Invariant:** candidate indices increase from bottom to top; their prices strictly decrease. After the popping step, the top is the nearest earlier price greater than the current price. Every skipped newer day has price at most the current one.
 
-**Why Monotonic Decreasing Stack?** We maintain a stack of `(price, span)` pairs where prices are always decreasing from bottom to top. When a new price comes in that is ≥ stack top, we **absorb** the span of those smaller prices (because they can't be the boundary for any future query either). This is the key leap: we accumulate spans rather than store indices.
+**Lecture analysis: approximately 24:57–26:08.** The outer loop visits n days. Every index is pushed once and popped at most once. Total work is O(n), even though one day can pop O(n) items. This is **amortized analysis**, not multiplication of the two loops' visible bounds.
 
+| Method | Total time | Auxiliary space | Output space |
+|---|---|---|---|
+| Scan backward for each day | O(n²) worst case | O(1) | O(n) |
+| Monotonic stack | O(n) | O(n) | O(n) |
+
+The worst-case stack size occurs on decreasing prices, where every day remains a candidate. Increasing/equal prices may use little live stack space but still require scanning all n inputs.
+
+## 6. Interview/CP extension — online stock span
+
+The [official Online Stock Span problem](https://leetcode.com/problems/online-stock-span/) receives one price per `next(price)` call rather than an entire array. Store `(price, accumulated span)` so a popped block contributes its full length.
+
+```cpp
+#include <stack>
+#include <utility>
+
+class StockSpanner {
+    std::stack<std::pair<int, int>> blocks;
+public:
+    int next(int price) {
+        int span = 1;
+        while (!blocks.empty() && blocks.top().first <= price) {
+            span += blocks.top().second;
+            blocks.pop();
+        }
+        blocks.push({price, span});
+        return span;
+    }
+};
 ```
-Prices: 100  80  60  70  60  75  85
-Index:    0   1   2   3   4   5   6
 
-Day 0: price=100, span=1    Stack: [(100,1)]
-Day 1: price=80,  span=1    Stack: [(100,1),(80,1)]
-Day 2: price=60,  span=1    Stack: [(100,1),(80,1),(60,1)]
-Day 3: price=70,  pop 60 (60≤70, absorb span=1), span=2
-                            Stack: [(100,1),(80,1),(70,2)]
-Day 4: price=60,  span=1    Stack: [(100,1),(80,1),(70,2),(60,1)]
-Day 5: price=75,  pop 60 (absorb 1), pop 70 (absorb 2), span=4
-                            Stack: [(100,1),(80,1),(75,4)]
-Day 6: price=85,  pop 75 (absorb 4), pop 80 (absorb 1), span=6
-                            Stack: [(100,1),(85,6)]
-Output: 1 1 1 2 1 4 6
-```
+For calls `40,30,35,35`, blocks progress as `[(40,1)]`, `[(40,1),(30,1)]`, `[(40,1),(35,2)]`, `[(40,1),(35,3)]`. Span values are `1,1,2,3`. Each block represents a consecutive merged group ending at that stored price.
 
----
+One `next` may take O(k); over k calls total time is O(k), or amortized O(1) per call. Live storage is O(k). The judge allows at most 10,000 calls, so `int` spans fit. For a longer stream, choose a sufficiently wide span type.
 
-## 🎯 Pattern Recognition — When to Use This Pattern
+## 7. Pitfalls and revision
 
-- "How many consecutive previous elements are ≤ (or ≥) current element?" → Monotonic Stack with span accumulation.
-- "Previous Greater Element" → Direct monotonic stack with index.
-- **Distinguish from NGE:** Stock Span asks about *all* consecutive preceding elements, not just the nearest. The span trick avoids storing all indices by accumulating counts.
+- Pop on `<=`, not `<`; `[5,5]` must produce `[1,2]`.
+- Compare `prices[candidates.top()]`, not the stored index itself.
+- Push after finding today's blocker, otherwise the current day can become its own blocker.
+- Include today's day; span is not merely the number of earlier eligible days.
+- The previous greater position is nearest by **position**, not greatest by price.
 
----
+**Interview check:** explain the formula, why an old candidate can be discarded forever, and why one expensive day does not make total time quadratic. Convert the array approach to the streaming class without retaining every historical price.
 
-## 🔍 Dry Run Trace
-
-Prices = `{100, 80, 60, 70, 60, 75, 85}`, traced through `next(price)`:
-
-| Call | Price | Stack (price,span) before | Pops | Span | Stack after |
-|------|-------|--------------------------|------|------|-------------|
-| 1 | 100 | empty | 0 | 1 | [(100,1)] |
-| 2 | 80 | [(100,1)] | 0 | 1 | [(100,1),(80,1)] |
-| 3 | 60 | [(100,1),(80,1)] | 0 | 1 | [...,(60,1)] |
-| 4 | 70 | [...,(60,1)] | pop(60) | 1+1=2 | [(100,1),(80,1),(70,2)] |
-| 5 | 60 | [...,(70,2)] | 0 | 1 | [...,(60,1)] |
-| 6 | 75 | [...,(60,1),(70,2) wait: (80,1)] | pop(60)+pop(70) | 1+1+2=4 | [(100,1),(80,1),(75,4)] |
-| 7 | 85 | [(100,1),(80,1),(75,4)] | pop(75)+pop(80) | 1+4+1=6 | [(100,1),(85,6)] |
-
----
-
-## ⚠️ Common Interview Mistakes
-
-1. **Storing indices instead of (price, span) pairs:** Fine for single-pass offline, but the span-accumulation trick is needed for online query-by-query processing.
-
-2. **Wrong comparison (`<` vs `<=`):** Span counts days with price ≤ today, so pop when `st.top().first <= price`. Using `<` would undercount ties.
-
-3. **Forgetting to initialize span = 1:** Every day has a self-span of at least 1. Not initializing to 1 gives span = 0.
-
-4. **Confusing amortized vs worst-case:** In a single call, `next()` can do $O(N)$ pops (when price is the all-time max). Interviewers often ask you to justify why it's $O(1)$ amortized — each element is pushed once and popped once.
-
----
-
-## 🔥 Interview Q&A — Google / Amazon / Meta Level
-
-### Q1: [Conceptual] What is the relationship between Stock Span and Next Greater Element on the Left?
-**Answer:** They are equivalent problems. The stock span for day $i$ equals `i - j` where `j` is the index of the Previous Greater Element (PGE) to the left of day $i$. If no PGE exists, span = `i + 1` (all days from 0 to i). So Stock Span = $i - \text{PGE\_index}[i]$, which is exactly the Nearest Greater Element to the Left problem computed efficiently with a monotonic decreasing stack.
-
-### Q2: [Derivation] Prove that the total time for N queries is O(N) despite individual calls doing O(N) work.
-**Answer:** Use an **amortized argument**. Each of the $N$ prices is pushed into the stack **exactly once** and popped **at most once**. Therefore, the total number of push + pop operations across all $N$ calls to `next()` is bounded by $2N$. Dividing by $N$ calls gives amortized $O(1)$ per call. The $\Sigma$ of all pops across all calls ≤ $N$.
-
-### Q3: [Design] Can you solve this with O(1) space (no auxiliary stack)?
-**Answer:** No, not in general with online queries. Without the stack, you'd need to scan all previous prices to find the previous greater element — taking $O(N)$ per query and $O(N^2)$ total. The stack is essential for the amortized $O(1)$ per query behavior. Note: if all prices are given upfront (offline), you can precompute spans in $O(N)$ using the Previous Greater Element pattern on the whole array.
-
-### Q4: [Extension] How do you handle duplicate prices? Should the condition be `<` or `<=`?
-**Answer:** The span counts days where price was **less than OR equal to** today's price (consecutive days including tie days). Therefore the pop condition must be `st.top().first <= price` (pop when top price ≤ current price). Using strict `<` would NOT absorb equal prices, causing incorrect shorter spans on tie days.
-
-### Q5: [Output Prediction] What is the output for prices = {3, 3, 3}?
-**Answer:** 
-- Day 0: price=3, stack empty → span=1. Stack: [(3,1)]
-- Day 1: price=3, pop (3,1) because 3≤3, span=1+1=2. Stack: [(3,2)]
-- Day 2: price=3, pop (3,2) because 3≤3, span=1+2=3. Stack: [(3,3)]
-Output: **1 2 3** — each day the span grows by absorbing all equal-price days.
-
-### Q6: [Extension] How would you adapt this for a sliding window (only consider last K days)?
-**Answer:** Store indices instead of span-accumulation, and add an expiry check: when the span would extend beyond K days, cap it. The condition becomes `span = min(accumulated_span, K)`. Alternatively, store `(price, index)` pairs and when `i - st.top().second >= K`, stop popping.
-
-### Q7: [System Design] How would you design this for a real-time stock price feed with millions of tickers?
-**Answer:** Each ticker maintains its own `StockSpanner` object (a stack per ticker). Since we process prices event-by-event, the amortized O(1) per event is ideal for real-time systems. For persistence, the stack state must be serialized to handle system restarts. For parallel tickers, no shared state means embarrassingly parallel processing — no locks needed.
-
----
-
-## 🏆 Related LeetCode Problems
-
-| # | Problem | Key Hint |
-|---|---------|----------|
-| 901 | Online Stock Span | This exact problem |
-| 496 | Next Greater Element I | Offline NGE with hash map |
-| 503 | Next Greater Element II | Circular array + modulo |
-| 739 | Daily Temperatures | NGE variant with day distances |
-| 84 | Largest Rectangle in Histogram | Previous smaller from both sides |
-
----
-
-## 🔗 Cross-Topic Connections
-
-- **Next/Previous Greater Element:** Stock Span is PGE-left, reframed as span counting.
-- **Monotonic Stack family:** All "nearest boundary" problems share the same core mechanism.
-- **Sliding Window:** Extending to "span within last K days" connects to sliding window max problems.
-
----
-
-## ⚡ 2-Minute Revision Flash Card
-
-- **Span[i]** = number of consecutive prior days with price ≤ today = `i - PGE_left_index`.
-- **Store `(price, span)` pairs**, not indices — accumulate spans to avoid re-scanning.
-- **Pop condition:** `st.top().first <= price` (absorb all ≤ days into current span).
-- **Amortized O(1):** Each element pushed once, popped once → total $O(N)$ for N queries.
-- **Gotcha:** `<=` not `<` — equal-price days must be absorbed into the span.
+**Revision:** scan left to right; remove prices `<= current`; span is distance to the remaining top, or `i+1` when none exists.
