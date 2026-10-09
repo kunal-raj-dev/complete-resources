@@ -1,186 +1,117 @@
-# Lecture 72: Previous Smaller Element
+# Lecture 70 — Previous Smaller Element
 
-> **One-Line Purpose:** Find the nearest strictly smaller element to the left for each array element using a Monotonic Increasing Stack scanned from left to right in $O(N)$ time.
+[Topic Index](./00_master_index.md) · [Previous: Next Greater](./04_next_greater_element.md) · [Next: Min Stack](./06_design_min_stack.md)
 
----
+**Source:** [Previous Smaller Element lecture](https://www.youtube.com/watch?v=WnjUfBn9nZM). **Verification:** full auto-caption sequence reviewed; selected code frame checked. [Coverage record](../stacks_dsa_notes/SOURCE_COVERAGE.md#lecture-70).
 
-## 📌 Source Metadata
-> **Source:** YouTube Playlist (Complete C++ DSA Course | Apna College)  
-> **Instructor:** Shradha Khapra  
-> **Lecture:** #72  
-> **Video ID:** `WnjUfBn9nZM`  
-> **Video URL:** [Watch on YouTube](https://www.youtube.com/watch?v=WnjUfBn9nZM)  
-> **Duration:** 09:24  
-> **Status:** AUDITED  
+**Prerequisites:** the candidate-stack explanation and domination proof from Lecture 69.
 
----
+## Contents
 
-## 💻 Complete C++ Implementation
+- [1. Define the target](#1-define-the-target)
+- [2. Adapt the previous pattern](#2-adapt-the-previous-pattern)
+- [3. Original dry run](#3-original-dry-run)
+- [4. C++17 values and indices](#4-c17-values-and-indices)
+- [5. Correctness and complexity](#5-correctness-and-complexity)
+- [6. Interview/CP extension and revision](#6-interviewcp-extension-and-revision)
+
+## 1. Define the target
+
+**Lecture flow: approximately 00:33–01:47.** For each position i, find the **largest index j < i** such that `a[j] < a[i]`. Largest index means nearest on the left; return that element's value, or `-1` if no such element exists.
+
+The lecture's `[3,1,0,8,6]` example produces `[-1,-1,-1,0,0]`. For 6, the nearer 8 is too large; 0 is the nearest valid smaller value. “Previous smaller” is not the minimum of the prefix. In `[1,4,6]`, the answer for 6 is **4**, not 1.
+
+Strictly smaller excludes equality. For `[2,2,3]`, the second 2 has no previous smaller value; 3's nearest smaller is the second 2.
+
+## 2. Adapt the previous pattern
+
+**Lecture flow: approximately 01:47–04:39.** We need information from the left, so traverse **left to right**. The stack contains surviving previous candidates, and its top is the most recent candidate. Remove any top `>= current`, because it cannot be a strictly smaller answer.
+
+After removal, either the stack is empty and the answer is `-1`, or its top supplies the nearest smaller value. Push the current value for future elements.
+
+| Pattern | Candidate scan direction | Pop invalid candidates |
+|---|---|---|
+| Next greater | Right → left | `top <= current` |
+| Previous smaller | Left → right | `top >= current` |
+
+We changed both **which side is processed first** and **which values can answer the query**. LIFO still gives us the nearest surviving candidate.
+
+## 3. Original dry run
+
+Use `[5,2,2,6,4]`. Stack entries are values, bottom → top.
+
+| i | Current | Stack before | Popped | Answer | Stack after push |
+|---|---|---|---|---|---|
+| 0 | 5 | `[]` | None | -1 | `[5]` |
+| 1 | 2 | `[5]` | 5 | -1 | `[2]` |
+| 2 | 2 | `[2]` | 2 | -1 | `[2]` |
+| 3 | 6 | `[2]` | None | 2 | `[2,6]` |
+| 4 | 4 | `[2,6]` | 6 | 2 | `[2,4]` |
+
+Output: `[-1,-1,-1,2,2]`. For an index-returning version, the result is `[-1,-1,-1,2,2]` too, coincidentally: the useful value 2 sits at index 2. Try `[8,3,7]` to expose the difference: values are `[-1,-1,3]`; indices are `[-1,-1,1]`.
+
+## 4. C++17 values and indices
+
+**Lecture flow: approximately 04:39–08:36.** The first function matches the lecture's value-returning problem. The index-returning function is an **Interview/CP extension** used for distances and histogram boundaries.
 
 ```cpp
-#include <vector>
 #include <stack>
-#include <iostream>
+#include <vector>
 
-using namespace std;
-
-class PreviousSmallerElement {
-public:
-    static vector<int> solve(const vector<int>& nums) {
-        int n = nums.size();
-        vector<int> pse(n, -1);
-        stack<int> st;
-
-        for (int i = 0; i < n; ++i) {
-            while (!st.empty() && st.top() >= nums[i]) {
-                st.pop();
-            }
-
-            if (!st.empty()) {
-                pse[i] = st.top();
-            }
-
-            st.push(nums[i]);
-        }
-
-        return pse;
+std::vector<int> previousSmallerValues(const std::vector<int>& a) {
+    const int n = static_cast<int>(a.size());
+    std::vector<int> answer(n, -1);
+    std::stack<int> candidates;
+    for (int i = 0; i < n; ++i) {
+        while (!candidates.empty() && candidates.top() >= a[i])
+            candidates.pop();
+        if (!candidates.empty()) answer[i] = candidates.top();
+        candidates.push(a[i]);
     }
-};
+    return answer;
+}
 
-int main() {
-    vector<int> arr = {4, 5, 2, 10, 8};
-    vector<int> res = PreviousSmallerElement::solve(arr);
-    cout << "Previous Smaller: ";
-    for (int x : res) cout << x << " "; // Output: -1 4 -1 2 2
-    cout << endl;
-    return 0;
+std::vector<int> previousSmallerIndices(const std::vector<int>& a) {
+    const int n = static_cast<int>(a.size());
+    std::vector<int> answer(n, -1);
+    std::stack<int> candidates;
+    for (int i = 0; i < n; ++i) {
+        while (!candidates.empty() && a[candidates.top()] >= a[i])
+            candidates.pop();
+        if (!candidates.empty()) answer[i] = candidates.top();
+        candidates.push(i);
+    }
+    return answer;
 }
 ```
 
----
+Usage: `previousSmallerValues({8,3,7})` returns `{-1,-1,3}`. `previousSmallerIndices` on the same input returns `{-1,-1,1}`. Both return an empty vector for empty input.
 
-## ⏱️ Complexity Analysis
-- **Time Complexity:** $O(N)$
-- **Space Complexity:** $O(N)$
+When a stack holds indices, compare **`a[top]`**, not top itself. Return top when the requested answer is an index; return `a[top]` when it is a value. State this distinction before coding.
 
----
+## 5. Correctness and complexity
 
-## 🧠 Core Intuition — Why This Works
+**Invariant:** surviving indices increase from bottom to top, and their values strictly increase. Any greater or equal top is removed before the current value is pushed, preserving strict increase.
 
-**Previous Smaller Element (PSE)** = for each element, find the nearest element to its **left** that is strictly smaller. This is the mirror of NGE but going leftward.
+Suppose older y is popped by newer x because `y >= x`. For a future target z:
 
-**Why Monotonic Increasing Stack?** Process left-to-right. Maintain a stack where elements are always in increasing order from bottom to top. When processing `nums[i]`:
-- Pop elements ≥ `nums[i]` — they are bigger than the current element and cannot be the PSE for anything to the right (the current smaller element "dominates" them out).
-- Stack top (if non-empty) is the nearest smaller element to the LEFT.
+- If `z > x`, x is a valid smaller candidate and is nearer than y.
+- If `z <= x`, then y is not strictly smaller than z either.
 
-```
-Array: [4, 5, 2, 10, 8]   (left-to-right scan)
+So y can never again be the nearest smaller answer. Once invalid candidates are popped, the top is the closest surviving valid one. This is the smaller-value mirror of Lecture 69's domination proof.
 
-i=0: val=4   Stack empty → PSE[0]=-1. Push 4.  Stack:[4]
-i=1: val=5   top=4<5   → PSE[1]=4.  Push 5.  Stack:[4,5]
-i=2: val=2   pop 5(5≥2), pop 4(4≥2), empty → PSE[2]=-1. Push 2. Stack:[2]
-i=3: val=10  top=2<10  → PSE[3]=2.  Push 10. Stack:[2,10]
-i=4: val=8   pop 10(10≥8), top=2<8 → PSE[4]=2.  Push 8.  Stack:[2,8]
+**Lecture analysis: approximately 08:36–09:10.** Each occurrence is pushed once and popped at most once. Total time is O(n), auxiliary space O(n), output space O(n). An increasing array keeps many candidates alive; a decreasing array repeatedly pops and can have a very small live stack. Both take linear total time.
 
-Result: [-1, 4, -1, 2, 2]  ✓
-```
+## 6. Interview/CP extension and revision
 
----
+For [CSES Nearest Smaller Values](https://cses.fi/problemset/task/1645), output **1-based positions**, and output **0** for absence. Convert a zero-based index result p with `p+1`: `-1` becomes 0 automatically. The CSES limit is 200,000 elements, so a quadratic scan is unsuitable.
 
-## 🎯 Pattern Recognition — The Complete Monotonic Stack Map
+For `[8,3,7]`, internal indices `[-1,-1,1]` become CSES positions `[0,0,2]`. Do not return the smaller values themselves to that judge.
 
-| Problem | Scan Direction | Stack Order | Pop Condition |
-|---------|---------------|-------------|---------------|
-| NGE (right) | Right → Left | Decreasing | pop when `top ≤ current` |
-| PGE (left) | Left → Right | Decreasing | pop when `top ≤ current` |
-| NSE (right) | Right → Left | Increasing | pop when `top ≥ current` |
-| PSE (left) | **Left → Right** | **Increasing** | **pop when `top ≥ current`** |
+**Pitfalls:** forgetting equality in the pop condition; searching the right side; using the smallest historical value instead of the nearest; mixing 0-based sentinels with 1-based output; and pushing before answering.
 
-**Histogram connection:** Largest Rectangle in Histogram uses BOTH PSE-left and NSE-right to find the left and right boundaries for each bar's maximum rectangle.
+If negative values are allowed, a value answer of `-1` can be a real smaller value as well as the absence marker. For unambiguous downstream logic, use the index result. Do not make a blanket statement that all negative answers mean absence.
 
----
+**Interview check:** derive next smaller by changing only direction; derive previous greater by changing only comparison. Explain why the most recent equal candidate can replace the old equal candidate.
 
-## 🔍 Dry Run Trace
-
-Array: `[3, 1, 4, 1, 5]`
-
-```
-i=0: val=3  Stack:[]  → PSE=-1. Push 3.  Stack:[3]
-i=1: val=1  pop 3(≥1) Stack:[]  → PSE=-1. Push 1. Stack:[1]
-i=2: val=4  top=1<4   → PSE=1.  Push 4.  Stack:[1,4]
-i=3: val=1  pop 4(≥1), pop 1(≥1), Stack:[] → PSE=-1. Push 1. Stack:[1]
-i=4: val=5  top=1<5   → PSE=1.  Push 5.  Stack:[1,5]
-
-Result: [-1, -1, 1, -1, 1]
-```
-
----
-
-## ⚠️ Common Interview Mistakes
-
-1. **Getting scan direction backwards:** PSE-Left scans LEFT-TO-RIGHT. NGE-Right scans RIGHT-TO-LEFT. Getting this wrong gives PGE or NSE instead.
-
-2. **Off-by-one in strict vs non-strict:** "Strictly smaller" means pop when `top >= current`. If problem says "smaller or equal", pop when `top > current`.
-
-3. **Not handling the case where stack is empty:** When stack is empty after popping, PSE = -1 (no smaller element to the left). Missing this gives garbage values.
-
-4. **Confusing PSE with NSE:** PSE looks LEFT, NSE looks RIGHT. Same stack type (increasing), different scan direction.
-
----
-
-## 🔥 Interview Q&A — Google / Amazon / Meta Level
-
-### Q1: [Conceptual] How does PSE relate to Largest Rectangle in Histogram?
-**Answer:** In the histogram problem, for each bar at index $i$, the maximum rectangle with height `h[i]` extends leftward until it hits a bar shorter than `h[i]` (that's the PSE boundary) and rightward until it hits a bar shorter than `h[i]` (that's the NSE boundary). The width = `NSE_index[i] - PSE_index[i] - 1`. Computing both PSE and NSE with monotonic stacks gives the $O(N)$ solution.
-
-### Q2: [Output Prediction] What is PSE for array `[5, 4, 3, 2, 1]` (strictly decreasing)?
-**Answer:** For a strictly decreasing array, every element to the right is smaller than everything to its left. But PSE looks LEFT, so for element at index $i$, all elements to its left are LARGER. The stack will always be empty when we record PSE (since each new element causes all larger elements to be popped). Result: `[-1, -1, -1, -1, -1]`. All -1 because no element has a smaller element to its left.
-
-### Q3: [Extension] How do you compute BOTH PSE and NSE for all elements in a single pass?
-**Answer:** You can't do both in a true single pass with one stack. The standard approach is two separate O(N) passes: one left-to-right for PSE, one right-to-left for NSE. Total: O(N) time, O(N) space for both arrays. Alternatively, the single-pass histogram algorithm handles both implicitly — each pop event gives the NSE of the popped element, and the new stack top after popping gives the PSE.
-
-### Q4: [Extension] What is "Previous Smaller or Equal" and how does it differ in implementation?
-**Answer:** Change the pop condition from `st.top() >= nums[i]` to `st.top() > nums[i]`. Now we keep equal elements on the stack, so the top (after popping strictly greater elements) gives the previous element that is ≤ current. This is used in the Stock Span problem variant where ties are included in the span.
-
-### Q5: [Complexity] Why is O(N) achievable when intuitively each element might be compared against many others?
-**Answer:** Each element is pushed exactly once and popped at most once. Even though the while loop can do multiple pops for one element, summed across all $N$ iterations, total pops ≤ $N$. So total operations = pushes + pops ≤ $2N$ = $O(N)$. This is the amortized analysis — a single element might do many pops, but it "pays" for them with previous cheap pushes.
-
-### Q6: [Design] How would you use PSE to solve the "Largest Rectangle in Histogram" problem?
-**Answer:** For each bar $i$:
-1. `left[i]` = PSE-left index of bar $i$ (first bar shorter than `h[i]` to the left), default to -1.
-2. `right[i]` = NSE-right index of bar $i$ (first bar shorter than `h[i]` to the right), default to N.
-3. Width = `right[i] - left[i] - 1`.
-4. Area = `h[i] * width`.
-5. Answer = max over all $i$.
-This uses two monotonic stack passes, each O(N). Total O(N) time, O(N) space.
-
----
-
-## 🏆 Related LeetCode Problems
-
-| # | Problem | Key Hint |
-|---|---------|----------|
-| 84 | Largest Rectangle in Histogram | PSE-left + NSE-right boundaries |
-| 85 | Maximal Rectangle | Apply histogram solution row by row |
-| 496 | Next Greater Element I | Symmetric: NGE-right |
-| 901 | Online Stock Span | PGE-left reframed as span |
-| 907 | Sum of Subarray Minimums | PSE and NSE to count subarrays |
-
----
-
-## 🔗 Cross-Topic Connections
-
-- **Largest Rectangle in Histogram:** Directly uses PSE and NSE to find bar boundaries.
-- **Stock Span:** PGE-Left (same stack type, different semantic: count vs index).
-- **Sum of Subarray Minimums (907):** Each element is the minimum in some contiguous subarrays — boundaries defined by PSE and NSE.
-- **Trapping Rainwater:** Can be solved using prefix and suffix max arrays which are analogous to monotonic array scans.
-
----
-
-## ⚡ 2-Minute Revision Flash Card
-
-- **PSE = Previous Smaller Element:** nearest strictly smaller element to the LEFT.
-- **Algorithm:** Left-to-right scan, monotonic INCREASING stack, pop when `top ≥ current`.
-- **Stack top after popping** = PSE of current element; push current.
-- **Initialize to -1:** when stack is empty, no PSE exists.
-- **Master combo:** PSE + NSE both needed for Largest Rectangle in Histogram.
+**Revision:** left-to-right scan; discard `>= current`; remaining top is previous strictly smaller; push current.
