@@ -28,7 +28,7 @@ This is a counting problem over a **contiguous run**, not a count of every cheap
 
 ## 2. Reframe the problem as previous greater
 
-**Lecture flow: approximately 05:35–10:52.** Instead of counting eligible days repeatedly, find the **nearest earlier strictly greater price**. The lecture calls this the *previous high*. This is not the maximum historical price; it is the nearest blocking position.
+**Lecture flow: approximately 05:35–10:52.** Instead of counting eligible days repeatedly, find the **nearest earlier strictly greater price**. The lecture calls this the _previous high_. This is not the maximum historical price; it is the nearest blocking position.
 
 Let p be its index. Days `p+1` through i are all eligible, so:
 
@@ -52,14 +52,14 @@ Store **indices**, because the answer needs a distance between days. Price value
 
 **Original dry run:** prices `[40,30,35,35,20,45]`. Entries are `index:price`, bottom → top.
 
-| i | Price | Stack before | Popped indices | Previous greater p | Span | Stack after push |
-|---|---|---|---|---|---|---|
-| 0 | 40 | `[]` | None | -1 | 1 | `[0:40]` |
-| 1 | 30 | `[0:40]` | None | 0 | 1 | `[0:40,1:30]` |
-| 2 | 35 | `[0:40,1:30]` | 1 | 0 | 2 | `[0:40,2:35]` |
-| 3 | 35 | `[0:40,2:35]` | 2 | 0 | 3 | `[0:40,3:35]` |
-| 4 | 20 | `[0:40,3:35]` | None | 3 | 1 | `[0:40,3:35,4:20]` |
-| 5 | 45 | `[0:40,3:35,4:20]` | 4,3,0 | -1 | 6 | `[5:45]` |
+| i   | Price | Stack before       | Popped indices | Previous greater p | Span | Stack after push   |
+| --- | ----- | ------------------ | -------------- | ------------------ | ---- | ------------------ |
+| 0   | 40    | `[]`               | None           | -1                 | 1    | `[0:40]`           |
+| 1   | 30    | `[0:40]`           | None           | 0                  | 1    | `[0:40,1:30]`      |
+| 2   | 35    | `[0:40,1:30]`      | 1              | 0                  | 2    | `[0:40,2:35]`      |
+| 3   | 35    | `[0:40,2:35]`      | 2              | 0                  | 3    | `[0:40,3:35]`      |
+| 4   | 20    | `[0:40,3:35]`      | None           | 3                  | 1    | `[0:40,3:35,4:20]` |
+| 5   | 45    | `[0:40,3:35,4:20]` | 4,3,0          | -1                 | 6    | `[5:45]`           |
 
 Output is `[1,1,2,3,1,6]`. The equal price at day 3 must pop day 2; equality is part of the span, not a stopping condition.
 
@@ -113,10 +113,10 @@ Thus j can never again be the nearest previous greater candidate. The stack reta
 
 **Lecture analysis: approximately 24:57–26:08.** The outer loop visits n days. Every index is pushed once and popped at most once. Total work is O(n), even though one day can pop O(n) items. This is **amortized analysis**, not multiplication of the two loops' visible bounds.
 
-| Method | Total time | Auxiliary space | Output space |
-|---|---|---|---|
-| Scan backward for each day | O(n²) worst case | O(1) | O(n) |
-| Monotonic stack | O(n) | O(n) | O(n) |
+| Method                     | Total time       | Auxiliary space | Output space |
+| -------------------------- | ---------------- | --------------- | ------------ |
+| Scan backward for each day | O(n²) worst case | O(1)            | O(n)         |
+| Monotonic stack            | O(n)             | O(n)            | O(n)         |
 
 The worst-case stack size occurs on decreasing prices, where every day remains a candidate. Increasing/equal prices may use little live stack space but still require scanning all n inputs.
 
