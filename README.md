@@ -18,12 +18,14 @@ Complete-Resources/
 │   └── ... (20 DSA Modules, 144 Lectures)
 ├── Web Development/
 │   ├── README.md                          # Web Development Track Guide
-│   └── JavaScript Notes/
-│       ├── README.md                      # JavaScript Notes Directory Guide
-│       ├── 00-master-index.md             # Complete 68-Episode Master Manifest & Study Guide
-│       ├── 01-story-of-javascript.md ... 25-while-loop-in-javascript.md
-│       ├── 26-for-loop-in-javascript.md ... 50-what-is-bom-in-javascript.md
-│       └── 51-introduction-to-dom.md ... 68-local-storage-explained-in-depth.md
+│   ├── JavaScript Notes/
+│   │   ├── README.md                      # JavaScript Notes Directory Guide
+│   │   ├── 00-master-index.md             # Complete 68-Episode Master Manifest & Study Guide
+│   │   └── 01-story-of-javascript.md ... 68-local-storage-explained-in-depth.md
+│   └── mongoDB Notes/
+│       ├── README.md                      # MongoDB Notes Directory Guide & Quickstart
+│       ├── 00-master-index.md             # 10-Episode Master Index, Cheat Sheet & FAANG Bank
+│       └── 01-the-mongo-shell.md ... 10-delete-in-db-and-drop-database.md
 ├── .gitignore
 └── README.md                              # Root Repository Index
 ```
@@ -127,6 +129,27 @@ An exhaustive, lecture-derived, interview-grade knowledge base covering **68 com
 | **66** | Event Simulation in JavaScript | Doorbell & master control board, `form.requestSubmit()` vs `submit()`, `event.isTrusted` origin model | [66-event-simulation-in-javascript.md](./Web%20Development/JavaScript%20Notes/66-event-simulation-in-javascript.md) |
 | **67** | Event Delegation in JavaScript | Lobby receptionist, single parent listener, `e.target.closest()`, non-bubbling `focusin`, memory scaling | [67-event-delegation-in-javascript.md](./Web%20Development/JavaScript%20Notes/67-event-delegation-in-javascript.md) |
 | **68** | Local Storage & Master Revision | Whiteboard vs locker, `JSON.stringify`/`parse`, ~5MB quota, XSS risks + **Master Revision Sheet** | [68-local-storage-explained-in-depth.md](./Web%20Development/JavaScript%20Notes/68-local-storage-explained-in-depth.md) |
+
+---
+
+#### [MongoDB Notes (Ep. 01 → Ep. 10)](./Web%20Development/mongoDB%20Notes/README.md)
+A comprehensive, production-grade MongoDB curriculum built from Shradha Khapra's *Delta Batch (Web Development) — 44. MongoDB (Part 1)*. Designed with Windows-first setup (PowerShell, Services, `mongosh`), BSON internals, full CRUD lifecycles, embedded sub-documents, dot notation syntax, WiredTiger storage reclamation, real-world production scenarios, and Mongoose Node.js ODM bridge snippets.
+
+👉 **[Open Complete 10-Episode Master Curriculum Index (`00-master-index.md`)](./Web%20Development/mongoDB%20Notes/00-master-index.md)**  
+👉 **[Open Windows Environment Setup & Quickstart (`README.md`)](./Web%20Development/mongoDB%20Notes/README.md)**
+
+| # | Episode Title | Core Topic & Pedagogical Focus | Note Link |
+|:---:|:---|:---|:---:|
+| **01** | The Mongo Shell | `mongod` vs `mongosh`, default port 27017, Node.js REPL, `use db`, `db`, `show dbs`, lazy DB allocation | [01-the-mongo-shell.md](./Web%20Development/mongoDB%20Notes/01-the-mongo-shell.md) |
+| **02** | How We Store Data (BSON) | JSON vs BSON binary serialization, length-prefixed traversal, `ObjectId`, 16MB document boundary | [02-how-we-store-data-bson.md](./Web%20Development/mongoDB%20Notes/02-how-we-store-data-bson.md) |
+| **03** | Document & Collection | SQL-to-MongoDB mapping, dynamic schemas, data denormalization vs normalization, embedding rules | [03-document-and-collection.md](./Web%20Development/mongoDB%20Notes/03-document-and-collection.md) |
+| **04** | INSERT in DB (InsertOne) | `insertOne()`, lazy collection creation, 12-byte `ObjectId` breakdown, custom `_id`, `E11000` errors | [04-insert-in-db-insertone.md](./Web%20Development/mongoDB%20Notes/04-insert-in-db-insertone.md) |
+| **05** | INSERT in DB (InsertMany) | `insertMany([])`, bulk write optimization, TCP round-trips, `ordered: true` vs `ordered: false` | [05-insert-in-db-insertmany.md](./Web%20Development/mongoDB%20Notes/05-insert-in-db-insertmany.md) |
+| **06** | FIND in DB | `find()` vs `findOne()`, cursor streaming, batch iteration (`it`), equality filtering, query projections | [06-find-in-db.md](./Web%20Development/mongoDB%20Notes/06-find-in-db.md) |
+| **07** | Query Operators | Comparison (`$gt`, `$gte`, `$in`, `$ne`) and Logical (`$or`, `$and`, `$not`, `$nor`) selectors | [07-query-operators.md](./Web%20Development/mongoDB%20Notes/07-query-operators.md) |
+| **08** | UPDATE in DB | `updateOne()`, `updateMany()`, `replaceOne()`, field modifiers (`$set`, `$unset`, `$inc`), upserts | [08-update-in-db.md](./Web%20Development/mongoDB%20Notes/08-update-in-db.md) |
+| **09** | Nesting & Embedded Documents | Embedded sub-documents, dot notation (`"parent.child"`), mandatory quotes, surgical nested updates | [09-nesting-and-embedded-documents.md](./Web%20Development/mongoDB%20Notes/09-nesting-and-embedded-documents.md) |
+| **10** | DELETE in DB & Drop Database | `deleteOne()`, `deleteMany()`, `drop()` vs `deleteMany({})`, `dropDatabase()`, WiredTiger storage | [10-delete-in-db-and-drop-database.md](./Web%20Development/mongoDB%20Notes/10-delete-in-db-and-drop-database.md) |
 
 ---
 

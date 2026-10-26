@@ -26,17 +26,33 @@ A lecture-derived, interview-grade JavaScript curriculum built from Anurag Singh
 
 ---
 
+### 🔹 [MongoDB Notes](./mongoDB%20Notes/README.md)
+A comprehensive, industry-standard MongoDB curriculum built from Shradha Khapra's *Delta Batch (Web Development) — 44. MongoDB (Part 1)*.
+
+- **Total In-Depth Notes:** **10 Complete Lectures (Ep. 01 – Ep. 10)**
+- **Master Guide & Manifest:** **[00-master-index.md](./mongoDB%20Notes/00-master-index.md)**
+- **Coverage:**
+  1. **Phase 1: Architecture & Data Storage (Ep. 01 – Ep. 03)**: `mongod` daemon, `mongosh` Node.js REPL, default port 27017, database contexts (`use db`, `db`, `show dbs`), BSON vs JSON binary serialization, 16MB document boundary, 12-byte `ObjectId` anatomy, SQL-to-MongoDB mapping, dynamic polymorphic schemas.
+  2. **Phase 2: CRUD: Create Operations & Bulk Ingestion (Ep. 04 – Ep. 05)**: `insertOne()`, lazy collection allocation, dynamic schemas, `insertMany([])`, network round-trip batch optimization, `ordered: true` vs `ordered: false` execution semantics.
+  3. **Phase 3: CRUD: Read Operations & Query Selectors (Ep. 06 – Ep. 07)**: `find()` vs `findOne()`, cursor streaming, batch iteration (`it`), query projections, Comparison operators (`$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$nin`, `$ne`), Logical operators (`$or`, `$and`, `$not`, `$nor`), implicit vs explicit AND.
+  4. **Phase 4: CRUD: Update, Nesting, & Delete Operations (Ep. 08 – Ep. 10)**: `updateOne()`, `updateMany()`, `replaceOne()`, field modifiers (`$set`, `$unset`, `$inc`, `$rename`, `$currentDate`), upsert pattern (`upsert: true`), embedded sub-documents, dot notation syntax (`"parent.child"`), surgical nested updates, `deleteOne()`, `deleteMany()`, `deleteMany({})` vs `drop()`, `dropDatabase()`, and WiredTiger storage reclamation.
+
+---
+
 ## 🗺️ Architectural Structure
 
 ```text
 Web Development/
 │
 ├── README.md                          # Web Development Track Guide
-└── JavaScript Notes/
-    ├── README.md                      # JavaScript Notes Directory Guide
-    ├── 00-master-index.md             # Complete 43-Episode Master Manifest & Study Roadmap
-    ├── 01-story-of-javascript.md ... 25-while-loop-in-javascript.md
-    └── 51-introduction-to-dom.md ... 68-local-storage-explained-in-depth.md
+├── JavaScript Notes/
+│   ├── README.md                      # JavaScript Notes Directory Guide
+│   ├── 00-master-index.md             # Complete Master Manifest & Study Roadmap
+│   └── 01-story-of-javascript.md ... 68-local-storage-explained-in-depth.md
+└── mongoDB Notes/
+    ├── README.md                      # MongoDB Notes Directory Guide & Quickstart
+    ├── 00-master-index.md             # 10-Episode Master Index, Syntax Cheat Sheet & FAANG Bank
+    └── 01-the-mongo-shell.md ... 10-delete-in-db-and-drop-database.md
 ```
 
 ---
